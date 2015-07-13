@@ -16,6 +16,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 abstract public class AbstractScanning {
 
 	public AbstractScanning() {
+		super();
 	}
 
 	abstract public DataStore selectDataStore();
