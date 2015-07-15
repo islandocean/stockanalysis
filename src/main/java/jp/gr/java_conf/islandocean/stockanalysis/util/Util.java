@@ -35,6 +35,31 @@ public final class Util {
 		return list;
 	}
 
+	/**
+	 * Remove comma and nbsp(\u00a0) from String.
+	 * 
+	 * @param org
+	 * @return
+	 */
+	public static String removeCommaAndNbsp(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; ++i) {
+			char c = org.charAt(i);
+			if (c == ',') {
+				continue;
+			}
+			if (c == '\u00a0') {
+				continue;
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
 	private static final DecimalFormat percentFormat = new DecimalFormat(
 			"##0.00%");
 

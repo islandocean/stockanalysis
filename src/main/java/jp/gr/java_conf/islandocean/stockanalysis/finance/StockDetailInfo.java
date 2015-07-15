@@ -8,33 +8,34 @@ public class StockDetailInfo {
 	private String stockName;
 	private String sector;
 	private Calendar date;
-	private double realtimePrice;
-	private double priceComparisonWithPreviousDay;
-	private double previousClosingPrice;
-	private double openingPrice;
-	private double highPrice;
-	private double lowPrice;
-	private double tradingVolumeOfStocks;
-	private double tradingValueOfMoney;
-	private double highPriceLimit;
-	private double lowPriceLimit;
-	private double marketCapitalization;
-	private double outstandingStockVolume;
-	private double annualInterestRate;
-	private double dividendsPerShare;
-	private double per;
-	private double pbr;
-	private double eps;
-	private double bps;
-	private double minimumPurchaseAmount;
-	private double shareUnitNumber;
-	private double yearlyHigh;
-	private double yearlyLow;
-	private double marginDebtBalance;
-	private double marginDebtBalanceRatioComparisonWithPreviousWeek;
-	private double marginSellingBalance;
-	private double marginSellingBalanceRatioComparisonWithPreviousWeek;
-	private double ratioOfMarginBalance;
+
+	private Double realtimePrice;
+	private Double priceComparisonWithPreviousDay;
+	private Double previousClosingPrice;
+	private Double openingPrice;
+	private Double highPrice;
+	private Double lowPrice;
+	private Double tradingVolumeOfStocks;
+	private Double tradingValueOfMoney;
+	private Double highPriceLimit;
+	private Double lowPriceLimit;
+	private Double marketCapitalization;
+	private Double outstandingStockVolume;
+	private Double annualInterestRate;
+	private Double dividendsPerShare;
+	private Double per;
+	private Double pbr;
+	private Double eps;
+	private Double bps;
+	private Double minimumPurchaseAmount;
+	private Double shareUnitNumber;
+	private Double yearlyHigh;
+	private Double yearlyLow;
+	private Double marginDebtBalance;
+	private Double marginDebtBalanceRatioComparisonWithPreviousWeek;
+	private Double marginSellingBalance;
+	private Double marginSellingBalanceRatioComparisonWithPreviousWeek;
+	private Double ratioOfMarginBalance;
 
 	public StockDetailInfo() {
 		super();
@@ -72,222 +73,222 @@ public class StockDetailInfo {
 		this.date = date;
 	}
 
-	public double getRealtimePrice() {
+	public Double getRealtimePrice() {
 		return realtimePrice;
 	}
 
-	public void setRealtimePrice(double realtimePrice) {
+	public void setRealtimePrice(Double realtimePrice) {
 		this.realtimePrice = realtimePrice;
 	}
 
-	public double getPriceComparisonWithPreviousDay() {
+	public Double getPriceComparisonWithPreviousDay() {
 		return priceComparisonWithPreviousDay;
 	}
 
 	public void setPriceComparisonWithPreviousDay(
-			double priceComparisonWithPreviousDay) {
+			Double priceComparisonWithPreviousDay) {
 		this.priceComparisonWithPreviousDay = priceComparisonWithPreviousDay;
 	}
 
-	public double getLastDayClosingPrice() {
+	public Double getPreviousClosingPrice() {
 		return previousClosingPrice;
 	}
 
-	public void setLastDayClosingPrice(double lastDayClosingPrice) {
-		this.previousClosingPrice = lastDayClosingPrice;
+	public void setPreviousClosingPrice(Double previousClosingPrice) {
+		this.previousClosingPrice = previousClosingPrice;
 	}
 
-	public double getOpeningPrice() {
+	public Double getOpeningPrice() {
 		return openingPrice;
 	}
 
-	public void setOpeningPrice(double openingPrice) {
+	public void setOpeningPrice(Double openingPrice) {
 		this.openingPrice = openingPrice;
 	}
 
-	public double getHighPrice() {
+	public Double getHighPrice() {
 		return highPrice;
 	}
 
-	public void setHighPrice(double highPrice) {
+	public void setHighPrice(Double highPrice) {
 		this.highPrice = highPrice;
 	}
 
-	public double getLowPrice() {
+	public Double getLowPrice() {
 		return lowPrice;
 	}
 
-	public void setLowPrice(double lowPrice) {
+	public void setLowPrice(Double lowPrice) {
 		this.lowPrice = lowPrice;
 	}
 
-	public double getTradingVolumeOfStocks() {
+	public Double getTradingVolumeOfStocks() {
 		return tradingVolumeOfStocks;
 	}
 
-	public void setTradingVolumeOfStocks(double tradingVolumeOfStocks) {
+	public void setTradingVolumeOfStocks(Double tradingVolumeOfStocks) {
 		this.tradingVolumeOfStocks = tradingVolumeOfStocks;
 	}
 
-	public double getTradingValueOfMoney() {
+	public Double getTradingValueOfMoney() {
 		return tradingValueOfMoney;
 	}
 
-	public void setTradingValueOfMoney(double tradingValueOfMoney) {
+	public void setTradingValueOfMoney(Double tradingValueOfMoney) {
 		this.tradingValueOfMoney = tradingValueOfMoney;
 	}
 
-	public double getHighPriceLimit() {
+	public Double getHighPriceLimit() {
 		return highPriceLimit;
 	}
 
-	public void setHighPriceLimit(double highPriceLimit) {
+	public void setHighPriceLimit(Double highPriceLimit) {
 		this.highPriceLimit = highPriceLimit;
 	}
 
-	public double getLowPriceLimit() {
+	public Double getLowPriceLimit() {
 		return lowPriceLimit;
 	}
 
-	public void setLowPriceLimit(double lowPriceLimit) {
+	public void setLowPriceLimit(Double lowPriceLimit) {
 		this.lowPriceLimit = lowPriceLimit;
 	}
 
-	public double getMarketCapitalization() {
+	public Double getMarketCapitalization() {
 		return marketCapitalization;
 	}
 
-	public void setMarketCapitalization(double marketCapitalization) {
+	public void setMarketCapitalization(Double marketCapitalization) {
 		this.marketCapitalization = marketCapitalization;
 	}
 
-	public double getOutstandingStockVolume() {
+	public Double getOutstandingStockVolume() {
 		return outstandingStockVolume;
 	}
 
-	public void setOutstandingStockVolume(double outstandingStockVolume) {
+	public void setOutstandingStockVolume(Double outstandingStockVolume) {
 		this.outstandingStockVolume = outstandingStockVolume;
 	}
 
-	public double getAnnualInterestRate() {
+	public Double getAnnualInterestRate() {
 		return annualInterestRate;
 	}
 
-	public void setAnnualInterestRate(double annualInterestRate) {
+	public void setAnnualInterestRate(Double annualInterestRate) {
 		this.annualInterestRate = annualInterestRate;
 	}
 
-	public double getDividendsPerShare() {
+	public Double getDividendsPerShare() {
 		return dividendsPerShare;
 	}
 
-	public void setDividendsPerShare(double dividendsPerShare) {
+	public void setDividendsPerShare(Double dividendsPerShare) {
 		this.dividendsPerShare = dividendsPerShare;
 	}
 
-	public double getPer() {
+	public Double getPer() {
 		return per;
 	}
 
-	public void setPer(double per) {
+	public void setPer(Double per) {
 		this.per = per;
 	}
 
-	public double getPbr() {
+	public Double getPbr() {
 		return pbr;
 	}
 
-	public void setPbr(double pbr) {
+	public void setPbr(Double pbr) {
 		this.pbr = pbr;
 	}
 
-	public double getEps() {
+	public Double getEps() {
 		return eps;
 	}
 
-	public void setEps(double eps) {
+	public void setEps(Double eps) {
 		this.eps = eps;
 	}
 
-	public double getBps() {
+	public Double getBps() {
 		return bps;
 	}
 
-	public void setBps(double bps) {
+	public void setBps(Double bps) {
 		this.bps = bps;
 	}
 
-	public double getMinimumPurchaseAmount() {
+	public Double getMinimumPurchaseAmount() {
 		return minimumPurchaseAmount;
 	}
 
-	public void setMinimumPurchaseAmount(double minimumPurchaseAmount) {
+	public void setMinimumPurchaseAmount(Double minimumPurchaseAmount) {
 		this.minimumPurchaseAmount = minimumPurchaseAmount;
 	}
 
-	public double getShareUnitNumber() {
+	public Double getShareUnitNumber() {
 		return shareUnitNumber;
 	}
 
-	public void setShareUnitNumber(double shareUnitNumber) {
+	public void setShareUnitNumber(Double shareUnitNumber) {
 		this.shareUnitNumber = shareUnitNumber;
 	}
 
-	public double getYearlyHigh() {
+	public Double getYearlyHigh() {
 		return yearlyHigh;
 	}
 
-	public void setYearlyHigh(double yearlyHigh) {
+	public void setYearlyHigh(Double yearlyHigh) {
 		this.yearlyHigh = yearlyHigh;
 	}
 
-	public double getYearlyLow() {
+	public Double getYearlyLow() {
 		return yearlyLow;
 	}
 
-	public void setYearlyLow(double yearlyLow) {
+	public void setYearlyLow(Double yearlyLow) {
 		this.yearlyLow = yearlyLow;
 	}
 
-	public double getMarginDebtBalance() {
+	public Double getMarginDebtBalance() {
 		return marginDebtBalance;
 	}
 
-	public void setMarginDebtBalance(double marginDebtBalance) {
+	public void setMarginDebtBalance(Double marginDebtBalance) {
 		this.marginDebtBalance = marginDebtBalance;
 	}
 
-	public double getMarginDebtBalanceRatioComparisonWithPreviousWeek() {
+	public Double getMarginDebtBalanceRatioComparisonWithPreviousWeek() {
 		return marginDebtBalanceRatioComparisonWithPreviousWeek;
 	}
 
 	public void setMarginDebtBalanceRatioComparisonWithPreviousWeek(
-			double marginDebtBalanceRatioComparisonWithPreviousWeek) {
+			Double marginDebtBalanceRatioComparisonWithPreviousWeek) {
 		this.marginDebtBalanceRatioComparisonWithPreviousWeek = marginDebtBalanceRatioComparisonWithPreviousWeek;
 	}
 
-	public double getMarginSellingBalance() {
+	public Double getMarginSellingBalance() {
 		return marginSellingBalance;
 	}
 
-	public void setMarginSellingBalance(double marginSellingBalance) {
+	public void setMarginSellingBalance(Double marginSellingBalance) {
 		this.marginSellingBalance = marginSellingBalance;
 	}
 
-	public double getMarginSellingBalanceRatioComparisonWithPreviousWeek() {
+	public Double getMarginSellingBalanceRatioComparisonWithPreviousWeek() {
 		return marginSellingBalanceRatioComparisonWithPreviousWeek;
 	}
 
 	public void setMarginSellingBalanceRatioComparisonWithPreviousWeek(
-			double marginSellingBalanceRatioComparisonWithPreviousWeek) {
+			Double marginSellingBalanceRatioComparisonWithPreviousWeek) {
 		this.marginSellingBalanceRatioComparisonWithPreviousWeek = marginSellingBalanceRatioComparisonWithPreviousWeek;
 	}
 
-	public double getRatioOfMarginBalance() {
+	public Double getRatioOfMarginBalance() {
 		return ratioOfMarginBalance;
 	}
 
-	public void setRatioOfMarginBalance(double ratioOfMarginBalance) {
+	public void setRatioOfMarginBalance(Double ratioOfMarginBalance) {
 		this.ratioOfMarginBalance = ratioOfMarginBalance;
 	}
 }
