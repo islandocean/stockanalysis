@@ -38,7 +38,7 @@ public class JreitManager {
 		File file = new File(folder + Config.getFilenameCsv());
 		FileWriter writer = new FileWriter(file);
 		for (JreitRecord record : records) {
-			writer.write(record.toString() + System.lineSeparator());
+			writer.write(record.toTsvString() + System.lineSeparator());
 		}
 		writer.close();
 	}

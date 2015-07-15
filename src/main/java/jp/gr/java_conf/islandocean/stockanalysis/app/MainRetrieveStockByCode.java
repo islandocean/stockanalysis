@@ -67,7 +67,7 @@ public class MainRetrieveStockByCode extends AbstractScanning {
 		boolean hit = false;
 		for (StockRecord record : oneCorpRecords) {
 			hit = true;
-			System.out.println(record.toString());
+			System.out.println(record.toTsvString());
 		}
 		System.out.println();
 		return hit;

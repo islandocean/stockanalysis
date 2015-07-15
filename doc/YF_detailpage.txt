@@ -1,0 +1,37 @@
+# Yahooo finance detail page structure pickup and consideration memo.
+
+------------------------------------------
+<div id="stockinf" class="stocksDtlWp">
+
+<table class="stocksTable" summary="株価詳細">
+ <td class="stoksPrice">1,232</td>
+<td class="change"><span class="yjSt">前日比</span><span class="icoUpGreen yjMSt">+8（+0.65%）</span></td>
+
+------------------------------------------
+
+<div id="detail" class="marB6 chartFinance clearFix">
+<div class="innerDate">
+
+<div class="lineFi clearfix">
+<dl class="tseDtlDelay"><dd class="ymuiEditLink mar0"><strong>1,224</strong><span class="date yjSt">（07/13）</span></dd>
+<dt class="title">前日終値<a class="tips alignPos" href="http://rdsig.yahoo.co.jp/finance/stocks/detail/116trm/RV=1/RU=aHR0cDovL2luZm8uZmluYW5jZS55YWhvby5jby5qcC9kaWN0aW9uYXJ5Lw--" onMouseOver="showTips('zenjituowarine');" onMouseOut ="hideTips('zenjituowarine');" data-ylk="slk:word;pos:1"><img src="http://i.yimg.jp/images/finance/common/image/btn_yougo.png" onmouseover="this.src='http://i.yimg.jp/images/finance/common/image/btn_yougo_on.png'" onmouseout="this.src='http://i.yimg.jp/images/finance/common/image/btn_yougo.png'"></a>
+<span class="tips yjSt" id="zenjituowarine">前営業日、最後の取引値</span></dt>
+</dl>
+</div>
+
+------------------------------------------
+
+<!--Right-->
+<div id="rfindex" class="main2colR clearFix">
+<!--参考指標-->
+    <div class="ymuiHeader ymuiHeaderBGDark"><h2 class="ymuiTitle">参考指標</h2></div>
+<div class="chartFinance">
+
+<div class="lineFi yjMS clearfix">
+<dl class="tseDtl"><dd class="ymuiEditLink mar0"><strong>211,238</strong>百万円<span class="date yjSt">（10:09）</span><span class="icoRealTime" title="リアルタイム">&nbsp;</span></dd>
+<dt class="title">時価総額<a class="tips alignPos" href="http://rdsig.yahoo.co.jp/finance/stocks/detail/116trm/RV=1/RU=aHR0cDovL2luZm8uZmluYW5jZS55YWhvby5jby5qcC9kaWN0aW9uYXJ5Lw--" onMouseOver="showTips('jikasougaku');" onMouseOut ="hideTips('jikasougaku');" data-ylk="slk:word;pos:1"><img src="http://i.yimg.jp/images/finance/common/image/btn_yougo.png" onmouseover="this.src='http://i.yimg.jp/images/finance/common/image/btn_yougo_on.png'" onmouseout="this.src='http://i.yimg.jp/images/finance/common/image/btn_yougo.png'"></a>
+<span class="tips yjSt" id="jikasougaku">市場が評価した銘柄の規模。株価×発行済株式数で計算される</span></dt>
+</dl>
+</div>
+
+------------------------------------------

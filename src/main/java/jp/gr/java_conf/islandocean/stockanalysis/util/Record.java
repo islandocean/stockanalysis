@@ -42,7 +42,29 @@ public class Record extends EnumMap {
 		return list;
 	}
 
+	public String toTsvString() {
+		StringBuilder sb = new StringBuilder(100);
+		Enum<?>[] allKeys = getAllKeys();
+		for (int idx = 0; idx < allKeys.length; ++idx) {
+			Enum<?> key = (Enum<?>) allKeys[idx];
+			Object obj = this.get(key);
+			if (idx != 0) {
+				sb.append('\t');
+			}
+			if (obj != null) {
+				if (obj instanceof Calendar) {
+					String s = CalendarUtil.format_yyyyMMdd((Calendar) obj);
+					sb.append(s);
+				} else {
+					sb.append(obj.toString());
+				}
+			}
+		}
+		return sb.toString();
+	}
+
 	// output CSV
+	@Deprecated
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder(100);

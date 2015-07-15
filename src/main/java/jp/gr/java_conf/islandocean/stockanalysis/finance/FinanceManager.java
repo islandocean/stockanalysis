@@ -32,12 +32,12 @@ public class FinanceManager {
 		return new FinanceManager();
 	}
 
-	private static String getHtmlDetailPageSpec(String code) {
+	public String getHtmlDetailPageSpec(String code) {
 		String spec = Config.getRemoteLocationStocksDetail() + code;
 		return spec;
 	}
 
-	private static String getHtmlChartPageSpec(String code) {
+	public String getHtmlChartPageSpec(String code) {
 		String spec = Config.getRemoteLocationStocksChart() + code;
 		return spec;
 	}

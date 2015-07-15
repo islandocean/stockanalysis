@@ -19,6 +19,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class StandaloneScanningSample {
 
+	private static final String TAB = "\t";
+
 	public StandaloneScanningSample() {
 	}
 
@@ -169,24 +171,16 @@ public class StandaloneScanningSample {
 		if (ratio != null && ratio < 0.65d) {
 			hit = true;
 			System.out.print(stockCode);
-			System.out.print("," + stockName);
-			System.out.print("," + periodHighPrice);
-			System.out.print("," + CalendarUtil.format_yyyyMMdd(periodHighDay));
-			System.out.print("," + periodLowPrice);
-			System.out.print("," + CalendarUtil.format_yyyyMMdd(periodLowDay));
-			System.out.print("," + lastPrice);
-			System.out.print("," + Util.formatPercent(ratio.doubleValue()));
-
-			int idx = stockCode.indexOf("-");
-			String code2 = null;
-			if (idx < 0) {
-				code2 = stockCode;
-			} else {
-				code2 = stockCode.substring(0, idx);
-			}
-			System.out.print(","
-					+ "http://stocks.finance.yahoo.co.jp/stocks/chart/?code="
-					+ code2);
+			System.out.print(TAB + stockName);
+			System.out.print(TAB + periodHighPrice);
+			System.out.print(TAB + CalendarUtil.format_yyyyMMdd(periodHighDay));
+			System.out.print(TAB + periodLowPrice);
+			System.out.print(TAB + CalendarUtil.format_yyyyMMdd(periodLowDay));
+			System.out.print(TAB + lastPrice);
+			System.out.print(TAB + Util.formatPercent(ratio.doubleValue()));
+			System.out.print(TAB
+					+ financeManager.getHtmlChartPageSpec(financeManager
+							.toSplitSearchStockCode(stockCode)));
 			System.out.println();
 		}
 
@@ -196,13 +190,14 @@ public class StandaloneScanningSample {
 	private static void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print("stock code");
-		System.out.print(",stock name");
-		System.out.print(",period high price");
-		System.out.print(",period high day");
-		System.out.print(",period low price");
-		System.out.print(",period low day");
-		System.out.print(",lastest price");
-		System.out.print(",latest / high ratio");
+		System.out.print(TAB + "stock name");
+		System.out.print(TAB + "period high price");
+		System.out.print(TAB + "period high day");
+		System.out.print(TAB + "period low price");
+		System.out.print(TAB + "period low day");
+		System.out.print(TAB + "lastest price");
+		System.out.print(TAB + "latest / high ratio");
+		System.out.print(TAB + "url");
 		System.out.println();
 	}
 
