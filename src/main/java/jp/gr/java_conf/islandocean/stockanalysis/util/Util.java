@@ -36,19 +36,19 @@ public final class Util {
 	}
 
 	/**
-	 * Returns substring before '(' (opening round parentheses). If "abc(07/14)"
-	 * is specified, returns "abc". If there is no opening round parentheses in
-	 * the string, returns the original string.
+	 * Returns substring before last '(' (opening round parentheses). If
+	 * "(連)abc(07/14)" is specified, returns "(連)abc". If there is no opening
+	 * round parentheses in the string, returns the original string.
 	 * 
 	 * @param org
 	 * @return substring before opening round parentheses.
 	 */
-	public static String substringBeforeOpeningRoundParentheses(String org) {
+	public static String substringBeforeLastOpeningRoundParentheses(String org) {
 		int len;
 		if (org == null || (len = org.length()) == 0) {
 			return org;
 		}
-		int index = org.indexOf('(');
+		int index = org.lastIndexOf('(');
 		if (index < 0) {
 			return org;
 		}
@@ -110,9 +110,9 @@ public final class Util {
 	}
 
 	public static void main(String[] args) {
-		String org = "abc(12(3)4)";
-		String s = substringBeforeOpeningRoundParentheses(org);
-		System.out.println("substringBeforeOpeningRoundParentheses(\"" + org
-				+ "\")=\"" + s + "\"");
+		String org = "(連)abc(07/20)";
+		String s = substringBeforeLastOpeningRoundParentheses(org);
+		System.out.println("substringBeforeLastOpeningRoundParentheses(\""
+				+ org + "\")=\"" + s + "\"");
 	}
 }
