@@ -36,6 +36,48 @@ public final class Util {
 	}
 
 	/**
+	 * Returns substring before '(' (opening round parentheses). If "abc(07/14)"
+	 * is specified, returns "abc". If there is no opening round parentheses in
+	 * the string, returns the original string.
+	 * 
+	 * @param org
+	 * @return substring before opening round parentheses.
+	 */
+	public static String substringBeforeOpeningRoundParentheses(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		int index = org.indexOf('(');
+		if (index < 0) {
+			return org;
+		}
+		return org.substring(0, index);
+	}
+
+	/**
+	 * Remove comma from String.
+	 * 
+	 * @param org
+	 * @return
+	 */
+	public static String removeComma(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; ++i) {
+			char c = org.charAt(i);
+			if (c == ',') {
+				continue;
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * Remove comma and nbsp(\u00a0) from String.
 	 * 
 	 * @param org
@@ -65,5 +107,12 @@ public final class Util {
 
 	public static final String formatPercent(double d) {
 		return percentFormat.format(d);
+	}
+
+	public static void main(String[] args) {
+		String org = "abc(12(3)4)";
+		String s = substringBeforeOpeningRoundParentheses(org);
+		System.out.println("substringBeforeOpeningRoundParentheses(\"" + org
+				+ "\")=\"" + s + "\"");
 	}
 }
