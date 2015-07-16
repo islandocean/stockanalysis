@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.util;
+package jp.gr.java_conf.islandocean.stockanalysis.common;
 
 public class InvalidDataException extends Exception {
 

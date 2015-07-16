@@ -1,9 +1,11 @@
-package jp.gr.java_conf.islandocean.stockanalysis.util;
+package jp.gr.java_conf.islandocean.stockanalysis.common;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EnumMap;
 import java.util.List;
+
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class Record extends EnumMap {
 

@@ -2,7 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
 import java.io.File;
 
-import jp.gr.java_conf.islandocean.stockanalysis.util.AbstractConfig;
+import jp.gr.java_conf.islandocean.stockanalysis.common.AbstractConfig;
 
 public class Config extends AbstractConfig {
 
