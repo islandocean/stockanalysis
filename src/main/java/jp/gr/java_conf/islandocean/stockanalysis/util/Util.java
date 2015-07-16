@@ -128,4 +128,29 @@ public final class Util {
 	public static final String formatPercent(double d) {
 		return percentFormat.format(d);
 	}
+
+	/**
+	 * Get current methodName.
+	 * 
+	 * @return String methodName
+	 */
+	public static String getCurrentMethodName() {
+		StackTraceElement stackTraceElement = Thread.currentThread()
+				.getStackTrace()[2];
+		String methodName = stackTraceElement.getMethodName();
+		return methodName;
+	}
+
+	/**
+	 * Get current className and methodName.
+	 * 
+	 * @return String Returns String formatted "className#methodName()".
+	 */
+	public static String getCurrentClassNameAndMethodName() {
+		StackTraceElement stackTraceElement = Thread.currentThread()
+				.getStackTrace()[2];
+		String className = stackTraceElement.getClassName();
+		String methodName = stackTraceElement.getMethodName();
+		return className + "#" + methodName + "()";
+	}
 }
