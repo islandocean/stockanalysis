@@ -87,6 +87,11 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	}
 
 	public void analyze(Document doc) {
+		extractDataAsString(doc);
+		this.stockDetailInfo = convertStringToStockDetailInfo();
+	}
+
+	private void extractDataAsString(Document doc) {
 		Elements infoElements = doc
 				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO);
 		if (infoElements == null || infoElements.size() < 1) {
@@ -121,9 +126,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 
 		Elements tds = table.select("td");
 		for (Element td : tds) {
-			String text = td.text().trim();
-			System.out.println("td=" + td);
-			System.out.println("text=[" + text + "]");
+			String text = Util.normalizeRoundParentheses(td.text().trim());
+			// System.out.println("td=" + td);
+			// System.out.println("text=[" + text + "]");
 			if (text.length() == 0) {
 			} else if (td.classNames().contains("change")) {
 				priceComparisonWithPreviousDayStr = text;
@@ -137,7 +142,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			}
 		}
 
-		System.out.println("------------------------------");
+		// System.out.println("------------------------------");
 
 		Elements detailElements = doc
 				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL);
@@ -145,9 +150,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			Elements dt = dl.getElementsByTag("dt");
 			Elements dd = dl.getElementsByTag("dd");
 			String caption = dt.text().trim();
-			String value = dd.text().trim();
-			System.out.println("caption=" + caption);
-			System.out.println("value=" + value);
+			String value = Util.normalizeRoundParentheses(dd.text().trim());
+			// System.out.println("caption=" + caption);
+			// System.out.println("value=" + value);
 
 			if (caption.startsWith(CAPTION_PREVIOUS_CLOSING_PRICE)) {
 				previousClosingPriceStr = value;
@@ -166,7 +171,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			}
 		}
 
-		System.out.println("------------------------------");
+		// System.out.println("------------------------------");
 
 		Elements rfindexElements = doc
 				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX);
@@ -174,9 +179,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			Elements dt = dl.getElementsByTag("dt");
 			Elements dd = dl.getElementsByTag("dd");
 			String caption = dt.text().trim();
-			String value = dd.text().trim();
-			System.out.println("caption=" + caption);
-			System.out.println("value=" + value);
+			String value = Util.normalizeRoundParentheses(dd.text().trim());
+			// System.out.println("caption=" + caption);
+			// System.out.println("value=" + value);
 
 			if (caption.startsWith(CAPTION_MARKET_CAPITALIZATION)) {
 				marketCapitalizationStr = value;
@@ -205,7 +210,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			}
 		}
 
-		System.out.println("------------------------------");
+		// System.out.println("------------------------------");
 
 		Elements marginElements = doc
 				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN);
@@ -215,9 +220,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			Elements dt = dl.getElementsByTag("dt");
 			Elements dd = dl.getElementsByTag("dd");
 			String caption = dt.text().trim();
-			String value = dd.text().trim();
-			System.out.println("caption=" + caption);
-			System.out.println("value=" + value);
+			String value = Util.normalizeRoundParentheses(dd.text().trim());
+			// System.out.println("caption=" + caption);
+			// System.out.println("value=" + value);
 
 			if (caption.startsWith(CAPTION_MARGIN_DEBT_BALANCE)) {
 				marginDebtBalanceStr = value;
@@ -238,21 +243,180 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				ratioOfMarginBalanceStr = value;
 			}
 		}
-
-		// TODO: debug
-		printAll();
-
-		this.stockDetailInfo = analyzeInner();
 	}
 
-	private StockDetailInfo analyzeInner() {
+	private StockDetailInfo convertStringToStockDetailInfo() {
 		StockDetailInfo stockDetailInfo = new StockDetailInfo();
+		String s;
 
-		// TODO:
-		// TODO:
-		// TODO:
+		// コード
+		stockDetailInfo.setStockCode(stockCodeStr);
 
-		// Under construciton.
+		// 銘柄名
+		stockDetailInfo.setStockName(stockNameStr);
+
+		// 業種
+		stockDetailInfo.setSector(sectorStr);
+
+		// リアルタイム株価
+		stockDetailInfo.setRealtimePrice(Double.parseDouble(Util
+				.removeComma(realtimePriceStr)));
+
+		// 前日比
+		s = Util.substringBeforeLastOpeningRoundParentheses(priceComparisonWithPreviousDayStr); // 前日比+3（+0.17%）→前日比+3
+		s = Util.substringChopStartIfMatch(s, "前日比"); // 前日比+3→+3
+		s = Util.removeComma(s);
+		stockDetailInfo
+				.setPriceComparisonWithPreviousDay(Double.parseDouble(s));
+
+		// 前日終値
+		s = Util.substringBeforeLastOpeningRoundParentheses(previousClosingPriceStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setPreviousClosingPrice(Double.parseDouble(s));
+
+		// 始値
+		s = Util.substringBeforeLastOpeningRoundParentheses(openingPriceStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setOpeningPrice(Double.parseDouble(s));
+
+		// 高値
+		s = Util.substringBeforeLastOpeningRoundParentheses(highPriceStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setHighPrice(Double.parseDouble(s));
+
+		// 安値
+		s = Util.substringBeforeLastOpeningRoundParentheses(lowPriceStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setLowPrice(Double.parseDouble(s));
+
+		// 出来高
+		s = Util.substringBeforeLastOpeningRoundParentheses(tradingVolumeOfStocksStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo.setTradingVolumeOfStocks(Double.parseDouble(s));
+
+		// 売買代金
+		s = Util.substringBeforeLastOpeningRoundParentheses(tradingValueOfMoneyStr);
+		s = Util.substringChopEndIfMatch(s, "千円");
+		s = Util.removeComma(s);
+		stockDetailInfo.setTradingValueOfMoney(Double.parseDouble(s));
+
+		// 値幅制限
+		s = Util.substringBeforeLastOpeningRoundParentheses(priceLimitStr);
+		s = Util.removeComma(s);
+		String[] ar = s.split("～");
+		if (ar.length >= 1) {
+			s = ar[0];
+			stockDetailInfo.setLowPriceLimit(Double.parseDouble(s));
+		}
+		if (ar.length >= 2) {
+			s = ar[1];
+			stockDetailInfo.setHighPriceLimit(Double.parseDouble(s));
+		}
+
+		// 時価総額
+		s = Util.substringBeforeLastOpeningRoundParentheses(marketCapitalizationStr);
+		s = Util.substringChopEndIfMatch(s, "百万円");
+		s = Util.removeComma(s);
+		stockDetailInfo.setMarketCapitalization(Double.parseDouble(s));
+
+		// 発行済株式数
+		s = Util.substringBeforeLastOpeningRoundParentheses(outstandingStockVolumeStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo.setOutstandingStockVolume(Double.parseDouble(s));
+
+		// 配当利回り
+		s = Util.substringBeforeLastOpeningRoundParentheses(annualInterestRateStr);
+		s = Util.substringChopEndIfMatch(s, "%");
+		s = Util.removeComma(s);
+		stockDetailInfo.setAnnualInterestRate(Double.parseDouble(s));
+
+		// 1株配当
+		s = Util.substringBeforeLastOpeningRoundParentheses(dividendsPerShareStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setDividendsPerShare(Double.parseDouble(s));
+
+		// PER
+		s = Util.substringBeforeLastOpeningRoundParentheses(perStr);
+		s = Util.substringChopStartIfMatch(s, "(連)");
+		s = Util.substringChopEndIfMatch(s, "倍");
+		s = Util.removeComma(s);
+		stockDetailInfo.setPer(Double.parseDouble(s));
+
+		// PER
+		s = Util.substringBeforeLastOpeningRoundParentheses(pbrStr);
+		s = Util.substringChopStartIfMatch(s, "(連)");
+		s = Util.substringChopEndIfMatch(s, "倍");
+		s = Util.removeComma(s);
+		stockDetailInfo.setPbr(Double.parseDouble(s));
+
+		// EPS
+		s = Util.substringBeforeLastOpeningRoundParentheses(epsStr);
+		s = Util.substringChopStartIfMatch(s, "(連)");
+		s = Util.removeComma(s);
+		stockDetailInfo.setEps(Double.parseDouble(s));
+
+		// BPS
+		s = Util.substringBeforeLastOpeningRoundParentheses(bpsStr);
+		s = Util.substringChopStartIfMatch(s, "(連)");
+		s = Util.removeComma(s);
+		stockDetailInfo.setBps(Double.parseDouble(s));
+
+		// 最低購入代金
+		s = Util.substringBeforeLastOpeningRoundParentheses(minimumPurchaseAmountStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setMinimumPurchaseAmount(Double.parseDouble(s));
+
+		// 単元株数
+		s = shareUnitNumberStr;
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo.setShareUnitNumber(Double.parseDouble(s));
+
+		// 年初来高値
+		s = Util.substringBeforeLastOpeningRoundParentheses(yearlyHighStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setYearlyHigh(Double.parseDouble(s));
+
+		// 年初来安値
+		s = Util.substringBeforeLastOpeningRoundParentheses(yearlyLowStr);
+		s = Util.removeComma(s);
+		stockDetailInfo.setYearlyLow(Double.parseDouble(s));
+
+		// 信用買残
+		s = Util.substringBeforeLastOpeningRoundParentheses(marginDebtBalanceStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo.setMarginDebtBalance(Double.parseDouble(s));
+
+		// 信用買残 前週比
+		s = Util.substringBeforeLastOpeningRoundParentheses(marginDebtBalanceRatioComparisonWithPreviousWeekStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo
+				.setMarginDebtBalanceRatioComparisonWithPreviousWeek(Double
+						.parseDouble(s));
+
+		// 信用売残
+		s = Util.substringBeforeLastOpeningRoundParentheses(marginSellingBalanceStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo.setMarginSellingBalance(Double.parseDouble(s));
+
+		// 信用売残 前週比
+		s = Util.substringBeforeLastOpeningRoundParentheses(marginSellingBalanceRatioComparisonWithPreviousWeekStr);
+		s = Util.substringChopEndIfMatch(s, "株");
+		s = Util.removeComma(s);
+		stockDetailInfo
+				.setMarginSellingBalanceRatioComparisonWithPreviousWeek(Double
+						.parseDouble(s));
+
+		// 貸借倍率
+		s = Util.substringBeforeLastOpeningRoundParentheses(ratioOfMarginBalanceStr);
+		s = Util.substringChopEndIfMatch(s, "倍");
+		s = Util.removeComma(s);
+		stockDetailInfo.setRatioOfMarginBalance(Double.parseDouble(s));
 
 		return stockDetailInfo;
 	}

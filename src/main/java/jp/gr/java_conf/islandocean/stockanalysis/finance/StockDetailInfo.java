@@ -44,6 +44,49 @@ public class StockDetailInfo {
 		super();
 	}
 
+	public void printAll() {
+		System.out.println("------------------------------");
+		System.out.println("dataGetDate=" + dataGetDate);
+
+		System.out.println("stockCode=" + stockCode);
+		System.out.println("stockName=" + stockName);
+		System.out.println("sector=" + sector);
+
+		System.out.println("realtimePrice=" + realtimePrice);
+		System.out.println("priceComparisonWithPreviousDay="
+				+ priceComparisonWithPreviousDay);
+		System.out.println("previousClosingPrice=" + previousClosingPrice);
+		System.out.println("openingPrice=" + openingPrice);
+		System.out.println("highPrice=" + highPrice);
+		System.out.println("lowPrice=" + lowPrice);
+		System.out.println("tradingVolumeOfStocks=" + tradingVolumeOfStocks);
+		System.out.println("tradingValueOfMoney=" + tradingValueOfMoney);
+		System.out.println("highPriceLimit=" + highPriceLimit);
+		System.out.println("lowPriceLimit=" + lowPriceLimit);
+
+		System.out.println("marketCapitalization=" + marketCapitalization);
+		System.out.println("outstandingStockVolume=" + outstandingStockVolume);
+		System.out.println("annualInterestRate=" + annualInterestRate);
+		System.out.println("dividendsPerShare=" + dividendsPerShare);
+		System.out.println("per=" + per);
+		System.out.println("pbr=" + pbr);
+		System.out.println("eps=" + eps);
+		System.out.println("bps=" + bps);
+		System.out.println("minimumPurchaseAmount=" + minimumPurchaseAmount);
+		System.out.println("shareUnitNumber=" + shareUnitNumber);
+		System.out.println("yearlyHigh=" + yearlyHigh);
+		System.out.println("yearlyLow=" + yearlyLow);
+
+		System.out.println("marginDebtBalance=" + marginDebtBalance);
+		System.out.println("marginDebtBalanceRatioComparisonWithPreviousWeek="
+				+ marginDebtBalanceRatioComparisonWithPreviousWeek);
+		System.out.println("marginSellingBalance=" + marginSellingBalance);
+		System.out
+				.println("marginSellingBalanceRatioComparisonWithPreviousWeek="
+						+ marginSellingBalanceRatioComparisonWithPreviousWeek);
+		System.out.println("ratioOfMarginBalance=" + ratioOfMarginBalance);
+	}
+
 	public Calendar getDataGetDate() {
 		return dataGetDate;
 	}

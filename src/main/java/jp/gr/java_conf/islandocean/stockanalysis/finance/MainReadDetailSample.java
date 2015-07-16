@@ -18,8 +18,9 @@ public class MainReadDetailSample {
 			Document doc = financeManager.readRemoteHtmlDetailPage(code);
 			YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
 			analyzer.analyze(doc);
-			// System.out.println("main() SplitInfoString="
-			// + analyzer.getSplitInfoString());
+			analyzer.printAll();
+			StockDetailInfo stockDetailIfo = analyzer.getStockDetailInfo();
+			stockDetailIfo.printAll();
 		}
 	}
 }
