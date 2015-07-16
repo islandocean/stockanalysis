@@ -55,6 +55,26 @@ public final class Util {
 		return org.substring(0, index);
 	}
 
+	public static String substringChopStartIfMatch(String org, String chop) {
+		if (org == null || org.length() == 0) {
+			return org;
+		}
+		if (org.startsWith(chop)) {
+			return org.substring(chop.length());
+		}
+		return org;
+	}
+
+	public static String substringChopEndIfMatch(String org, String chop) {
+		if (org == null || org.length() == 0) {
+			return org;
+		}
+		if (org.endsWith(chop)) {
+			return org.substring(0, org.length() - chop.length());
+		}
+		return org;
+	}
+
 	/**
 	 * Remove comma from String.
 	 * 
@@ -107,12 +127,5 @@ public final class Util {
 
 	public static final String formatPercent(double d) {
 		return percentFormat.format(d);
-	}
-
-	public static void main(String[] args) {
-		String org = "(連)abc(07/20)";
-		String s = substringBeforeLastOpeningRoundParentheses(org);
-		System.out.println("substringBeforeLastOpeningRoundParentheses(\""
-				+ org + "\")=\"" + s + "\"");
 	}
 }

@@ -30,6 +30,8 @@ public class JreitRecordTest {
 
 	@Test
 	public void testJreitRecord() {
+		System.out.println("Test of " + JreitRecord.class.getCanonicalName()
+				+ ".");
 		JreitRecord record = new JreitRecord();
 		assertTrue(record != null);
 		if (record != null) {
