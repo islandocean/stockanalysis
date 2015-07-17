@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+
 public final class CalendarUtil {
 
 	private static final SimpleDateFormat DATE_FORMAT_yyyy = new SimpleDateFormat(
@@ -127,6 +129,20 @@ public final class CalendarUtil {
 		end.add(Calendar.DAY_OF_MONTH, -1);
 		begin.add(Calendar.DAY_OF_MONTH, -backdays);
 		return new CalendarRange(begin, end);
+	}
+
+	public static Calendar createCalendarByStringyyyyMMdd(String yyyyMMdd)
+			throws InvalidDataException {
+		if (yyyyMMdd.length() != 8) {
+			throw new InvalidDataException(
+					"Error. Length of yyyyMMdd String is not 8. String="
+							+ yyyyMMdd);
+		}
+		String yearStr = yyyyMMdd.substring(0, 4);
+		String monthStr = yyyyMMdd.substring(4, 6);
+		String dayStr = yyyyMMdd.substring(6, 8);
+		return createDay(Integer.parseInt(yearStr),
+				Integer.parseInt(monthStr) - 1, Integer.parseInt(dayStr));
 	}
 
 	public static String format_yyyy(Calendar cal) {

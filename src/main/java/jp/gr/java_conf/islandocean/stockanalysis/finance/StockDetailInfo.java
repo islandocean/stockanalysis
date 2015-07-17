@@ -2,9 +2,12 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
 import java.util.Calendar;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class StockDetailInfo {
+
+	private static Character DELIM = '\t';
 
 	private Calendar dataGetDate;
 
@@ -46,9 +49,186 @@ public class StockDetailInfo {
 		super();
 	}
 
+	public StockDetailInfo(String tsvLine) throws InvalidDataException {
+		super();
+
+		String[] a = tsvLine.split("" + DELIM);
+		if (a.length != 31) {
+			// TODO:
+			throw new RuntimeException(
+					"Invalid csv line data. Items of csv line should be 31.");
+		}
+
+		String s;
+		int idx = 0;
+
+		//
+
+		s = a[idx++];
+		Calendar cal = CalendarUtil.createCalendarByStringyyyyMMdd(s);
+		setDataGetDate(cal);
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setStockCode(s);
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setStockName(s);
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setSector(s);
+		}
+
+		//
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setRealtimePrice(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setPriceComparisonWithPreviousDay(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setPreviousClosingPrice(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setOpeningPrice(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setHighPrice(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setLowPrice(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setTradingVolumeOfStocks(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setTradingValueOfMoney(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setHighPriceLimit(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setLowPriceLimit(Double.parseDouble(s));
+		}
+
+		//
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMarketCapitalization(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setOutstandingStockVolume(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setAnnualInterestRate(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setDividendsPerShare(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setPer(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setPbr(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setEps(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setBps(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMinimumPurchaseAmount(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setShareUnitNumber(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setYearlyHigh(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setYearlyLow(Double.parseDouble(s));
+		}
+
+		//
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMarginDebtBalance(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMarginDebtBalanceRatioComparisonWithPreviousWeek(Double
+					.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMarginSellingBalance(Double.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setMarginSellingBalanceRatioComparisonWithPreviousWeek(Double
+					.parseDouble(s));
+		}
+
+		s = a[idx++];
+		if (s != null && s.length() != 0) {
+			setRatioOfMarginBalance(Double.parseDouble(s));
+		}
+	}
+
 	public String toTsvString() {
-		Character delim = '\t';
-		StringBuilder sb = new StringBuilder(100);
+		StringBuilder sb = new StringBuilder(200);
 
 		//
 
@@ -58,101 +238,161 @@ public class StockDetailInfo {
 		}
 		sb.append(s);
 
-		sb.append(delim);
-		sb.append(stockCode);
+		sb.append(DELIM);
+		if (stockCode != null) {
+			sb.append(stockCode);
+		}
 
-		sb.append(delim);
-		sb.append(stockName);
+		sb.append(DELIM);
+		if (stockName != null) {
+			sb.append(stockName);
+		}
 
-		sb.append(delim);
-		sb.append(sector);
-
-		//
-
-		sb.append(delim);
-		sb.append(realtimePrice);
-
-		sb.append(delim);
-		sb.append(priceComparisonWithPreviousDay);
-
-		sb.append(delim);
-		sb.append(previousClosingPrice);
-
-		sb.append(delim);
-		sb.append(openingPrice);
-
-		sb.append(delim);
-		sb.append(highPrice);
-
-		sb.append(delim);
-		sb.append(lowPrice);
-
-		sb.append(delim);
-		sb.append(tradingVolumeOfStocks);
-
-		sb.append(delim);
-		sb.append(tradingValueOfMoney);
-
-		sb.append(delim);
-		sb.append(highPriceLimit);
-
-		sb.append(delim);
-		sb.append(lowPriceLimit);
+		sb.append(DELIM);
+		if (sector != null) {
+			sb.append(sector);
+		}
 
 		//
 
-		sb.append(delim);
-		sb.append(marketCapitalization);
+		sb.append(DELIM);
+		if (realtimePrice != null) {
+			sb.append(realtimePrice);
+		}
 
-		sb.append(delim);
-		sb.append(outstandingStockVolume);
+		sb.append(DELIM);
+		if (priceComparisonWithPreviousDay != null) {
+			sb.append(priceComparisonWithPreviousDay);
+		}
 
-		sb.append(delim);
-		sb.append(annualInterestRate);
+		sb.append(DELIM);
+		if (previousClosingPrice != null) {
+			sb.append(previousClosingPrice);
+		}
 
-		sb.append(delim);
-		sb.append(dividendsPerShare);
+		sb.append(DELIM);
+		if (openingPrice != null) {
+			sb.append(openingPrice);
+		}
 
-		sb.append(delim);
-		sb.append(per);
+		sb.append(DELIM);
+		if (highPrice != null) {
+			sb.append(highPrice);
+		}
 
-		sb.append(delim);
-		sb.append(pbr);
+		sb.append(DELIM);
+		if (lowPrice != null) {
+			sb.append(lowPrice);
+		}
 
-		sb.append(delim);
-		sb.append(eps);
+		sb.append(DELIM);
+		if (tradingVolumeOfStocks != null) {
+			sb.append(tradingVolumeOfStocks);
+		}
 
-		sb.append(delim);
-		sb.append(bps);
+		sb.append(DELIM);
+		if (tradingValueOfMoney != null) {
+			sb.append(tradingValueOfMoney);
+		}
 
-		sb.append(delim);
-		sb.append(minimumPurchaseAmount);
+		sb.append(DELIM);
+		if (highPriceLimit != null) {
+			sb.append(highPriceLimit);
+		}
 
-		sb.append(delim);
-		sb.append(shareUnitNumber);
-
-		sb.append(delim);
-		sb.append(yearlyHigh);
-
-		sb.append(delim);
-		sb.append(yearlyLow);
+		sb.append(DELIM);
+		if (lowPriceLimit != null) {
+			sb.append(lowPriceLimit);
+		}
 
 		//
 
-		sb.append(delim);
-		sb.append(marginDebtBalance);
+		sb.append(DELIM);
+		if (marketCapitalization != null) {
+			sb.append(marketCapitalization);
+		}
 
-		sb.append(delim);
-		sb.append(marginDebtBalanceRatioComparisonWithPreviousWeek);
+		sb.append(DELIM);
+		if (outstandingStockVolume != null) {
+			sb.append(outstandingStockVolume);
+		}
 
-		sb.append(delim);
-		sb.append(marginSellingBalance);
+		sb.append(DELIM);
+		if (annualInterestRate != null) {
+			sb.append(annualInterestRate);
+		}
 
-		sb.append(delim);
-		sb.append(marginSellingBalanceRatioComparisonWithPreviousWeek);
+		sb.append(DELIM);
+		if (dividendsPerShare != null) {
+			sb.append(dividendsPerShare);
+		}
 
-		sb.append(delim);
-		sb.append(ratioOfMarginBalance);
+		sb.append(DELIM);
+		if (per != null) {
+			sb.append(per);
+		}
+
+		sb.append(DELIM);
+		if (pbr != null) {
+			sb.append(pbr);
+		}
+
+		sb.append(DELIM);
+		if (eps != null) {
+			sb.append(eps);
+		}
+
+		sb.append(DELIM);
+		if (bps != null) {
+			sb.append(bps);
+		}
+
+		sb.append(DELIM);
+		if (minimumPurchaseAmount != null) {
+			sb.append(minimumPurchaseAmount);
+		}
+
+		sb.append(DELIM);
+		if (shareUnitNumber != null) {
+			sb.append(shareUnitNumber);
+		}
+
+		sb.append(DELIM);
+		if (yearlyHigh != null) {
+			sb.append(yearlyHigh);
+		}
+
+		sb.append(DELIM);
+		if (yearlyLow != null) {
+			sb.append(yearlyLow);
+		}
+
+		//
+
+		sb.append(DELIM);
+		if (marginDebtBalance != null) {
+			sb.append(marginDebtBalance);
+		}
+
+		sb.append(DELIM);
+		if (marginDebtBalanceRatioComparisonWithPreviousWeek != null) {
+			sb.append(marginDebtBalanceRatioComparisonWithPreviousWeek);
+		}
+
+		sb.append(DELIM);
+		if (marginSellingBalance != null) {
+			sb.append(marginSellingBalance);
+		}
+
+		sb.append(DELIM);
+		if (marginSellingBalanceRatioComparisonWithPreviousWeek != null) {
+			sb.append(marginSellingBalanceRatioComparisonWithPreviousWeek);
+		}
+
+		sb.append(DELIM);
+		if (ratioOfMarginBalance != null) {
+			sb.append(ratioOfMarginBalance);
+		}
 
 		return sb.toString();
 	}

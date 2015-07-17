@@ -9,6 +9,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class Record extends EnumMap {
 
+	private static String DELIM = "\t";
+
 	private Class enumClass;
 
 	public Record(Class enumClass) {
@@ -44,6 +46,13 @@ public class Record extends EnumMap {
 		return list;
 	}
 
+	// public void printAllValues() {
+	// List list = getAllValues();
+	// for (int idx = 0; idx < list.size(); ++idx) {
+	// System.out.println("idx=" + idx + " value=" + list.get(idx).toString());
+	// }
+	// }
+
 	public String toTsvString() {
 		StringBuilder sb = new StringBuilder(100);
 		Enum<?>[] allKeys = getAllKeys();
@@ -51,7 +60,7 @@ public class Record extends EnumMap {
 			Enum<?> key = (Enum<?>) allKeys[idx];
 			Object obj = this.get(key);
 			if (idx != 0) {
-				sb.append('\t');
+				sb.append(DELIM);
 			}
 			if (obj != null) {
 				if (obj instanceof Calendar) {
@@ -63,6 +72,46 @@ public class Record extends EnumMap {
 			}
 		}
 		return sb.toString();
+	}
+
+	public void fromTsvString(String line) {
+		ValueClassHolder v = ValueClassHolder.getInstance();
+		Class[] valueClasses = v.referValueClass(enumClass);
+		Enum<?>[] allKeys = getAllKeys();
+
+		String[] a = line.split(DELIM);
+		if (a.length != allKeys.length) {
+			// TODO:
+			throw new RuntimeException(
+					"Invalid csv line data. Number of items is different from number of fields of record.");
+		}
+		for (int idx = 0; idx < allKeys.length; ++idx) {
+			Enum<?> key = (Enum<?>) allKeys[idx];
+			String s = a[idx];
+			if (s == null) {
+				put(key, null);
+			} else {
+				Class clazz = valueClasses[idx];
+				if (clazz.equals(Double.class)) {
+					put(key, Double.parseDouble(s));
+				} else if (clazz.equals(String.class)) {
+					put(key, s);
+				} else if (clazz.equals(Long.class)) {
+					put(key, Long.parseLong(s));
+				} else if (clazz.equals(Integer.class)) {
+					put(key, Integer.parseInt(s));
+				} else if (clazz.equals(Calendar.class)) {
+					Calendar cal = null;
+					try {
+						cal = CalendarUtil.createCalendarByStringyyyyMMdd(s);
+					} catch (InvalidDataException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					put(key, cal);
+				}
+			}
+		}
 	}
 
 	// output CSV

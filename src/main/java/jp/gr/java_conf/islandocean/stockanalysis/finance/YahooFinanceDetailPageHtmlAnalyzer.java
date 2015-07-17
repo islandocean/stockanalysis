@@ -432,7 +432,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				}
 			}
 
-			// PER
+			// PBR
 			org = pbrStr;
 			if ((s = org) != null) {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
