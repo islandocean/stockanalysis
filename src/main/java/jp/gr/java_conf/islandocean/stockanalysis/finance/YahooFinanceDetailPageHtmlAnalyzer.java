@@ -1,5 +1,7 @@
 package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
+import java.util.Calendar;
+
 import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
@@ -92,9 +94,10 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		super();
 	}
 
-	public void analyze(Document doc) throws FailedToFindElementException {
+	public void analyze(Document doc, Calendar dataGetDate)
+			throws FailedToFindElementException {
 		extractDataAsString(doc);
-		this.stockDetailInfo = convertStringToStockDetailInfo();
+		this.stockDetailInfo = convertStringToStockDetailInfo(dataGetDate);
 	}
 
 	private void extractDataAsString(Document doc)
@@ -237,10 +240,11 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		}
 	}
 
-	private StockDetailInfo convertStringToStockDetailInfo() {
+	private StockDetailInfo convertStringToStockDetailInfo(Calendar dataGetDate) {
 		StockDetailInfo stockDetailInfo = new StockDetailInfo();
 		String org = null;
 		String s = null;
+		stockDetailInfo.setDataGetDate(dataGetDate);
 
 		try {
 			// コード
@@ -254,36 +258,31 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 
 			// リアルタイム株価
 			org = realtimePriceStr;
-			if (org != null) {
+			if ((s = org) != null) {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
-				s = Util.removeCommaAndTrim(org);
+				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setRealtimePrice(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: realtimePriceStr is null.");
 			}
 
 			// 前日比
 			org = priceComparisonWithPreviousDayStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "前日比");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setPriceComparisonWithPreviousDay(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: priceComparisonWithPreviousDayStr is null.");
 			}
 
 			// 前日終値
 			org = previousClosingPriceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
@@ -291,85 +290,72 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 					stockDetailInfo.setPreviousClosingPrice(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: previousClosingPriceStr is null.");
 			}
 
 			// 始値
 			org = openingPriceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setOpeningPrice(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: openingPriceStr is null.");
 			}
 
 			// 高値
 			org = highPriceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setHighPrice(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: highPriceStr is null.");
 			}
 
 			// 安値
 			org = lowPriceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setLowPrice(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: lowPriceStr is null.");
 			}
 
 			// 出来高
 			org = tradingVolumeOfStocksStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setTradingVolumeOfStocks(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: tradingVolumeOfStocksStr is null.");
 			}
 
 			// 売買代金
 			org = tradingValueOfMoneyStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "千円");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setTradingValueOfMoney(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: tradingValueOfMoneyStr is null.");
 			}
 
 			// 値幅制限
 			org = priceLimitStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.removeCommaAndTrim(s);
 				String[] ar = s.split("～");
 				if (ar.length >= 1) {
@@ -385,69 +371,58 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 								.setHighPriceLimit(Double.parseDouble(s));
 					}
 				}
-			} else {
-//				System.out.println("Warning: priceLimitStr is null.");
 			}
 
 			// 時価総額
 			org = marketCapitalizationStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "百万円");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setMarketCapitalization(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: marketCapitalizationStr is null.");
 			}
 
 			// 発行済株式数
 			org = outstandingStockVolumeStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setOutstandingStockVolume(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: outstandingStockVolumeStr is null.");
 			}
 
 			// 配当利回り
 			org = annualInterestRateStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "%");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo
 							.setAnnualInterestRate(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: annualInterestRateStr is null.");
 			}
 
 			// 1株配当
 			org = dividendsPerShareStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setDividendsPerShare(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: dividendsPerShareStr is null.");
 			}
 
 			// PER
 			org = perStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.substringChopEndIfMatch(s, "倍");
@@ -455,14 +430,12 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				if (!isNoData(s)) {
 					stockDetailInfo.setPer(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: perStr is null.");
 			}
 
 			// PER
 			org = pbrStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.substringChopEndIfMatch(s, "倍");
@@ -470,108 +443,90 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				if (!isNoData(s)) {
 					stockDetailInfo.setPbr(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: pbrStr is null.");
 			}
 
 			// EPS
 			org = epsStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setEps(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: epsStr is null.");
 			}
 
 			// BPS
 			org = bpsStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setBps(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: bpsStr is null.");
 			}
 
 			// 最低購入代金
 			org = minimumPurchaseAmountStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setMinimumPurchaseAmount(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: minimumPurchaseAmountStr is null.");
 			}
 
 			// 単元株数
 			org = shareUnitNumberStr;
-			if (org != null) {
-				s = org;
+			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setShareUnitNumber(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: shareUnitNumberStr is null.");
 			}
 
 			// 年初来高値
 			org = yearlyHighStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "更新");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setYearlyHigh(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: yearlyHighStr is null.");
 			}
 
 			// 年初来安値
 			org = yearlyLowStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "更新");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setYearlyLow(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: yearlyLowStr is null.");
 			}
 
 			// 信用買残
 			org = marginDebtBalanceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setMarginDebtBalance(Double.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: marginDebtBalanceStr is null.");
 			}
 
 			// 信用買残 前週比
 			org = marginDebtBalanceRatioComparisonWithPreviousWeekStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
@@ -579,29 +534,24 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 							.setMarginDebtBalanceRatioComparisonWithPreviousWeek(Double
 									.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: marginDebtBalanceRatioComparisonWithPreviousWeekStr is null.");
 			}
 
 			// 信用売残
 			org = marginSellingBalanceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setMarginSellingBalance(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: marginSellingBalanceStr is null.");
 			}
 
 			// 信用売残 前週比
 			org = marginSellingBalanceRatioComparisonWithPreviousWeekStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
@@ -609,23 +559,18 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 							.setMarginSellingBalanceRatioComparisonWithPreviousWeek(Double
 									.parseDouble(s));
 				}
-			} else {
-//				System.out
-//						.println("Warning: marginSellingBalanceRatioComparisonWithPreviousWeekStr is null.");
 			}
 
 			// 貸借倍率
 			org = ratioOfMarginBalanceStr;
-			if (org != null) {
-				s = Util.substringBeforeLastOpeningRoundParentheses(org);
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "倍");
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					stockDetailInfo.setRatioOfMarginBalance(Double
 							.parseDouble(s));
 				}
-			} else {
-//				System.out.println("Warning: ratioOfMarginBalanceStr is null.");
 			}
 
 		} catch (NumberFormatException e) {
@@ -640,8 +585,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	}
 
 	private boolean isNoData(String s) {
-		// if(s==null || s.length()==0 || s.equals((NO_DATA)){
-		if (s.equals(NO_DATA)) {
+		if (s == null || s.length() == 0 || s.equals(NO_DATA)) {
 			return true;
 		}
 		return false;

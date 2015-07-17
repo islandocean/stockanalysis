@@ -28,7 +28,6 @@ public class MainDownloadDetailInfoOfAllStocks {
 		super();
 	}
 
-	@SuppressWarnings("unused")
 	private static DataStore selectDataStore() {
 		DataStore store = new DataStoreKdb();
 		return store;
@@ -72,6 +71,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 		} catch (IOException eTemp) {
 		}
 
+		Calendar today = CalendarUtil.createToday();
 		try (BufferedWriter writer = Files.newBufferedWriter(pathTemp,
 				StandardCharsets.UTF_8)) {
 			int errorCount = 0;
@@ -107,7 +107,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 
 				YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
 				try {
-					analyzer.analyze(doc);
+					analyzer.analyze(doc, today);
 				} catch (FailedToFindElementException e) {
 					++errorCount;
 					System.out

@@ -159,7 +159,8 @@ public class StockDetailInfo {
 
 	public void printAll() {
 		System.out.println("------------------------------");
-		System.out.println("dataGetDate=" + dataGetDate);
+		System.out.println("dataGetDate="
+				+ CalendarUtil.format_yyyyMMdd(dataGetDate));
 
 		System.out.println("stockCode=" + stockCode);
 		System.out.println("stockName=" + stockName);

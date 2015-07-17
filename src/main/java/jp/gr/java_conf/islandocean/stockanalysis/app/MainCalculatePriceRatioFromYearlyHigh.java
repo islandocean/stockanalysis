@@ -16,7 +16,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 
-	private static final String TAB = "\t";
+	private static final Character DELIM = '\t';
 
 	public MainCalculatePriceRatioFromYearlyHigh() {
 	}
@@ -108,14 +108,16 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 		if (ratio != null) {
 			hit = true;
 			System.out.print(stockCode);
-			System.out.print(TAB + stockName);
-			System.out.print(TAB + periodHighPrice);
-			System.out.print(TAB + CalendarUtil.format_yyyyMMdd(periodHighDay));
-			System.out.print(TAB + periodLowPrice);
-			System.out.print(TAB + CalendarUtil.format_yyyyMMdd(periodLowDay));
-			System.out.print(TAB + lastPrice);
-			System.out.print(TAB + Util.formatPercent(ratio.doubleValue()));
-			System.out.print(TAB
+			System.out.print(DELIM + stockName);
+			System.out.print(DELIM + periodHighPrice);
+			System.out.print(DELIM
+					+ CalendarUtil.format_yyyyMMdd(periodHighDay));
+			System.out.print(DELIM + periodLowPrice);
+			System.out
+					.print(DELIM + CalendarUtil.format_yyyyMMdd(periodLowDay));
+			System.out.print(DELIM + lastPrice);
+			System.out.print(DELIM + Util.formatPercent(ratio.doubleValue()));
+			System.out.print(DELIM
 					+ financeManager.getHtmlChartPageSpec(financeManager
 							.toSplitSearchStockCode(stockCode)));
 			System.out.println();
@@ -127,14 +129,14 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print("stock code");
-		System.out.print(TAB + "stock name");
-		System.out.print(TAB + "period high price");
-		System.out.print(TAB + "period high day");
-		System.out.print(TAB + "period low price");
-		System.out.print(TAB + "period low day");
-		System.out.print(TAB + "lastest price");
-		System.out.print(TAB + "latest / high ratio");
-		System.out.print(TAB + "url");
+		System.out.print(DELIM + "stock name");
+		System.out.print(DELIM + "period high price");
+		System.out.print(DELIM + "period high day");
+		System.out.print(DELIM + "period low price");
+		System.out.print(DELIM + "period low day");
+		System.out.print(DELIM + "lastest price");
+		System.out.print(DELIM + "latest / high ratio");
+		System.out.print(DELIM + "url");
 		System.out.println();
 	}
 
