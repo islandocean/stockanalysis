@@ -2,6 +2,8 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
 import java.util.Calendar;
 
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
+
 public class StockDetailInfo {
 
 	private Calendar dataGetDate;
@@ -42,6 +44,117 @@ public class StockDetailInfo {
 
 	public StockDetailInfo() {
 		super();
+	}
+
+	public String toTsvString() {
+		Character delim = '\t';
+		StringBuilder sb = new StringBuilder(100);
+
+		//
+
+		String s = "";
+		if (dataGetDate != null) {
+			s = CalendarUtil.format_yyyyMMdd(dataGetDate);
+		}
+		sb.append(s);
+
+		sb.append(delim);
+		sb.append(stockCode);
+
+		sb.append(delim);
+		sb.append(stockName);
+
+		sb.append(delim);
+		sb.append(sector);
+
+		//
+
+		sb.append(delim);
+		sb.append(realtimePrice);
+
+		sb.append(delim);
+		sb.append(priceComparisonWithPreviousDay);
+
+		sb.append(delim);
+		sb.append(previousClosingPrice);
+
+		sb.append(delim);
+		sb.append(openingPrice);
+
+		sb.append(delim);
+		sb.append(highPrice);
+
+		sb.append(delim);
+		sb.append(lowPrice);
+
+		sb.append(delim);
+		sb.append(tradingVolumeOfStocks);
+
+		sb.append(delim);
+		sb.append(tradingValueOfMoney);
+
+		sb.append(delim);
+		sb.append(highPriceLimit);
+
+		sb.append(delim);
+		sb.append(lowPriceLimit);
+
+		//
+
+		sb.append(delim);
+		sb.append(marketCapitalization);
+
+		sb.append(delim);
+		sb.append(outstandingStockVolume);
+
+		sb.append(delim);
+		sb.append(annualInterestRate);
+
+		sb.append(delim);
+		sb.append(dividendsPerShare);
+
+		sb.append(delim);
+		sb.append(per);
+
+		sb.append(delim);
+		sb.append(pbr);
+
+		sb.append(delim);
+		sb.append(eps);
+
+		sb.append(delim);
+		sb.append(bps);
+
+		sb.append(delim);
+		sb.append(minimumPurchaseAmount);
+
+		sb.append(delim);
+		sb.append(shareUnitNumber);
+
+		sb.append(delim);
+		sb.append(yearlyHigh);
+
+		sb.append(delim);
+		sb.append(yearlyLow);
+
+		//
+
+		sb.append(delim);
+		sb.append(marginDebtBalance);
+
+		sb.append(delim);
+		sb.append(marginDebtBalanceRatioComparisonWithPreviousWeek);
+
+		sb.append(delim);
+		sb.append(marginSellingBalance);
+
+		sb.append(delim);
+		sb.append(marginSellingBalanceRatioComparisonWithPreviousWeek);
+
+		sb.append(delim);
+		sb.append(ratioOfMarginBalance);
+
+		return sb.toString();
 	}
 
 	public void printAll() {

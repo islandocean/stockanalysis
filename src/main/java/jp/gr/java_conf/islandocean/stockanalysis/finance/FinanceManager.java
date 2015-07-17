@@ -63,7 +63,8 @@ public class FinanceManager {
 	}
 
 	public List<String> readLocalSplitInfoText() throws IOException {
-		String filename = Config.getSplitInformationFilename();
+		String filename = Config.getSplitInformationFilename()
+				+ Config.getSplitInformationExt();
 		FileSystem fs = FileSystems.getDefault();
 		Path src = fs.getPath(filename);
 		List<String> lines = Files.readAllLines(src, StandardCharsets.UTF_8);

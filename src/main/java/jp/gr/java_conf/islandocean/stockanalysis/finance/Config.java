@@ -27,9 +27,13 @@ public class Config extends AbstractConfig {
 		}
 	}
 
-	private static final String SPLIT_INFORMATION = "split_information.csv";
+	private static final String SPLIT_INFORMATION = "split_information";
 	private static final String SPLIT_INFORMATION_FILENAME = getBaseFolder()
 			+ SPLIT_INFORMATION;
+
+	private static final String DETAIL_INFORMATION = "detail_information";
+	private static final String DETAIL_INFORMATION_FILENAME = getBaseFolder()
+			+ DETAIL_INFORMATION;
 
 	private Config() {
 	}
@@ -52,5 +56,17 @@ public class Config extends AbstractConfig {
 
 	public static String getSplitInformationFilename() {
 		return SPLIT_INFORMATION_FILENAME;
+	}
+
+	public static String getSplitInformationExt() {
+		return ".csv";
+	}
+
+	public static String getDetailInformationFilename() {
+		return DETAIL_INFORMATION_FILENAME;
+	}
+
+	public static String getDetailInformationExt() {
+		return ".csv";
 	}
 }

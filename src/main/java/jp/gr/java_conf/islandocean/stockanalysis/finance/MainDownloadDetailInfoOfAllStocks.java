@@ -11,6 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Calendar;
 import java.util.List;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -21,9 +22,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 import org.jsoup.nodes.Document;
 
-public class MainDownloadSplitInfoOfAllStocks {
+public class MainDownloadDetailInfoOfAllStocks {
 
-	public MainDownloadSplitInfoOfAllStocks() {
+	public MainDownloadDetailInfoOfAllStocks() {
 		super();
 	}
 
@@ -58,11 +59,11 @@ public class MainDownloadSplitInfoOfAllStocks {
 				.get(dailyDataList.size() - 1);
 
 		FileSystem fs = FileSystems.getDefault();
-		String filename = Config.getSplitInformationFilename();
+		String filename = Config.getDetailInformationFilename();
 		String tempSuffix = "."
 				+ CalendarUtil.format_yyyyMMdd(CalendarUtil.createToday());
 		Path pathTemp = fs.getPath(filename + tempSuffix
-				+ Config.getSplitInformationExt());
+				+ Config.getDetailInformationExt());
 
 		try {
 			if (Files.exists(pathTemp)) {
@@ -73,6 +74,7 @@ public class MainDownloadSplitInfoOfAllStocks {
 
 		try (BufferedWriter writer = Files.newBufferedWriter(pathTemp,
 				StandardCharsets.UTF_8)) {
+			int errorCount = 0;
 			for (int idxStockList = 0; idxStockList < stockList.size(); ++idxStockList) {
 				String stockCode = (String) ((StockRecord) stockList
 						.get(idxStockList)).get(StockEnum.STOCK_CODE);
@@ -85,7 +87,7 @@ public class MainDownloadSplitInfoOfAllStocks {
 				for (int retry = 0; retry < maxRetry; ++retry) {
 					try {
 						doc = financeManager
-								.readRemoteHtmlChartPage(searchCode);
+								.readRemoteHtmlDetailPage(searchCode);
 						break;
 					} catch (IOException e) {
 						System.out
@@ -103,17 +105,33 @@ public class MainDownloadSplitInfoOfAllStocks {
 					}
 				}
 
-				YahooFinanceChartPageHtmlAnalyzer analyzer = new YahooFinanceChartPageHtmlAnalyzer();
-				analyzer.analyze(doc);
-				String line = stockCode + "," + analyzer.getSplitInfoString();
-				System.out.println(line);
+				YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
+				try {
+					analyzer.analyze(doc);
+				} catch (FailedToFindElementException e) {
+					++errorCount;
+					System.out
+							.println("Error: Failed to find element. stockCode="
+									+ stockCode);
+					continue;
+				}
+				StockDetailInfo stockDetailInfo = analyzer.getStockDetailInfo();
+				String line = stockDetailInfo.toTsvString();
+				// System.out.println(line);
 				writer.write(line);
 				writer.newLine();
+
+				if ((idxStockList % 100) == 0) {
+					System.out
+							.println("Info: processing count=" + idxStockList);
+				}
 			}
+
+			System.out.println("errorCount=" + errorCount);
 		}
 
 		Path pathRegular = fs.getPath(filename
-				+ Config.getSplitInformationExt());
+				+ Config.getDetailInformationExt());
 		Files.copy(pathTemp, pathRegular, StandardCopyOption.COPY_ATTRIBUTES,
 				StandardCopyOption.REPLACE_EXISTING);
 	}

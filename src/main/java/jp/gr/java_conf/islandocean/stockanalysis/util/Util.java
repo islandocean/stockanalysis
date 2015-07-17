@@ -76,12 +76,12 @@ public final class Util {
 	}
 
 	/**
-	 * Remove comma from String.
+	 * Remove comma from String, and trim.
 	 * 
 	 * @param org
 	 * @return
 	 */
-	public static String removeComma(String org) {
+	public static String removeCommaAndTrim(String org) {
 		int len;
 		if (org == null || (len = org.length()) == 0) {
 			return org;
@@ -94,7 +94,7 @@ public final class Util {
 			}
 			sb.append(c);
 		}
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	/**

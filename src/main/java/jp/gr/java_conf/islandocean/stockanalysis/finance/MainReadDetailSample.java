@@ -2,6 +2,8 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
 import java.io.IOException;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
+
 import org.jsoup.nodes.Document;
 
 public class MainReadDetailSample {
@@ -14,10 +16,16 @@ public class MainReadDetailSample {
 
 		FinanceManager financeManager = FinanceManager.getInstance();
 		String[] codes = new String[] { "4536" };
-		for (String code : codes) {
-			Document doc = financeManager.readRemoteHtmlDetailPage(code);
+		for (String stockCode : codes) {
+			Document doc = financeManager.readRemoteHtmlDetailPage(stockCode);
 			YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
-			analyzer.analyze(doc);
+			try {
+				analyzer.analyze(doc);
+			} catch (FailedToFindElementException e) {
+				System.out.println("Error: Failed to find element. stockCode="
+						+ stockCode);
+				continue;
+			}
 			analyzer.printAll();
 			StockDetailInfo stockDetailIfo = analyzer.getStockDetailInfo();
 			stockDetailIfo.printAll();
