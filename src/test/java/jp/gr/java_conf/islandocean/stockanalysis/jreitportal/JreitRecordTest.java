@@ -40,7 +40,7 @@ public class JreitRecordTest {
 				record.put(enums[idx], HEAD + String.valueOf(idx));
 			}
 
-			Enum<?>[] allKeys = record.getAllKeys();
+			Enum<?>[] allKeys = record.getEnumConstants();
 			for (int idx = 0; idx < allKeys.length; ++idx) {
 				JreitEnum key = (JreitEnum) allKeys[idx];
 				String value = (String) record.get(key);

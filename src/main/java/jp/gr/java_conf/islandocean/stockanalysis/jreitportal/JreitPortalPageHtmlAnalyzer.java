@@ -44,7 +44,7 @@ public class JreitPortalPageHtmlAnalyzer {
 	private JreitRecord analyzeTr(Element tr) {
 		List<String> texts = analyzeThtd(tr);
 		JreitRecord record = new JreitRecord();
-		Enum<?>[] allKeys = record.getAllKeys();
+		Enum<?>[] allKeys = record.getEnumConstants();
 		for (int idx = 0; idx < texts.size(); ++idx) {
 			JreitEnum key = (JreitEnum) allKeys[idx];
 			String text = (String) texts.get(idx);

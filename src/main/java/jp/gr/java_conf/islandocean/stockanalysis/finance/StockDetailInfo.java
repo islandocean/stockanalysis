@@ -5,6 +5,7 @@ import java.util.Calendar;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
+@Deprecated
 public class StockDetailInfo {
 
 	private static Character DELIM = '\t';

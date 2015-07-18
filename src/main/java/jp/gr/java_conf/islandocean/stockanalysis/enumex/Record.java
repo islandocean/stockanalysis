@@ -17,13 +17,9 @@ public class Record extends EnumMap {
 	public Record(Class enumClass) {
 		super(enumClass);
 		this.enumClass = enumClass;
-
-		if (!enumClass.isEnum()) {
-			// TODO: error.
-		}
 	}
 
-	public Enum<?>[] getAllKeys() {
+	public Enum<?>[] getEnumConstants() {
 		return (Enum<?>[]) enumClass.getEnumConstants();
 	}
 
@@ -35,7 +31,7 @@ public class Record extends EnumMap {
 	 */
 	public List<String> getAllValues() {
 		ArrayList<String> list = new ArrayList<String>();
-		Enum<?>[] allKeys = getAllKeys();
+		Enum<?>[] allKeys = getEnumConstants();
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
 			String val = (String) this.get(key);
@@ -49,7 +45,7 @@ public class Record extends EnumMap {
 
 	public String toTsvString() {
 		StringBuilder sb = new StringBuilder(100);
-		Enum<?>[] allKeys = getAllKeys();
+		Enum<?>[] allKeys = getEnumConstants();
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
 			Object obj = this.get(key);
@@ -69,7 +65,7 @@ public class Record extends EnumMap {
 	}
 
 	public void fromTsvString(String line) {
-		Enum<?>[] allKeys = getAllKeys();
+		Enum<?>[] allKeys = getEnumConstants();
 		String[] a = line.split(DELIM);
 		if (a.length != allKeys.length) {
 			// TODO:
@@ -106,7 +102,7 @@ public class Record extends EnumMap {
 	}
 
 	public void printAllNamesAndValues() {
-		Enum<?>[] allKeys = getAllKeys();
+		Enum<?>[] allKeys = getEnumConstants();
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
 			String name = key.toString();
