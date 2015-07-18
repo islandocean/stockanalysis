@@ -1,10 +1,11 @@
-package jp.gr.java_conf.islandocean.stockanalysis.common;
+package jp.gr.java_conf.islandocean.stockanalysis.enumex;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EnumMap;
 import java.util.List;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class Record extends EnumMap {
@@ -46,13 +47,6 @@ public class Record extends EnumMap {
 		return list;
 	}
 
-	// public void printAllValues() {
-	// List list = getAllValues();
-	// for (int idx = 0; idx < list.size(); ++idx) {
-	// System.out.println("idx=" + idx + " value=" + list.get(idx).toString());
-	// }
-	// }
-
 	public String toTsvString() {
 		StringBuilder sb = new StringBuilder(100);
 		Enum<?>[] allKeys = getAllKeys();
@@ -75,10 +69,7 @@ public class Record extends EnumMap {
 	}
 
 	public void fromTsvString(String line) {
-		ValueClassHolder v = ValueClassHolder.getInstance();
-		Class[] valueClasses = v.referValueClass(enumClass);
 		Enum<?>[] allKeys = getAllKeys();
-
 		String[] a = line.split(DELIM);
 		if (a.length != allKeys.length) {
 			// TODO:
@@ -91,7 +82,7 @@ public class Record extends EnumMap {
 			if (s == null) {
 				put(key, null);
 			} else {
-				Class clazz = valueClasses[idx];
+				Class clazz = EnumUtil.getDataValueClass(enumClass, idx);
 				if (clazz.equals(Double.class)) {
 					put(key, Double.parseDouble(s));
 				} else if (clazz.equals(String.class)) {
@@ -114,27 +105,18 @@ public class Record extends EnumMap {
 		}
 	}
 
-	// output CSV
-	@Deprecated
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(100);
+	public void printAllNamesAndValues() {
 		Enum<?>[] allKeys = getAllKeys();
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
+			String name = key.toString();
 			Object obj = this.get(key);
-			if (idx != 0) {
-				sb.append(',');
-			}
-			if (obj != null) {
-				if (obj instanceof Calendar) {
-					String s = CalendarUtil.format_yyyyMMdd((Calendar) obj);
-					sb.append(s);
-				} else {
-					sb.append(obj.toString());
-				}
+			if (obj instanceof Calendar) {
+				String s = CalendarUtil.format_yyyyMMdd((Calendar) obj);
+				System.out.println(name + "=" + s);
+			} else {
+				System.out.println(name + "=" + obj.toString());
 			}
 		}
-		return sb.toString();
 	}
 }

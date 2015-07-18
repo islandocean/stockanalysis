@@ -2,83 +2,69 @@ package jp.gr.java_conf.islandocean.stockanalysis.price;
 
 import java.util.Calendar;
 
-public enum StockEnum {
+import jp.gr.java_conf.islandocean.stockanalysis.enumex.HasDataValueClass;
+
+public enum StockEnum implements HasDataValueClass {
 
 	/** 日付 */
-	DATE,
+	DATE(Calendar.class),
 
 	/** コード */
-	STOCK_CODE,
+	STOCK_CODE(String.class),
 
 	/** 市場 */
-	MARKET,
+	MARKET(String.class),
 
 	/** 銘柄名 */
-	STOCK_NAME,
+	STOCK_NAME(String.class),
 
 	/** 業種 */
-	SECTOR,
+	SECTOR(String.class),
 
 	/** 始値 */
-	OPENING_PRICE,
+	OPENING_PRICE(Double.class),
 
 	/** 高値 */
-	HIGH_PRICE,
+	HIGH_PRICE(Double.class),
 
 	/** 安値 */
-	LOW_PRICE,
+	LOW_PRICE(Double.class),
 
 	/** 終値 */
-	CLOSING_PRICE,
+	CLOSING_PRICE(Double.class),
 
 	/** 出来高 */
-	TRADING_VOLUME_OF_STOCKS,
+	TRADING_VOLUME_OF_STOCKS(Double.class),
 
 	/** 売買代金 */
-	TRADING_VALUE_OF_MONEY,
+	TRADING_VALUE_OF_MONEY(Double.class),
 
 	/** 始値（株式分割調整後） */
-	ADJUSTED_OPENING_PRICE,
+	ADJUSTED_OPENING_PRICE(Double.class),
 
 	/** 高値（株式分割調整後） */
-	ADJUSTED_HIGH_PRICE,
+	ADJUSTED_HIGH_PRICE(Double.class),
 
 	/** 安値 （株式分割調整後） */
-	ADJUSTED_LOW_PRICE,
+	ADJUSTED_LOW_PRICE(Double.class),
 
 	/** 終値 （株式分割調整後） */
-	ADJUSTED_CLOSING_PRICE,
+	ADJUSTED_CLOSING_PRICE(Double.class),
 
 	/** 調整適用回数 */
-	SPLIT_COUNT;
+	SPLIT_COUNT(Integer.class);
 
 	private Class<?> dataValueClass;
+
+	StockEnum(Class<?> dataValueClass) {
+		this.dataValueClass = dataValueClass;
+	}
 
 	public Class<?> getDataValueClass() {
 		return this.dataValueClass;
 	}
 
-	public void setDataValueClass(Class<?> valueClass) {
-		this.dataValueClass = valueClass;
+	public void setDataValueClass(Class<?> dataValueClass) {
+		this.dataValueClass = dataValueClass;
 	}
-
-	// Class of data value in the map.
-	static {
-		DATE.setDataValueClass(Calendar.class);
-		STOCK_CODE.setDataValueClass(String.class);
-		MARKET.setDataValueClass(String.class);
-		STOCK_NAME.setDataValueClass(String.class);
-		SECTOR.setDataValueClass(String.class);
-		OPENING_PRICE.setDataValueClass(Double.class);
-		HIGH_PRICE.setDataValueClass(Double.class);
-		LOW_PRICE.setDataValueClass(Double.class);
-		CLOSING_PRICE.setDataValueClass(Double.class);
-		TRADING_VOLUME_OF_STOCKS.setDataValueClass(Double.class);
-		TRADING_VALUE_OF_MONEY.setDataValueClass(Double.class);
-		ADJUSTED_OPENING_PRICE.setDataValueClass(Double.class);
-		ADJUSTED_HIGH_PRICE.setDataValueClass(Double.class);
-		ADJUSTED_LOW_PRICE.setDataValueClass(Double.class);
-		ADJUSTED_CLOSING_PRICE.setDataValueClass(Double.class);
-		SPLIT_COUNT.setDataValueClass(Integer.class);
-	};
 }

@@ -37,7 +37,7 @@ public class MainSaveJreitCsv {
 			System.out.println("Error: Cannot find table data from HTML page.");
 		} else {
 			for (JreitRecord record : records) {
-				System.out.println(record);
+				System.out.println(record.toTsvString());
 			}
 			jreitManager.saveLocalCsv(records);
 		}

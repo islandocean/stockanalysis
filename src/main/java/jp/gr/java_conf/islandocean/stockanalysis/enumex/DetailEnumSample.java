@@ -1,6 +1,8 @@
-package jp.gr.java_conf.islandocean.stockanalysis.finance;
+package jp.gr.java_conf.islandocean.stockanalysis.enumex;
 
 import java.io.IOException;
+
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 
 public class DetailEnumSample {
 

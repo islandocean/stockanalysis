@@ -3,10 +3,10 @@ package jp.gr.java_conf.islandocean.stockanalysis.jreitportal;
 public enum JreitEnum {
 
 	/** 証券コード */
-	CODE,
+	STOCK_CODE,
 
 	/** 投資法人 */
-	NAME,
+	STOCK_NAME,
 
 	/** 投資口価格（円） */
 	PRICE,
