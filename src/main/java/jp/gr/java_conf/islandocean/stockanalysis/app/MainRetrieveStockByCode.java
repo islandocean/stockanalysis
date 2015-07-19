@@ -1,5 +1,6 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -57,7 +58,12 @@ public class MainRetrieveStockByCode extends AbstractScanning {
 
 	public static void main(String[] args) {
 		MainRetrieveStockByCode app = new MainRetrieveStockByCode();
-		app.scanningMain();
+		try {
+			app.scanningMain();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean scanOneCorp(String stockCode,

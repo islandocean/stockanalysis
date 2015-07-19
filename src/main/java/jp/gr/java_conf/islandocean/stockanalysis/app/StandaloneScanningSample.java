@@ -19,7 +19,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class StandaloneScanningSample {
 
-	private static final Character DELIM = '\t';
+	private static final String DELIM = "\t";
 
 	public StandaloneScanningSample() {
 	}
@@ -113,6 +113,11 @@ public class StandaloneScanningSample {
 		for (int idxCorp = 0; idxCorp < stockCodes.length; ++idxCorp) {
 			String stockCode = stockCodes[idxCorp];
 			List<StockRecord> oneCorpRecords = stockManager.retrieve(stockCode);
+			if (oneCorpRecords.size() == 0) {
+				System.out
+						.println("Warning: No stock price record for one corp. stockCode="
+								+ stockCode);
+			}
 			String splitSerachStockCode = financeManager
 					.toSplitSearchStockCode(stockCode);
 			StockSplitInfo stockSplitInfo = code2SplitInfoMap

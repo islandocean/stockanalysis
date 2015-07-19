@@ -60,11 +60,25 @@ public class JreitManager {
 				StandardCopyOption.REPLACE_EXISTING);
 	}
 
-	public List<JreitRecord> readRemoteJreitRecords() throws IOException {
+	public List<JreitRecord> readRemoteAndReturnJreitRecords()
+			throws IOException {
 		Document doc = readRemoteHtml();
 		JreitPortalPageHtmlAnalyzer analyzer = new JreitPortalPageHtmlAnalyzer();
 		analyzer.analyze(doc);
 		List<JreitRecord> records = analyzer.getJreitRecords();
 		return records;
+	}
+
+	public String[] readRemoteAndReturnStockCodeArray() throws IOException {
+		List<JreitRecord> records = readRemoteAndReturnJreitRecords();
+		if (records.size() <= 1) {
+			return new String[0];
+		}
+		String[] stockCodes = new String[records.size() - 1];
+		for (int idx = 0; idx < records.size() - 1; ++idx) {
+			stockCodes[idx] = (String) (records.get(idx + 1)
+					.get(JreitEnum.STOCK_CODE));
+		}
+		return stockCodes;
 	}
 }

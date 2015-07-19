@@ -9,7 +9,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class SplitInfoTextAnalyzer {
 
-	private static final char DELIM_SPLIT_INFORMATION_TEXT = '、';
+	public static final String DELIM_LINE = "\t";
+	private static final char DELIM_ORG_SPLIT_INFORMATION_TEXT = '、';
+	public static final char DELIM_NORMALIZED = ',';
 	private static final String NO_SPLIT_DATA = "なし";
 
 	List<StockSplitInfo> stockSplitInfoList;
@@ -22,31 +24,35 @@ public class SplitInfoTextAnalyzer {
 		this.stockSplitInfoList = new ArrayList<StockSplitInfo>();
 		for (int idxLine = 0; idxLine < lines.size(); ++idxLine) {
 			String line = lines.get(idxLine);
-			System.out.println("idxLine=" + idxLine + " Line=" + line);
+			// System.out.println("idxLine=" + idxLine + " Line=" + line);
 			if (line == null || line.length() < 1) {
 				System.out.println("Warning: Invalid line. line number="
-						+ idxLine);
+						+ idxLine + " line=" + line);
 				continue;
 			}
-			int idx = line.indexOf(',');
+			int idx = line.indexOf(DELIM_LINE);
 			if (idx < 0) {
 				System.out
-						.println("Warning: Invalid line. Not contain comma. line number="
-								+ idxLine);
+						.println("Warning: Invalid line. Not contain delimiter. line number="
+								+ idxLine + " line=" + line);
 				continue;
 			}
 			String code = line.substring(0, idx);
 			if (code == null || code.length() <= 0) {
 				System.out.println("Warning: Invalid code. line number="
-						+ idxLine);
+						+ idxLine + " line=" + line);
 				continue;
 			}
-			System.out.println("code=" + code);
+			// System.out.println("code=" + code);
 			String allSplitsStr = line.substring(idx + 1);
-			if (allSplitsStr.equals("null")) {
-				System.out
-						.println("Info: No split data for this stock. line number="
-								+ idxLine);
+			if (allSplitsStr.equals("null") || allSplitsStr.equals("")) {
+				StockSplitInfo stockSplitInfo = new StockSplitInfo();
+				stockSplitInfo.setSplitSearchStockCode(code);
+				stockSplitInfo.setExplicitlyNoSplit(false);
+				stockSplitInfoList.add(stockSplitInfo);
+				// System.out
+				// .println("Info: No split data for this stock. line number="
+				// + idxLine + " line=" + line);
 				continue;
 			}
 
@@ -58,10 +64,10 @@ public class SplitInfoTextAnalyzer {
 				continue;
 			}
 
-			allSplitsStr = allSplitsStr.replace(DELIM_SPLIT_INFORMATION_TEXT,
-					',');
+			allSplitsStr = allSplitsStr.replace(
+					DELIM_ORG_SPLIT_INFORMATION_TEXT, DELIM_NORMALIZED);
 
-			String[] splits = allSplitsStr.split(",");
+			String[] splits = allSplitsStr.split("" + DELIM_NORMALIZED);
 			List<StockSplit> stockSplitList = new ArrayList<StockSplit>();
 			for (int idxSplit = 0; idxSplit < splits.length; ++idxSplit) {
 				String split = splits[idxSplit];
@@ -71,7 +77,7 @@ public class SplitInfoTextAnalyzer {
 							.println("Warning: stockSplit is null. continue...");
 					continue;
 				}
-				System.out.println("stockSplit=" + stockSplit.toString());
+				// System.out.println("stockSplit=" + stockSplit.toString());
 				stockSplitList.add(stockSplit);
 			}
 

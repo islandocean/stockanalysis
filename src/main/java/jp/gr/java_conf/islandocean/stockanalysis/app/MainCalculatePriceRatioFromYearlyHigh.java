@@ -1,9 +1,11 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
+import jp.gr.java_conf.islandocean.stockanalysis.jreitportal.JreitManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreSouko;
@@ -16,7 +18,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 
-	private static final Character DELIM = '\t';
+	private static final String DELIM = "\t";
 
 	public MainCalculatePriceRatioFromYearlyHigh() {
 	}
@@ -42,17 +44,10 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 		return calendarRange;
 	}
 
-	@SuppressWarnings("unused")
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) {
-		String[] stockCodes;
-		stockCodes = new String[] { "8951", "8952", "8953", "8954", "8955",
-				"8956", "8957", "8958", "8959", "8960", "8961", "8964", "8966",
-				"8967", "8968", "8972", "8973", "8975", "8976", "8977", "8982",
-				"8984", "8985", "8986", "8987", "8963", "3226", "3227", "3234",
-				"3240", "3249", "3269", "8979", "3278", "3279", "3263", "3281",
-				"3282", "3283", "3285", "3287", "3290", "3292", "3295", "3296",
-				"3298", "3308", "3451", "3309", "3453", "3455" };
+			List<StockRecord> list) throws IOException {
+		JreitManager jreitManager = JreitManager.getInstance();
+		String[] stockCodes = jreitManager.readRemoteAndReturnStockCodeArray();
 		String suffix = stockManager.getStockCodeSuffixOfDefaultMarket();
 		for (int i = 0; i < stockCodes.length; ++i) {
 			stockCodes[i] += suffix;
@@ -62,7 +57,12 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 
 	public static void main(String[] args) {
 		MainCalculatePriceRatioFromYearlyHigh app = new MainCalculatePriceRatioFromYearlyHigh();
-		app.scanningMain();
+		try {
+			app.scanningMain();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean scanOneCorp(String stockCode,
@@ -75,28 +75,31 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 		Double periodLowPrice = null;
 		Calendar periodLowDay = null;
 		Double lastPrice = null;
-		for (StockRecord record : oneCorpRecords) {
-			stockName = (String) record.get(StockEnum.STOCK_NAME);
-			Calendar day = (Calendar) record.get(StockEnum.DATE);
-			Double highPrice = (Double) record
-					.get(StockEnum.ADJUSTED_HIGH_PRICE);
-			if (highPrice != null) {
-				if (periodHighPrice == null || periodHighPrice <= highPrice) {
-					periodHighPrice = highPrice;
-					periodHighDay = day;
+		if (oneCorpRecords.size() > 0) {
+			for (StockRecord record : oneCorpRecords) {
+				stockName = (String) record.get(StockEnum.STOCK_NAME);
+				Calendar day = (Calendar) record.get(StockEnum.DATE);
+				Double highPrice = (Double) record
+						.get(StockEnum.ADJUSTED_HIGH_PRICE);
+				if (highPrice != null) {
+					if (periodHighPrice == null || periodHighPrice <= highPrice) {
+						periodHighPrice = highPrice;
+						periodHighDay = day;
+					}
 				}
-			}
-			Double lowPrice = (Double) record.get(StockEnum.ADJUSTED_LOW_PRICE);
-			if (lowPrice != null) {
-				if (periodLowPrice == null || periodLowPrice >= lowPrice) {
-					periodLowPrice = lowPrice;
-					periodLowDay = day;
+				Double lowPrice = (Double) record
+						.get(StockEnum.ADJUSTED_LOW_PRICE);
+				if (lowPrice != null) {
+					if (periodLowPrice == null || periodLowPrice >= lowPrice) {
+						periodLowPrice = lowPrice;
+						periodLowDay = day;
+					}
 				}
-			}
-			Double closingPrice = (Double) record
-					.get(StockEnum.ADJUSTED_CLOSING_PRICE);
-			if (closingPrice != null) {
-				lastPrice = closingPrice;
+				Double closingPrice = (Double) record
+						.get(StockEnum.ADJUSTED_CLOSING_PRICE);
+				if (closingPrice != null) {
+					lastPrice = closingPrice;
+				}
 			}
 		}
 
@@ -105,23 +108,51 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 			ratio = lastPrice / periodHighPrice;
 		}
 
-		if (ratio != null) {
-			hit = true;
-			System.out.print(stockCode);
-			System.out.print(DELIM + stockName);
-			System.out.print(DELIM + periodHighPrice);
-			System.out.print(DELIM
-					+ CalendarUtil.format_yyyyMMdd(periodHighDay));
-			System.out.print(DELIM + periodLowPrice);
-			System.out
-					.print(DELIM + CalendarUtil.format_yyyyMMdd(periodLowDay));
-			System.out.print(DELIM + lastPrice);
-			System.out.print(DELIM + Util.formatPercent(ratio.doubleValue()));
-			System.out.print(DELIM
-					+ financeManager.getHtmlChartPageSpec(financeManager
-							.toSplitSearchStockCode(stockCode)));
-			System.out.println();
+		// if (ratio != null) {
+		hit = true;
+		// }
+
+		System.out.print(stockCode);
+
+		System.out.print(DELIM);
+		if (stockName != null) {
+			System.out.print(stockName);
 		}
+
+		System.out.print(DELIM);
+		if (periodHighPrice != null) {
+			System.out.print(periodHighPrice);
+		}
+
+		System.out.print(DELIM);
+		if (periodHighDay != null) {
+			System.out.print(CalendarUtil.format_yyyyMMdd(periodHighDay));
+		}
+
+		System.out.print(DELIM);
+		if (periodLowPrice != null) {
+			System.out.print(periodLowPrice);
+		}
+
+		System.out.print(DELIM);
+		if (periodLowDay != null) {
+			System.out.print(CalendarUtil.format_yyyyMMdd(periodLowDay));
+		}
+
+		System.out.print(DELIM);
+		if (lastPrice != null) {
+			System.out.print(lastPrice);
+		}
+
+		System.out.print(DELIM);
+		if (ratio != null) {
+			System.out.print(Util.formatPercent(ratio.doubleValue()));
+		}
+
+		System.out.print(DELIM
+				+ financeManager.getHtmlChartPageSpec(financeManager
+						.toSplitSearchStockCode(stockCode)));
+		System.out.println();
 
 		return hit;
 	}

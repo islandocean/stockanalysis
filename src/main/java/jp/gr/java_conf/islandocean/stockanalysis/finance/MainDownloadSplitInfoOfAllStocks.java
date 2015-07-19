@@ -81,8 +81,8 @@ public class MainDownloadSplitInfoOfAllStocks {
 
 				Document doc = null;
 
-				int maxRetry = 5;
-				for (int retry = 0; retry < maxRetry; ++retry) {
+				int maxTry = 5;
+				for (int retry = 0; retry < maxTry; ++retry) {
 					try {
 						doc = financeManager
 								.readRemoteHtmlChartPage(searchCode);
@@ -91,7 +91,7 @@ public class MainDownloadSplitInfoOfAllStocks {
 						System.out
 								.println("Warning: IOException occurred. Current attempt counter="
 										+ retry + " e=" + e.getMessage());
-						if (retry >= maxRetry - 1) {
+						if (retry >= maxTry - 1) {
 							System.out
 									.println("Error: Count of IOException exceeds the limit. Aborting...");
 							throw e;
@@ -105,7 +105,8 @@ public class MainDownloadSplitInfoOfAllStocks {
 
 				YahooFinanceChartPageHtmlAnalyzer analyzer = new YahooFinanceChartPageHtmlAnalyzer();
 				analyzer.analyze(doc);
-				String line = stockCode + "," + analyzer.getSplitInfoString();
+				String line = stockCode + SplitInfoTextAnalyzer.DELIM_LINE
+						+ analyzer.getSplitInfoString();
 				System.out.println(line);
 				writer.write(line);
 				writer.newLine();

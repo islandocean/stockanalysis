@@ -24,7 +24,7 @@ abstract public class AbstractScanning {
 	abstract public CalendarRange selectCalendarRange();
 
 	abstract public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list);
+			List<StockRecord> list) throws IOException;
 
 	abstract public boolean scanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
@@ -34,7 +34,7 @@ abstract public class AbstractScanning {
 
 	abstract public void printFooter(int count);
 
-	public void scanningMain() {
+	public void scanningMain() throws IOException {
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
 		CalendarRange calendarRange = selectCalendarRange();
@@ -78,12 +78,20 @@ abstract public class AbstractScanning {
 		for (int idxCorp = 0; idxCorp < stockCodes.length; ++idxCorp) {
 			String stockCode = stockCodes[idxCorp];
 			List<StockRecord> oneCorpRecords = stockManager.retrieve(stockCode);
-			String splitSerachStockCode = financeManager
-					.toSplitSearchStockCode(stockCode);
-			StockSplitInfo stockSplitInfo = code2SplitInfoMap
-					.get(splitSerachStockCode);
-			stockManager.calcAdjustedPricesForOneCorp(oneCorpRecords,
-					stockSplitInfo, currentDay);
+			if (oneCorpRecords.size() == 0) {
+				System.out
+						.println("Warning: No stock price record for one corp. stockCode="
+								+ stockCode);
+			}
+			else{
+				String splitSerachStockCode = financeManager
+						.toSplitSearchStockCode(stockCode);
+				StockSplitInfo stockSplitInfo = code2SplitInfoMap
+						.get(splitSerachStockCode);
+				stockManager.calcAdjustedPricesForOneCorp(oneCorpRecords,
+						stockSplitInfo, currentDay);
+			}
+
 			if (scanOneCorp(stockCode, oneCorpRecords, stockManager,
 					financeManager)) {
 				++count;

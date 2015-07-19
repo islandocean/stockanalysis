@@ -1,5 +1,6 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
 
-	private static final Character DELIM = '\t';
+	private static final String DELIM = "\t";
 
 	public MainScreeningPriceDownFromPeriodHigh() {
 	}
@@ -57,7 +58,12 @@ public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
 
 	public static void main(String[] args) {
 		MainScreeningPriceDownFromPeriodHigh app = new MainScreeningPriceDownFromPeriodHigh();
-		app.scanningMain();
+		try {
+			app.scanningMain();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean scanOneCorp(String stockCode,

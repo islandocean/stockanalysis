@@ -150,11 +150,11 @@ public class StockManager {
 		}
 
 		List<StockSplit> stockSplitList = splitInfo.getStockSplitList();
-		if (stockSplitList.size() <= 0) {
+		if (stockSplitList == null || stockSplitList.size() <= 0) {
 			// TODO: suspicious situation
 			//
 			// System.out
-			// .println("Warning: No split info. Continue process assuming that there was no split for this stock. Stock Code="
+			// .println("Warning: No split info. Split info file may be old. Continue process assuming that there was no split for this stock. Stock Code="
 			// + code);
 			return;
 		}
