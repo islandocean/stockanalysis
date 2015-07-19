@@ -8,8 +8,10 @@ public class Config extends AbstractConfig {
 
 	private static final String BASE_PATH = "jreitPortal" + File.separator;
 	private static final String REMOTE_LOCATION = "http://www.japan-reit.com/list/rimawari/";
-	private static final String FILENAME_HTML = "JAPAN-REIT.htm";
-	private static final String FILENAME_CSV = "JAPAN-REIT.csv";
+	private static final String FILENAME_HTML = "JAPAN-REIT";
+	private static final String EXT_HTML = ".htm";
+	private static final String FILENAME_CSV = "JAPAN-REIT";
+	private static final String EXT_CSV = ".csv";
 
 	private static final String baseFolder = AbstractConfig
 			.getAbsoluteRootFolder() + BASE_PATH;
@@ -41,8 +43,15 @@ public class Config extends AbstractConfig {
 		return FILENAME_HTML;
 	}
 
+	public static String getExtHtml() {
+		return EXT_HTML;
+	}
+
 	public static String getFilenameCsv() {
 		return FILENAME_CSV;
 	}
 
+	public static String getExtCsv() {
+		return EXT_CSV;
+	}
 }
