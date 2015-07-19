@@ -8,16 +8,16 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 import org.jsoup.nodes.Document;
 
-public class MainReadDetailSample {
+public class MainReadRemoteDetailSample {
 
-	public MainReadDetailSample() {
+	public MainReadRemoteDetailSample() {
 		super();
 	}
 
 	public static void main(String[] args) throws IOException {
 
 		FinanceManager financeManager = FinanceManager.getInstance();
-		String[] codes = new String[] { "4536" };
+		String[] codes = new String[] { "6143", "6674", "4565" };
 		Calendar today = CalendarUtil.createToday();
 		for (String stockCode : codes) {
 			Document doc = financeManager.readRemoteHtmlDetailPage(stockCode);
@@ -29,8 +29,11 @@ public class MainReadDetailSample {
 						+ stockCode);
 				continue;
 			}
+			System.out.println("------------------------------");
 			analyzer.printAll();
+
 			DetailRecord detailRecord = analyzer.getDetailRecord();
+			System.out.println("------------------------------");
 			detailRecord.printAllNamesAndValues();
 		}
 	}

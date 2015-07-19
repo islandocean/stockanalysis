@@ -603,12 +603,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	}
 
 	public void printAll() {
-		System.out.println("------------------------------");
 		System.out.println("stockCodeStr=" + stockCodeStr);
 		System.out.println("stockNameStr=" + stockNameStr);
 		System.out.println("sectorStr=" + sectorStr);
-		System.out.println();
-
 		System.out.println("realtimePriceStr=" + realtimePriceStr);
 		System.out.println("priceComparisonWithPreviousDayStr="
 				+ priceComparisonWithPreviousDayStr);
@@ -621,8 +618,6 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				+ tradingVolumeOfStocksStr);
 		System.out.println("tradingValueOfMoneyStr=" + tradingValueOfMoneyStr);
 		System.out.println("priceLimitStr=" + priceLimitStr);
-		System.out.println();
-
 		System.out
 				.println("marketCapitalizationStr=" + marketCapitalizationStr);
 		System.out.println("outstandingStockVolumeStr="
@@ -638,8 +633,6 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		System.out.println("shareUnitNumberStr=" + shareUnitNumberStr);
 		System.out.println("yearlyHighStr=" + yearlyHighStr);
 		System.out.println("yearlyLowStr=" + yearlyLowStr);
-		System.out.println();
-
 		System.out.println("marginDebtBalanceStr=" + marginDebtBalanceStr);
 		System.out
 				.println("marginDebtBalanceRatioComparisonWithPreviousWeekStr="

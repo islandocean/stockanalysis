@@ -63,13 +63,12 @@ public class Record extends EnumMap {
 		return sb.toString();
 	}
 
-	public void fromTsvString(String line) {
+	public void fromTsvString(String line) throws InvalidDataException {
 		Enum<?>[] allKeys = getEnumConstants();
 		String[] a = line.split(DELIM);
 		if (a.length != allKeys.length) {
-			// TODO:
-			throw new RuntimeException(
-					"Invalid csv line data. Number of items is different from number of fields of record.");
+			throw new InvalidDataException(
+					"Invalid tsv line data. Number of actual items is different from number of fields of record definition.");
 		}
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
@@ -91,8 +90,7 @@ public class Record extends EnumMap {
 					try {
 						cal = CalendarUtil.createCalendarByStringyyyyMMdd(s);
 					} catch (InvalidDataException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						throw e;
 					}
 					put(key, cal);
 				}
