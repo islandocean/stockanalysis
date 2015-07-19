@@ -83,8 +83,8 @@ public class MainDownloadDetailInfoOfAllStocks {
 
 				Document doc = null;
 
-				int maxRetry = 5;
-				for (int retry = 0; retry < maxRetry; ++retry) {
+				int maxTry = 5;
+				for (int retry = 0; retry < maxTry; ++retry) {
 					try {
 						doc = financeManager
 								.readRemoteHtmlDetailPage(searchCode);
@@ -93,7 +93,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 						System.out
 								.println("Warning: IOException occurred. Current attempt counter="
 										+ retry + " e=" + e.getMessage());
-						if (retry >= maxRetry - 1) {
+						if (retry >= maxTry - 1) {
 							System.out
 									.println("Error: Count of IOException exceeds the limit. Aborting...");
 							throw e;
@@ -111,19 +111,17 @@ public class MainDownloadDetailInfoOfAllStocks {
 				} catch (FailedToFindElementException e) {
 					++errorCount;
 					System.out
-							.println("Error: Failed to find element. stockCode="
+							.println("Error: Failed to find element. Skip this stock. stockCode="
 									+ stockCode);
 					continue;
 				}
-				StockDetailInfo stockDetailInfo = analyzer.getStockDetailInfo();
-				String line = stockDetailInfo.toTsvString();
-				// System.out.println(line);
+				DetailRecord detailRecord = analyzer.getDetailRecord();
+				String line = detailRecord.toTsvString();
 				writer.write(line);
 				writer.newLine();
 
 				if ((idxStockList % 100) == 0) {
-					System.out
-							.println("Info: processing count=" + idxStockList);
+					System.out.println("counter=" + idxStockList);
 				}
 			}
 

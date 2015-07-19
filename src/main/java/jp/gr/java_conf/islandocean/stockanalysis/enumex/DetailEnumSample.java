@@ -23,5 +23,8 @@ public class DetailEnumSample {
 		} else {
 			System.out.println("Failure.");
 		}
+
+		System.out.println();
+		System.out.println("record.header()=" + record.header());
 	}
 }

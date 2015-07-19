@@ -11,7 +11,6 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 public class Record extends EnumMap {
 
 	private static String DELIM = "\t";
-
 	private Class enumClass;
 
 	public Record(Class enumClass) {
@@ -114,5 +113,19 @@ public class Record extends EnumMap {
 				System.out.println(name + "=" + obj.toString());
 			}
 		}
+	}
+
+	public String header() {
+		StringBuilder sb = new StringBuilder(100);
+		Enum<?>[] allKeys = getEnumConstants();
+		for (int idx = 0; idx < allKeys.length; ++idx) {
+			Enum<?> key = (Enum<?>) allKeys[idx];
+			String name = key.toString();
+			if (idx != 0) {
+				sb.append(DELIM);
+			}
+			sb.append(name);
+		}
+		return sb.toString();
 	}
 }

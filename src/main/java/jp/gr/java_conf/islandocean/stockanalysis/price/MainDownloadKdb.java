@@ -17,9 +17,12 @@ public class MainDownloadKdb {
 
 		calendarRange = CalendarUtil.createCalendarRangeRecent(14);
 		if (false) {
-			calendarRange = CalendarUtil.createCalendarRangeRecent(5);
+			calendarRange = CalendarUtil.createCalendarRangeRecent(7);
 			calendarRange = CalendarUtil.createCalendarRangeRecent(14);
+			calendarRange = CalendarUtil.createCalendarRangeRecent(30);
+			calendarRange = CalendarUtil.createCalendarRangeRecent(90);
 			calendarRange = CalendarUtil.createCalendarRangeRecent(180);
+			calendarRange = CalendarUtil.createCalendarRangeRecent(365);
 			calendarRange = CalendarUtil.createCalendarRangeYearMonth(2013,
 					Calendar.MAY);
 			calendarRange = CalendarUtil.createCalendarRangeYear(2007);

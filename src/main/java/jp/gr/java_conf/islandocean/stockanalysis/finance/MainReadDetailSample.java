@@ -30,8 +30,8 @@ public class MainReadDetailSample {
 				continue;
 			}
 			analyzer.printAll();
-			StockDetailInfo stockDetailIfo = analyzer.getStockDetailInfo();
-			stockDetailIfo.printAll();
+			DetailRecord detailRecord = analyzer.getDetailRecord();
+			detailRecord.printAllNamesAndValues();
 		}
 	}
 }
