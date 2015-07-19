@@ -16,11 +16,12 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
-public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
+public class MainCalculateJreitPriceRatioFromRecentHigh extends
+		AbstractScanning {
 
 	private static final String DELIM = "\t";
 
-	public MainCalculatePriceRatioFromYearlyHigh() {
+	public MainCalculateJreitPriceRatioFromRecentHigh() {
 	}
 
 	@SuppressWarnings("unused")
@@ -37,10 +38,8 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 	}
 
 	public CalendarRange selectCalendarRange() {
-		Calendar end = CalendarUtil.createToday();
-		Calendar firstDay = CalendarUtil.createFirstDayOfThisYear(end);
-		Calendar begin = firstDay;
-		CalendarRange calendarRange = new CalendarRange(begin, end);
+		CalendarRange calendarRange = CalendarUtil
+				.createCalendarRangeRecent(180);
 		return calendarRange;
 	}
 
@@ -56,7 +55,7 @@ public class MainCalculatePriceRatioFromYearlyHigh extends AbstractScanning {
 	}
 
 	public static void main(String[] args) {
-		MainCalculatePriceRatioFromYearlyHigh app = new MainCalculatePriceRatioFromYearlyHigh();
+		MainCalculateJreitPriceRatioFromRecentHigh app = new MainCalculateJreitPriceRatioFromRecentHigh();
 		try {
 			app.scanningMain();
 		} catch (IOException e) {
