@@ -38,9 +38,7 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 	}
 
 	public CalendarRange selectCalendarRange() {
-		CalendarRange calendarRange = CalendarUtil
-				.createCalendarRangeRecent(180);
-		return calendarRange;
+		return CalendarUtil.createCalendarRangeRecent(180);
 	}
 
 	public String[] selectCorps(StockManager stockManager,

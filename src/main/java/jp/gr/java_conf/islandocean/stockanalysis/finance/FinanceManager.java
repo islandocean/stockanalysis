@@ -7,17 +7,22 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.HtmlUtil;
 
 import org.jsoup.nodes.Document;
 
 public class FinanceManager {
+
+	private Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
 
 	private FinanceManager() {
 		super();
@@ -86,15 +91,18 @@ public class FinanceManager {
 		return map;
 	}
 
-	public Map<String, StockSplitInfo> generateStockSplitInfoMap()
-			throws IOException {
+	public void generateStockCodeToSplitInfoMap() throws IOException {
 		List<String> lines = readLocalSplitInfoText();
 		SplitInfoTextAnalyzer analyzer = new SplitInfoTextAnalyzer();
 		analyzer.analyze(lines);
 		List<StockSplitInfo> stockSplitInfoList = analyzer
 				.getStockSplitInfoList();
 		Map<String, StockSplitInfo> map = listToMap(stockSplitInfoList);
-		return map;
+		this.stockCodeToSplitInfoMap = map;
+	}
+
+	public Map<String, StockSplitInfo> getStockCodeToSplitInfoMap() {
+		return stockCodeToSplitInfoMap;
 	}
 
 	public void checkAndWarnSplitInfo(List<StockRecord> list,
@@ -111,5 +119,37 @@ public class FinanceManager {
 								+ stockCode);
 			}
 		}
+	}
+
+	public int countSplitsInCalendarRange(StockSplitInfo splitInfo,
+			CalendarRange calendarRange) {
+
+		if (splitInfo == null) {
+			return 0;
+		}
+		if (splitInfo.isExplicitlyNoSplit()) {
+			return 0; // Completely no problem !!!
+		}
+
+		List<StockSplit> stockSplitList = splitInfo.getStockSplitList();
+		if (stockSplitList == null || stockSplitList.size() <= 0) {
+			// TODO: suspicious situation
+			//
+			// System.out
+			// .println("Warning: No split info. Split info file may be old. Continue process assuming that there was no split for this stock. Stock Code="
+			// + code);
+			return 0;
+		}
+
+		int splitCount = 0;
+		Calendar begin = calendarRange.getBegin();
+		Calendar end = calendarRange.getEnd();
+		for (StockSplit stockSplit : stockSplitList) {
+			Calendar splitDay = stockSplit.getSplitDay();
+			if (splitDay.compareTo(begin) >= 0 && splitDay.compareTo(end) <= 0) {
+				++splitCount;
+			}
+		}
+		return splitCount;
 	}
 }

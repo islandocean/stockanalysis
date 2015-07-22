@@ -38,17 +38,7 @@ public class StandaloneScanningSample {
 	}
 
 	private static CalendarRange selectCalendarRange() {
-		int lastDays = 180;
-		Calendar end = CalendarUtil.createToday();
-		Calendar daysAgo = (Calendar) end.clone();
-		daysAgo.add(Calendar.DAY_OF_MONTH, -lastDays);
-		Calendar begin = daysAgo;
-
-		// Calendar firstDay = CalendarUtil.createFirstDayOfThisYear(end);
-		// Calendar begin = firstDay;
-
-		CalendarRange calendarRange = new CalendarRange(begin, end);
-		return calendarRange;
+		return CalendarUtil.createCalendarRangeRecent(180);
 	}
 
 	@SuppressWarnings("unused")
@@ -96,16 +86,18 @@ public class StandaloneScanningSample {
 		String[] stockCodes = selectCorps(stockManager, lastData);
 
 		FinanceManager financeManager = FinanceManager.getInstance();
-		Map<String, StockSplitInfo> code2SplitInfoMap;
+		Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
 		try {
-			code2SplitInfoMap = financeManager.generateStockSplitInfoMap();
+			financeManager.generateStockCodeToSplitInfoMap();
+			stockCodeToSplitInfoMap = financeManager
+					.getStockCodeToSplitInfoMap();
 		} catch (IOException e) {
 			System.out
 					.println("Error: Failed to create stock split infomation.");
 			e.printStackTrace();
 			return;
 		}
-		financeManager.checkAndWarnSplitInfo(lastData, code2SplitInfoMap);
+		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
 
 		printHeader();
 		Calendar currentDay = CalendarUtil.createToday();
@@ -120,7 +112,7 @@ public class StandaloneScanningSample {
 			}
 			String splitSerachStockCode = financeManager
 					.toSplitSearchStockCode(stockCode);
-			StockSplitInfo stockSplitInfo = code2SplitInfoMap
+			StockSplitInfo stockSplitInfo = stockCodeToSplitInfoMap
 					.get(splitSerachStockCode);
 			stockManager.calcAdjustedPricesForOneCorp(oneCorpRecords,
 					stockSplitInfo, currentDay);

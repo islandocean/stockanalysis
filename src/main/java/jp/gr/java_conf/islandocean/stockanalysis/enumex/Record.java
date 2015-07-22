@@ -122,7 +122,13 @@ public class Record extends EnumMap {
 				String s = CalendarUtil.format_yyyyMMdd((Calendar) obj);
 				System.out.println(name + "=" + s);
 			} else {
-				System.out.println(name + "=" + obj.toString());
+				System.out.print(name + "=");
+				if (obj == null) {
+					System.out.println("null");
+
+				} else {
+					System.out.println(obj.toString());
+				}
 			}
 		}
 	}

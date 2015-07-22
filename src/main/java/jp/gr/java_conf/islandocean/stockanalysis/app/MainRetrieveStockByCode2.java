@@ -12,9 +12,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainRetrieveStockByCode extends AbstractScanning {
+public class MainRetrieveStockByCode2 extends AbstractScanning {
 
-	public MainRetrieveStockByCode() {
+	public MainRetrieveStockByCode2() {
 	}
 
 	@SuppressWarnings("unused")
@@ -31,18 +31,18 @@ public class MainRetrieveStockByCode extends AbstractScanning {
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(30);
+		return CalendarUtil.createCalendarRangeRecent(365 * 1);
 	}
 
 	public String[] selectCorps(StockManager stockManager,
 			List<StockRecord> list) {
-		String[] stockCodes = new String[] { "8951-T", "8952-T", "8953-T",
-				"8954-T", "8955-T", };
+		String[] stockCodes = new String[] { "2928-S", "3093-T", "3598-T",
+				"3810-T", "4563-T", "7638-T" };
 		return stockCodes;
 	}
 
 	public static void main(String[] args) {
-		MainRetrieveStockByCode app = new MainRetrieveStockByCode();
+		MainRetrieveStockByCode2 app = new MainRetrieveStockByCode2();
 		try {
 			app.scanningMain();
 		} catch (IOException e) {

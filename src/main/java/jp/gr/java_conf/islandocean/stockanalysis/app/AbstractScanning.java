@@ -61,16 +61,18 @@ abstract public class AbstractScanning {
 		String[] stockCodes = selectCorps(stockManager, lastData);
 
 		FinanceManager financeManager = FinanceManager.getInstance();
-		Map<String, StockSplitInfo> code2SplitInfoMap;
+		Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
 		try {
-			code2SplitInfoMap = financeManager.generateStockSplitInfoMap();
+			financeManager.generateStockCodeToSplitInfoMap();
+			stockCodeToSplitInfoMap = financeManager
+					.getStockCodeToSplitInfoMap();
 		} catch (IOException e) {
 			System.out
 					.println("Error: Failed to create stock split infomation.");
 			e.printStackTrace();
 			return;
 		}
-		financeManager.checkAndWarnSplitInfo(lastData, code2SplitInfoMap);
+		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
 
 		printHeader();
 		Calendar currentDay = CalendarUtil.createToday();
@@ -82,11 +84,10 @@ abstract public class AbstractScanning {
 				System.out
 						.println("Warning: No stock price record for one corp. stockCode="
 								+ stockCode);
-			}
-			else{
+			} else {
 				String splitSerachStockCode = financeManager
 						.toSplitSearchStockCode(stockCode);
-				StockSplitInfo stockSplitInfo = code2SplitInfoMap
+				StockSplitInfo stockSplitInfo = stockCodeToSplitInfoMap
 						.get(splitSerachStockCode);
 				stockManager.calcAdjustedPricesForOneCorp(oneCorpRecords,
 						stockSplitInfo, currentDay);

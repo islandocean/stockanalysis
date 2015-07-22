@@ -49,6 +49,7 @@ public class SplitInfoTextAnalyzer {
 				StockSplitInfo stockSplitInfo = new StockSplitInfo();
 				stockSplitInfo.setSplitSearchStockCode(code);
 				stockSplitInfo.setExplicitlyNoSplit(false);
+				stockSplitInfo.setOrgSplitStr(allSplitsStr);
 				stockSplitInfoList.add(stockSplitInfo);
 				// System.out
 				// .println("Info: No split data for this stock. line number="
@@ -60,6 +61,7 @@ public class SplitInfoTextAnalyzer {
 				StockSplitInfo stockSplitInfo = new StockSplitInfo();
 				stockSplitInfo.setSplitSearchStockCode(code);
 				stockSplitInfo.setExplicitlyNoSplit(true);
+				stockSplitInfo.setOrgSplitStr(allSplitsStr);
 				stockSplitInfoList.add(stockSplitInfo);
 				continue;
 			}
@@ -85,6 +87,7 @@ public class SplitInfoTextAnalyzer {
 				StockSplitInfo stockSplitInfo = new StockSplitInfo();
 				stockSplitInfo.setSplitSearchStockCode(code);
 				stockSplitInfo.setStockSplitList(stockSplitList);
+				stockSplitInfo.setOrgSplitStr(allSplitsStr);
 				stockSplitInfoList.add(stockSplitInfo);
 			}
 		}

@@ -7,6 +7,7 @@ public class StockSplitInfo {
 	private boolean explicitlyNoSplit = false; // 分割情報が「なし」と明示されていた場合にtrue。
 	private String splitSearchStockCode;
 	private List<StockSplit> stockSplitList;
+	private String orgSplitStr;
 
 	public StockSplitInfo() {
 		super();
@@ -34,6 +35,14 @@ public class StockSplitInfo {
 
 	public void setStockSplitList(List<StockSplit> stockSplitList) {
 		this.stockSplitList = stockSplitList;
+	}
+
+	public String getOrgSplitStr() {
+		return orgSplitStr;
+	}
+
+	public void setOrgSplitStr(String orgSplitStr) {
+		this.orgSplitStr = orgSplitStr;
 	}
 
 	@Override
