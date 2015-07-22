@@ -15,11 +15,11 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
-public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
+public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning {
 
 	private static final String DELIM = "\t";
 
-	public MainScreeningPriceDownFromPeriodHigh() {
+	public MainScreeningPriceUpDownFromPeriodHighLow() {
 	}
 
 	@SuppressWarnings("unused")
@@ -47,7 +47,7 @@ public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
 	}
 
 	public static void main(String[] args) {
-		MainScreeningPriceDownFromPeriodHigh app = new MainScreeningPriceDownFromPeriodHigh();
+		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
 		try {
 			app.scanningMain();
 		} catch (IOException e) {
@@ -91,12 +91,18 @@ public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
 			}
 		}
 
-		Double ratio = null;
+		Double lastHighRatio = null;
 		if (periodHighPrice != null) {
-			ratio = lastPrice / periodHighPrice;
+			lastHighRatio = lastPrice / periodHighPrice;
 		}
 
-		if (ratio != null && ratio < 0.65d) {
+		Double lastLowRatio = null;
+		if (periodLowPrice != null) {
+			lastLowRatio = lastPrice / periodLowPrice;
+		}
+
+		if (lastHighRatio != null && lastHighRatio < 0.65d
+				&& lastLowRatio < 1.1d) {
 			hit = true;
 			System.out.print(stockCode);
 			System.out.print(DELIM + stockName);
@@ -107,7 +113,8 @@ public class MainScreeningPriceDownFromPeriodHigh extends AbstractScanning {
 			System.out
 					.print(DELIM + CalendarUtil.format_yyyyMMdd(periodLowDay));
 			System.out.print(DELIM + lastPrice);
-			System.out.print(DELIM + Util.formatPercent(ratio.doubleValue()));
+			System.out.print(DELIM
+					+ Util.formatPercent(lastHighRatio.doubleValue()));
 			System.out.print(DELIM
 					+ financeManager.getHtmlChartPageSpec(financeManager
 							.toSplitSearchStockCode(stockCode)));
