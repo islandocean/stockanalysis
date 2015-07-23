@@ -21,9 +21,10 @@ public class DetailInfoTextAnalyzer {
 		List<DetailRecord> recordList = new ArrayList<DetailRecord>();
 		for (int idxLine = 0; idxLine < lines.size(); ++idxLine) {
 			String line = lines.get(idxLine);
+			if (idxLine == 0) {
+				continue; // skip header line
+			}
 
-			// TODO: debug
-//			System.out.println("idxLine=" + idxLine + " Line=" + line);
 			if (line == null || line.length() < 1) {
 				System.out.println("Warning: Invalid line. line number="
 						+ idxLine + " line=" + line);
@@ -149,9 +150,6 @@ public class DetailInfoTextAnalyzer {
 				record.put(detailEnum, obj);
 			}
 			recordList.add(record);
-
-			// TODO: debug
-			// System.out.print("anlyzer record=" + record.toTsvString());
 		}
 		this.detailRecordList = recordList;
 	}

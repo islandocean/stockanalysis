@@ -72,6 +72,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 		}
 
 		Calendar today = CalendarUtil.createToday();
+		boolean headerWritten = false;
 		try (BufferedWriter writer = Files.newBufferedWriter(pathTemp,
 				StandardCharsets.UTF_8)) {
 			int errorCount = 0;
@@ -118,6 +119,13 @@ public class MainDownloadDetailInfoOfAllStocks {
 				DetailRecord detailRecord = analyzer.getDetailRecord();
 				detailRecord.put(DetailEnum.STOCK_CODE, stockCode);
 				String line = detailRecord.toTsvString();
+
+				if (!headerWritten) {
+					writer.write(detailRecord.header());
+					writer.newLine();
+					headerWritten = true;
+				}
+
 				writer.write(line);
 				writer.newLine();
 
