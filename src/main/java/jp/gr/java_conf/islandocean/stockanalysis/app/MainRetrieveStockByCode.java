@@ -3,6 +3,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 import java.io.IOException;
 import java.util.List;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
@@ -46,6 +47,9 @@ public class MainRetrieveStockByCode extends AbstractScanning {
 		try {
 			app.scanningMain();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

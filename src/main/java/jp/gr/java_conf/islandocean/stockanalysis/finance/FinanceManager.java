@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
-import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.HtmlUtil;
 
 import org.jsoup.nodes.Document;
@@ -23,6 +23,7 @@ import org.jsoup.nodes.Document;
 public class FinanceManager {
 
 	private Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
+	private Map<String, DetailRecord> stockCodeToDetailRecordMap;
 
 	private FinanceManager() {
 		super();
@@ -76,7 +77,7 @@ public class FinanceManager {
 		return lines;
 	}
 
-	private Map<String, StockSplitInfo> listToMap(
+	private Map<String, StockSplitInfo> listToMapForStockSplitInfo(
 			List<StockSplitInfo> stockSplitInfoList) {
 		Map<String, StockSplitInfo> map = new HashMap<String, StockSplitInfo>();
 		for (StockSplitInfo stockSplitInfo : stockSplitInfoList) {
@@ -97,12 +98,12 @@ public class FinanceManager {
 		analyzer.analyze(lines);
 		List<StockSplitInfo> stockSplitInfoList = analyzer
 				.getStockSplitInfoList();
-		Map<String, StockSplitInfo> map = listToMap(stockSplitInfoList);
+		Map<String, StockSplitInfo> map = listToMapForStockSplitInfo(stockSplitInfoList);
 		this.stockCodeToSplitInfoMap = map;
 	}
 
 	public Map<String, StockSplitInfo> getStockCodeToSplitInfoMap() {
-		return stockCodeToSplitInfoMap;
+		return this.stockCodeToSplitInfoMap;
 	}
 
 	public void checkAndWarnSplitInfo(List<StockRecord> list,
@@ -151,5 +152,48 @@ public class FinanceManager {
 			}
 		}
 		return splitCount;
+	}
+
+	public String toDetailSearchStockCode(String stockCode) {
+		return stockCode.replace('-', '.');
+	}
+
+	public List<String> readLocalDetailInfoText() throws IOException {
+		String filename = Config.getDetailInformationFilename()
+				+ Config.getDetailInformationExt();
+		FileSystem fs = FileSystems.getDefault();
+		Path src = fs.getPath(filename);
+		List<String> lines = Files.readAllLines(src, StandardCharsets.UTF_8);
+		return lines;
+	}
+
+	private Map<String, DetailRecord> listToMapForDetailRecord(
+			List<DetailRecord> detailRecordList) {
+		Map<String, DetailRecord> map = new HashMap<String, DetailRecord>();
+		for (DetailRecord detailRecord : detailRecordList) {
+			String stockCode = (String) detailRecord.get(DetailEnum.STOCK_CODE);
+			if (stockCode != null) {
+				// String splitSearchStockCode =
+				// toSplitSearchStockCode(stockCode);
+				if (map.get(stockCode) == null) {
+					map.put(stockCode, detailRecord);
+				}
+			}
+		}
+		return map;
+	}
+
+	public void generateStockCodeToDetailRecordMap() throws IOException,
+			InvalidDataException {
+		List<String> lines = readLocalDetailInfoText();
+		DetailInfoTextAnalyzer analyzer = new DetailInfoTextAnalyzer();
+		analyzer.analyze(lines);
+		List<DetailRecord> detailRecordList = analyzer.getDetailRecordList();
+		Map<String, DetailRecord> map = listToMapForDetailRecord(detailRecordList);
+		this.stockCodeToDetailRecordMap = map;
+	}
+
+	public Map<String, DetailRecord> getStockCodeToDetailRecordMap() {
+		return this.stockCodeToDetailRecordMap;
 	}
 }

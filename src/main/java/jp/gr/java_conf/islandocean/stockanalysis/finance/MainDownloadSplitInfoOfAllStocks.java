@@ -27,7 +27,6 @@ public class MainDownloadSplitInfoOfAllStocks {
 		super();
 	}
 
-	@SuppressWarnings("unused")
 	private static DataStore selectDataStore() {
 		DataStore store = new DataStoreKdb();
 		return store;
@@ -81,7 +80,7 @@ public class MainDownloadSplitInfoOfAllStocks {
 
 				Document doc = null;
 
-				int maxTry = 5;
+				int maxTry = 7;
 				for (int retry = 0; retry < maxTry; ++retry) {
 					try {
 						doc = financeManager

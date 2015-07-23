@@ -5,25 +5,20 @@ import java.util.List;
 import java.util.Map;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
-import jp.gr.java_conf.islandocean.stockanalysis.finance.StockSplitInfo;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreSouko;
-import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainScreeningSplitNumInPeriod extends AbstractScanning {
+public class MainScreeningPer extends AbstractScanning {
 
-	private static final String DELIM = "\t";
-
-	private int CONDITION_RECENT_DAYS = 365 * 3;
-	private int CONDITION_SPLIT_COUNT_IS_AND_OVER = 3;
-
-	public MainScreeningSplitNumInPeriod() {
+	public MainScreeningPer() {
 	}
 
 	@SuppressWarnings("unused")
@@ -43,10 +38,6 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 		return CalendarUtil.createCalendarRangeRecent(14);
 	}
 
-	public CalendarRange selectSplitSearchCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(CONDITION_RECENT_DAYS);
-	}
-
 	public String[] selectCorps(StockManager stockManager,
 			List<StockRecord> list) {
 		String[] stockCodes;
@@ -54,8 +45,12 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 		return stockCodes;
 	}
 
+	public boolean useDetailInfo() {
+		return true;
+	}
+
 	public static void main(String[] args) {
-		MainScreeningSplitNumInPeriod app = new MainScreeningSplitNumInPeriod();
+		MainScreeningPer app = new MainScreeningPer();
 		try {
 			app.scanningMain();
 		} catch (IOException e) {
@@ -71,45 +66,27 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
 		boolean hit = false;
-		String stockName = null;
-		int splitCount = 0;
-		for (StockRecord record : oneCorpRecords) {
-			stockName = (String) record.get(StockEnum.STOCK_NAME);
-			if (stockName != null) {
-				break;
-			}
-		}
-		Map<String, StockSplitInfo> stockCodeToSplitInfoMap = financeManager
-				.getStockCodeToSplitInfoMap();
-		String splitSerachStockCode = financeManager
-				.toSplitSearchStockCode(stockCode);
-		StockSplitInfo stockSplitInfo = stockCodeToSplitInfoMap
-				.get(splitSerachStockCode);
+		Map<String, DetailRecord> map = financeManager
+				.getStockCodeToDetailRecordMap();
 
-		splitCount = financeManager.countSplitsInCalendarRange(stockSplitInfo,
-				selectSplitSearchCalendarRange());
-		if (splitCount >= CONDITION_SPLIT_COUNT_IS_AND_OVER) {
-			hit = true;
-			System.out.print(stockCode);
-			System.out.print(DELIM + stockName);
-			System.out.print(DELIM + splitCount);
-			System.out.print(DELIM + stockSplitInfo.getOrgSplitStr());
-			System.out.print(DELIM
-					+ financeManager.getHtmlChartPageSpec(financeManager
-							.toSplitSearchStockCode(stockCode)));
-			System.out.println();
+		DetailRecord detailRecord = map.get(stockCode);
+		if (detailRecord == null) {
+			System.out.println("Warning: Cannot get detail record. stockCode="
+					+ stockCode);
+			return hit;
 		}
+
+		Double per = (Double) detailRecord.get(DetailEnum.PER);
+		if (per != null && per.doubleValue() < 5.0d) {
+			hit = true;
+			System.out.println(detailRecord.toTsvString());
+		}
+
 		return hit;
 	}
 
 	public void printHeader() {
 		System.out.println("------------------------------");
-		System.out.print("stock code");
-		System.out.print(DELIM + "stock name");
-		System.out.print(DELIM + "split count in range");
-		System.out.print(DELIM + "split info");
-		System.out.print(DELIM + "url");
-		System.out.println();
 	}
 
 	public void printFooter(int count) {

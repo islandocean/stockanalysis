@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.StockSplitInfo;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
@@ -34,7 +35,11 @@ abstract public class AbstractScanning {
 
 	abstract public void printFooter(int count);
 
-	public void scanningMain() throws IOException {
+	public boolean useDetailInfo() {
+		return false;
+	}
+
+	public void scanningMain() throws IOException, InvalidDataException {
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
 		CalendarRange calendarRange = selectCalendarRange();
@@ -73,6 +78,10 @@ abstract public class AbstractScanning {
 			return;
 		}
 		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
+
+		if (useDetailInfo()) {
+			financeManager.generateStockCodeToDetailRecordMap();
+		}
 
 		printHeader();
 		Calendar currentDay = CalendarUtil.createToday();

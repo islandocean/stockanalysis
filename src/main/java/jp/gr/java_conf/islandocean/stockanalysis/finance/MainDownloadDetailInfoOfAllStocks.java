@@ -79,11 +79,11 @@ public class MainDownloadDetailInfoOfAllStocks {
 				String stockCode = (String) ((StockRecord) stockList
 						.get(idxStockList)).get(StockEnum.STOCK_CODE);
 				String searchCode = financeManager
-						.toSplitSearchStockCode(stockCode);
+						.toDetailSearchStockCode(stockCode);
 
 				Document doc = null;
 
-				int maxTry = 5;
+				int maxTry = 7;
 				for (int retry = 0; retry < maxTry; ++retry) {
 					try {
 						doc = financeManager
@@ -116,6 +116,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 					continue;
 				}
 				DetailRecord detailRecord = analyzer.getDetailRecord();
+				detailRecord.put(DetailEnum.STOCK_CODE, stockCode);
 				String line = detailRecord.toTsvString();
 				writer.write(line);
 				writer.newLine();
