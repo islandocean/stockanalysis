@@ -24,125 +24,33 @@ public class DetailInfoTextAnalyzer {
 			if (idxLine == 0) {
 				continue; // skip header line
 			}
-
 			if (line == null || line.length() < 1) {
 				System.out.println("Warning: Invalid line. line number="
 						+ idxLine + " line=" + line);
 				continue;
 			}
-			String[] fields = line.split(DELIM);
 
+			String[] fields = line.split(DELIM);
 			DetailRecord record = new DetailRecord();
 			for (DetailEnum detailEnum : DetailEnum.values()) {
 				Class<?> dataValueClass = detailEnum.getDataValueClass();
-				int ordinal = -1;
 				String field = null;
 				Object obj = null;
+				int tsvPosition = detailEnum.ordinal();
 
 				switch (detailEnum) {
 				case DATA_GET_DATE:
-					String dataGetDateStr = fields[DetailEnum.DATA_GET_DATE
-							.ordinal()];
+					String dataGetDateStr = fields[tsvPosition];
 					obj = (Object) CalendarUtil
 							.createCalendarByStringyyyyMMdd(dataGetDateStr);
 					break;
-				case STOCK_CODE:
-					ordinal = DetailEnum.STOCK_CODE.ordinal();
-					break;
-				case STOCK_NAME:
-					ordinal = DetailEnum.STOCK_NAME.ordinal();
-					break;
-				case SECTOR:
-					ordinal = DetailEnum.SECTOR.ordinal();
-					break;
-				case REALTIME_PRICE:
-					ordinal = DetailEnum.REALTIME_PRICE.ordinal();
-					break;
-				case PRICE_COMPARISON_WITH_PREVIOUS_DAY:
-					ordinal = DetailEnum.PRICE_COMPARISON_WITH_PREVIOUS_DAY
-							.ordinal();
-					break;
-				case PREVIOUS_CLOSING_PRICE:
-					ordinal = DetailEnum.PREVIOUS_CLOSING_PRICE.ordinal();
-					break;
-				case OPENING_PRICE:
-					ordinal = DetailEnum.OPENING_PRICE.ordinal();
-					break;
-				case HIGH_PRICE:
-					ordinal = DetailEnum.HIGH_PRICE.ordinal();
-					break;
-				case LOW_PRICE:
-					ordinal = DetailEnum.LOW_PRICE.ordinal();
-					break;
-				case TRADING_VOLUME_OF_STOCKS:
-					ordinal = DetailEnum.TRADING_VOLUME_OF_STOCKS.ordinal();
-					break;
-				case TRADING_VALUE_OF_MONEY:
-					ordinal = DetailEnum.TRADING_VALUE_OF_MONEY.ordinal();
-					break;
-				case HIGH_PRICE_LIMIT:
-					ordinal = DetailEnum.HIGH_PRICE_LIMIT.ordinal();
-					break;
-				case LOW_PRICE_LIMIT:
-					ordinal = DetailEnum.LOW_PRICE_LIMIT.ordinal();
-					break;
-				case MARKET_CAPITALIZATION:
-					ordinal = DetailEnum.MARKET_CAPITALIZATION.ordinal();
-					break;
-				case OUTSTANDING_STOCK_VOLUME:
-					ordinal = DetailEnum.OUTSTANDING_STOCK_VOLUME.ordinal();
-					break;
-				case ANNUAL_INTEREST_RATE:
-					ordinal = DetailEnum.ANNUAL_INTEREST_RATE.ordinal();
-					break;
-				case DIVIDENDS_PER_SHARE:
-					ordinal = DetailEnum.DIVIDENDS_PER_SHARE.ordinal();
-					break;
-				case PER:
-					ordinal = DetailEnum.PER.ordinal();
-					break;
-				case PBR:
-					ordinal = DetailEnum.PBR.ordinal();
-					break;
-				case EPS:
-					ordinal = DetailEnum.EPS.ordinal();
-					break;
-				case BPS:
-					ordinal = DetailEnum.BPS.ordinal();
-					break;
-				case MINIMUM_PURCHASE_AMOUNT:
-					ordinal = DetailEnum.MINIMUM_PURCHASE_AMOUNT.ordinal();
-					break;
-				case SHARE_UNIT_NUMBER:
-					ordinal = DetailEnum.SHARE_UNIT_NUMBER.ordinal();
-					break;
-				case YEARLY_HIGH:
-					ordinal = DetailEnum.YEARLY_HIGH.ordinal();
-					break;
-				case YEARLY_LOW:
-					ordinal = DetailEnum.YEARLY_LOW.ordinal();
-					break;
-				case MARGIN_DEBT_BALANCE:
-					ordinal = DetailEnum.MARGIN_DEBT_BALANCE.ordinal();
-					break;
-				case MARGIN_DEBT_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK:
-					ordinal = DetailEnum.MARGIN_DEBT_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK
-							.ordinal();
-					break;
-				case MARGIN_SELLING_BALANCE:
-					ordinal = DetailEnum.MARGIN_SELLING_BALANCE.ordinal();
-					break;
-				case MARGIN_SELLING_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK:
-					ordinal = DetailEnum.MARGIN_SELLING_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK
-							.ordinal();
-					break;
-				case RATIO_OF_MARGIN_BALANCE:
-					ordinal = DetailEnum.RATIO_OF_MARGIN_BALANCE.ordinal();
+				default:
 					break;
 				}
 
-				if (obj == null && ordinal >= 0 && ordinal < fields.length) {
-					field = fields[ordinal];
+				if (obj == null && tsvPosition >= 0
+						&& tsvPosition < fields.length) {
+					field = fields[tsvPosition];
 					if (!isNoDataField(field)) {
 						obj = Util.convClass(field, dataValueClass);
 					}
