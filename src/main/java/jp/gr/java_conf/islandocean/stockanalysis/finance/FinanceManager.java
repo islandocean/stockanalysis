@@ -48,6 +48,11 @@ public class FinanceManager {
 		return spec;
 	}
 
+	public String getHtmlProfilePageSpec(String code) {
+		String spec = Config.getRemoteLocationStocksProfile() + code;
+		return spec;
+	}
+
 	public Document readRemoteHtmlDetailPage(String code) throws IOException {
 		String spec = getHtmlDetailPageSpec(code);
 		Document doc = HtmlUtil.readRemoteHtml(spec);
@@ -56,6 +61,12 @@ public class FinanceManager {
 
 	public Document readRemoteHtmlChartPage(String code) throws IOException {
 		String spec = getHtmlChartPageSpec(code);
+		Document doc = HtmlUtil.readRemoteHtml(spec);
+		return doc;
+	}
+
+	public Document readRemoteHtmlProfilePage(String code) throws IOException {
+		String spec = getHtmlProfilePageSpec(code);
 		Document doc = HtmlUtil.readRemoteHtml(spec);
 		return doc;
 	}

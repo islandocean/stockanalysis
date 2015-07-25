@@ -50,6 +50,6 @@ public class YahooFinanceChartPageHtmlAnalyzer {
 	}
 
 	public String getSplitInfoString() {
-		return splitInfoString;
+		return this.splitInfoString;
 	}
 }

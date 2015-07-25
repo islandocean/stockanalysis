@@ -9,9 +9,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 import org.jsoup.nodes.Document;
 
-public class MainReadRemoteDetailSample {
+public class MainReadRemoteProfileSample {
 
-	public MainReadRemoteDetailSample() {
+	public MainReadRemoteProfileSample() {
 		super();
 	}
 
@@ -21,8 +21,8 @@ public class MainReadRemoteDetailSample {
 		String[] codes = new String[] { "6143", "6674", "4565", "1305" };
 		Calendar today = CalendarUtil.createToday();
 		for (String stockCode : codes) {
-			Document doc = financeManager.readRemoteHtmlDetailPage(stockCode);
-			YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
+			Document doc = financeManager.readRemoteHtmlProfilePage(stockCode);
+			YahooFinanceProfilePageHtmlAnalyzer analyzer = new YahooFinanceProfilePageHtmlAnalyzer();
 			try {
 				analyzer.analyze(doc, today);
 			} catch (FailedToFindElementException e) {
@@ -39,7 +39,7 @@ public class MainReadRemoteDetailSample {
 			System.out.println("------------------------------");
 			analyzer.printAll();
 
-			DetailRecord record = analyzer.getDetailRecord();
+			ProfileRecord record = analyzer.getProfileRecord();
 			System.out.println("------------------------------");
 			record.printAllNamesAndValues();
 		}

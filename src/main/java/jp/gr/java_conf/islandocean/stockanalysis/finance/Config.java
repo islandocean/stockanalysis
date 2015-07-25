@@ -12,6 +12,8 @@ public class Config extends AbstractConfig {
 			+ "detail/?code=";
 	private static final String REMOTE_LOCATION_STOCKS_CHART = REMOTE_LOCATION_STOCKS
 			+ "chart/?code=";
+	private static final String REMOTE_LOCATION_STOCKS_PROFILE = REMOTE_LOCATION_STOCKS
+			+ "profile/?code=";
 	private static final String baseFolder = AbstractConfig
 			.getAbsoluteRootFolder() + BASE_PATH;
 
@@ -52,6 +54,10 @@ public class Config extends AbstractConfig {
 
 	public static String getRemoteLocationStocksChart() {
 		return REMOTE_LOCATION_STOCKS_CHART;
+	}
+
+	public static String getRemoteLocationStocksProfile() {
+		return REMOTE_LOCATION_STOCKS_PROFILE;
 	}
 
 	public static String getSplitInformationFilename() {
