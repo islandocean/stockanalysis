@@ -84,6 +84,36 @@ public enum DetailEnum implements HasDataValueClass {
 	/** 年初来安値 */
 	YEARLY_LOW(Double.class),
 
+	/** 純資産 */
+	NET_ASSETS(Double.class),
+
+	/** 売買単位 */
+	UNIT_OF_TRADING(Double.class),
+
+	/** 運用会社 */
+	MANAGEMENT_COMPANY(String.class),
+
+	/** 投資対象資産 */
+	TYPE_OF_ASSETS_TO_BE_INVESTED(String.class),
+
+	/** 投資対象地域 */
+	REGION_TO_BE_INVESTED(String.class),
+
+	/** 連動対象 */
+	UNDERLYING_INDEX(String.class),
+
+	/** 決算頻度 */
+	SETTLEMENT_FREQUENCY(Integer.class),
+
+	/** 決算月 */
+	SETTLEMENT_MONTH(String.class),
+
+	/** 上場年月日 */
+	LISTED_DATE(Calendar.class),
+
+	/** 信託報酬（税抜） */
+	TRUST_FEE(Double.class),
+
 	/** 信用買残 */
 	MARGIN_DEBT_BALANCE(Double.class),
 

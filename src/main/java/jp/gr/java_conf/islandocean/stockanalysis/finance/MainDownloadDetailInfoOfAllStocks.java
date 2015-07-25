@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -114,6 +115,13 @@ public class MainDownloadDetailInfoOfAllStocks {
 					System.out
 							.println("Error: Failed to find element. Skip this stock. stockCode="
 									+ stockCode);
+					continue;
+				} catch (InvalidDataException e) {
+					++errorCount;
+					System.out
+							.println("Error: Invalid or unexpected data. Skip this stock. stockCode="
+									+ stockCode);
+					System.out.println(e);
 					continue;
 				}
 				DetailRecord detailRecord = analyzer.getDetailRecord();

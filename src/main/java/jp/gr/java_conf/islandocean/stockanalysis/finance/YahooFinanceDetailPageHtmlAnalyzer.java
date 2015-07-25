@@ -3,6 +3,8 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 import java.util.Calendar;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
+import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 import org.jsoup.nodes.Document;
@@ -13,9 +15,13 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 
 	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO = ".stocksInfo";
 	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_TABLE = ".stocksTable";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL = "#detail dl";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX = "#rfindex dl";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN = "#margin dl";
+	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL =
+	// "#detail dl";
+	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX =
+	// "#rfindex dl";
+	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN =
+	// "#margin dl";
+	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL = "dl";
 
 	private static final String CAPTION_PREVIOUS_CLOSING_PRICE = "前日終値";
 	private static final String CAPTION_OPENING_PRICE = "始値";
@@ -37,6 +43,17 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	private static final String CAPTION_SHARE_UNIT_NUMBER = "単元株数";
 	private static final String CAPTION_YEARLY_HIGH = "年初来高値";
 	private static final String CAPTION_YEARLY_LOW = "年初来安値";
+
+	private static final String CAPTION_NET_ASSETS = "純資産";
+	private static final String CAPTION_UNIT_OF_TRADING = "売買単位";
+	private static final String CAPTION_MANAGEMENT_COMPANY = "運用会社";
+	private static final String CAPTION_TYPE_OF_ASSETS_TO_BE_INVESTED = "投資対象資産";
+	private static final String CAPTION_REGION_TO_BE_INVESTED = "投資対象地域";
+	private static final String CAPTION_UNDERLYING_INDEX = "連動対象";
+	private static final String CAPTION_SETTLEMENT_FREQUENCY = "決算頻度";
+	private static final String CAPTION_SETTLEMENT_MONTH = "決算月";
+	private static final String CAPTION_LISTED_DATE = "上場年月日";
+	private static final String CAPTION_TRUST_FEE = "信託報酬（税抜）";
 
 	private static final String CAPTION_MARGIN_DEBT_BALANCE = "信用買残";
 	private static final String CAPTION_MARGIN_RATIO_COMPARISON_WITH_PREVIOUS_WEEK = "前週比";
@@ -74,6 +91,17 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	private String yearlyHighStr;
 	private String yearlyLowStr;
 
+	private String netAssetsStr;
+	private String unitOfTradingStr;
+	private String managementCompanyStr;
+	private String typeOfAssetsToBeInvestedStr;
+	private String regionToBeInvestedStr;
+	private String underlyingIndexStr;
+	private String settlementFrequencyStr;
+	private String settlementMonthStr;
+	private String listedDateStr;
+	private String trustFeeStr;
+
 	private String marginDebtBalanceStr;
 	private String marginDebtBalanceRatioComparisonWithPreviousWeekStr;
 	private String marginSellingBalanceStr;
@@ -95,7 +123,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	}
 
 	public void analyze(Document doc, Calendar dataGetDate)
-			throws FailedToFindElementException {
+			throws FailedToFindElementException, InvalidDataException {
 		extractDataAsString(doc);
 		this.detailRecord = convertStringToDetailRecord(dataGetDate);
 	}
@@ -149,9 +177,10 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			}
 		}
 
-		Elements detailElements = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL);
-		for (Element dl : detailElements) {
+		boolean isDebt = false;
+		boolean isSelling = false;
+		Elements dls = doc.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL);
+		for (Element dl : dls) {
 			Elements dt = dl.getElementsByTag("dt");
 			Elements dd = dl.getElementsByTag("dd");
 			String caption = dt.text().trim();
@@ -171,18 +200,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				tradingValueOfMoneyStr = value;
 			} else if (caption.startsWith(CAPTION_PRICE_LIMIT)) {
 				priceLimitStr = value;
-			}
-		}
-
-		Elements rfindexElements = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX);
-		for (Element dl : rfindexElements) {
-			Elements dt = dl.getElementsByTag("dt");
-			Elements dd = dl.getElementsByTag("dd");
-			String caption = dt.text().trim();
-			String value = Util.normalizeRoundParentheses(dd.text().trim());
-
-			if (caption.startsWith(CAPTION_MARKET_CAPITALIZATION)) {
+			} else if (caption.startsWith(CAPTION_MARKET_CAPITALIZATION)) {
 				marketCapitalizationStr = value;
 			} else if (caption.startsWith(CAPTION_OUTSTANDING_STOCK_VOLUME)) {
 				outstandingStockVolumeStr = value;
@@ -206,20 +224,28 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				yearlyHighStr = value;
 			} else if (caption.startsWith(CAPTION_YEARLY_LOW)) {
 				yearlyLowStr = value;
-			}
-		}
-
-		Elements marginElements = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN);
-		boolean isDebt = false;
-		boolean isSelling = false;
-		for (Element dl : marginElements) {
-			Elements dt = dl.getElementsByTag("dt");
-			Elements dd = dl.getElementsByTag("dd");
-			String caption = dt.text().trim();
-			String value = Util.normalizeRoundParentheses(dd.text().trim());
-
-			if (caption.startsWith(CAPTION_MARGIN_DEBT_BALANCE)) {
+			} else if (caption.startsWith(CAPTION_NET_ASSETS)) {
+				netAssetsStr = value;
+			} else if (caption.startsWith(CAPTION_UNIT_OF_TRADING)) {
+				unitOfTradingStr = value;
+			} else if (caption.startsWith(CAPTION_MANAGEMENT_COMPANY)) {
+				managementCompanyStr = value;
+			} else if (caption
+					.startsWith(CAPTION_TYPE_OF_ASSETS_TO_BE_INVESTED)) {
+				typeOfAssetsToBeInvestedStr = value;
+			} else if (caption.startsWith(CAPTION_REGION_TO_BE_INVESTED)) {
+				regionToBeInvestedStr = value;
+			} else if (caption.startsWith(CAPTION_UNDERLYING_INDEX)) {
+				underlyingIndexStr = value;
+			} else if (caption.startsWith(CAPTION_SETTLEMENT_FREQUENCY)) {
+				settlementFrequencyStr = value;
+			} else if (caption.startsWith(CAPTION_SETTLEMENT_MONTH)) {
+				settlementMonthStr = value;
+			} else if (caption.startsWith(CAPTION_LISTED_DATE)) {
+				listedDateStr = value;
+			} else if (caption.startsWith(CAPTION_TRUST_FEE)) {
+				trustFeeStr = value;
+			} else if (caption.startsWith(CAPTION_MARGIN_DEBT_BALANCE)) {
 				marginDebtBalanceStr = value;
 				isDebt = true;
 				isSelling = false;
@@ -236,11 +262,25 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				isSelling = true;
 			} else if (caption.startsWith(CAPTION_RATIO_OF_MARGIN_BALANCE)) {
 				ratioOfMarginBalanceStr = value;
+			} else {
+				if (!caption.equals("") && !caption.startsWith("値上がり率")
+						&& !caption.startsWith("値下がり率")
+						&& !caption.startsWith("[買い]")
+						&& !caption.startsWith("[売り]")
+						&& value.indexOf("リアルタイム株価") < 0) {
+
+					//
+					// TODO: unknown data format
+					//
+					System.out.println("caption=" + caption);
+					System.out.println("value=" + value);
+				}
 			}
 		}
 	}
 
-	private DetailRecord convertStringToDetailRecord(Calendar dataGetDate) {
+	private DetailRecord convertStringToDetailRecord(Calendar dataGetDate)
+			throws InvalidDataException {
 		DetailRecord detailRecord = new DetailRecord();
 		String org = null;
 		String s = null;
@@ -522,6 +562,134 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				}
 			}
 
+			// 純資産
+			org = netAssetsStr;
+			if ((s = org) != null) {
+				s = Util.substringBeforeLastOpeningRoundParentheses(s);
+				if (!s.endsWith("百万円")) {
+					// TODO: error or unknown data format
+				}
+				s = Util.substringChopEndIfMatch(s, "百万円");
+				s = Util.removeCommaAndTrim(s);
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.NET_ASSETS,
+							Double.parseDouble(s));
+				}
+			}
+
+			// 売買単位
+			org = unitOfTradingStr;
+			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "株");
+				s = Util.removeCommaAndTrim(s);
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.UNIT_OF_TRADING,
+							Double.parseDouble(s));
+				}
+			}
+
+			// 運用会社
+			org = managementCompanyStr;
+			if ((s = org) != null) {
+				s = s.trim();
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.MANAGEMENT_COMPANY, s);
+				}
+			}
+
+			// 投資対象資産
+			org = typeOfAssetsToBeInvestedStr;
+			if ((s = org) != null) {
+				s = s.trim();
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.TYPE_OF_ASSETS_TO_BE_INVESTED,
+							s);
+				}
+			}
+
+			// 投資対象地域
+			org = regionToBeInvestedStr;
+			if ((s = org) != null) {
+				s = s.trim();
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.REGION_TO_BE_INVESTED, s);
+				}
+			}
+
+			// 連動対象
+			org = underlyingIndexStr;
+			if ((s = org) != null) {
+				s = s.trim();
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.UNDERLYING_INDEX, s);
+				}
+			}
+
+			// 決算頻度
+			org = settlementFrequencyStr;
+			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "回");
+				s = Util.removeCommaAndTrim(s);
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.SETTLEMENT_FREQUENCY,
+							Integer.parseInt(s));
+				}
+			}
+
+			// 決算月
+			org = settlementMonthStr; // Comma separated numerics, January is 1.
+			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "月");
+				s = s.trim();
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.SETTLEMENT_MONTH, s);
+				}
+			}
+
+			// 上場年月日
+			org = listedDateStr;
+			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "日");
+				s = s.trim();
+				int year;
+				int month;
+				int day;
+				if (s.length() != 0) {
+					String[] p = s.split("年");
+					if (p.length != 2) {
+						throw new InvalidDataException(
+								"Error: listedDateStr is invalid. listedDateStr="
+										+ listedDateStr);
+					}
+					year = Integer.parseInt(p[0]);
+
+					String[] q = p[1].split("月");
+					if (p.length != 2) {
+						throw new InvalidDataException(
+								"Error: listedDateStr is invalid. listedDateStr="
+										+ listedDateStr);
+					}
+					month = Integer.parseInt(q[0]) - 1; /* because January==0 */
+					day = Integer.parseInt(q[1]);
+					Calendar cal = CalendarUtil.createDay(year, month, day);
+
+					if (!isNoData(s)) {
+						detailRecord.put(DetailEnum.LISTED_DATE, cal);
+					}
+				}
+			}
+
+			// 信託報酬（税抜）
+			org = trustFeeStr;
+			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "%");
+				s = Util.removeCommaAndTrim(s);
+				if (!isNoData(s)) {
+					detailRecord.put(DetailEnum.TRUST_FEE,
+							Double.parseDouble(s));
+				}
+			}
+
 			// 信用買残
 			org = marginDebtBalanceStr;
 			if ((s = org) != null) {
@@ -583,7 +751,6 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 							Double.parseDouble(s));
 				}
 			}
-
 		} catch (NumberFormatException e) {
 			// TODO: debug
 			System.out
@@ -633,6 +800,17 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		System.out.println("shareUnitNumberStr=" + shareUnitNumberStr);
 		System.out.println("yearlyHighStr=" + yearlyHighStr);
 		System.out.println("yearlyLowStr=" + yearlyLowStr);
+		System.out.println("NetAssetsStr=" + netAssetsStr);
+		System.out.println("UnitOfTradingStr=" + unitOfTradingStr);
+		System.out.println("ManagementCompanyStr=" + managementCompanyStr);
+		System.out.println("TypeOfAssetsToBeInvestedStr="
+				+ typeOfAssetsToBeInvestedStr);
+		System.out.println("RegionToBeInvestedStr=" + regionToBeInvestedStr);
+		System.out.println("UnderlyingIndexStr=" + underlyingIndexStr);
+		System.out.println("SettlementFrequencyStr=" + settlementFrequencyStr);
+		System.out.println("SettlementMonthStr=" + settlementMonthStr);
+		System.out.println("ListedDateStr=" + listedDateStr);
+		System.out.println("TrustFeeStr=" + trustFeeStr);
 		System.out.println("marginDebtBalanceStr=" + marginDebtBalanceStr);
 		System.out
 				.println("marginDebtBalanceRatioComparisonWithPreviousWeekStr="
