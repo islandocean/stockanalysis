@@ -34,28 +34,35 @@ public class DetailInfoTextAnalyzer {
 			DetailRecord record = new DetailRecord();
 			for (DetailEnum detailEnum : DetailEnum.values()) {
 				Class<?> dataValueClass = detailEnum.getDataValueClass();
-				String field = null;
-				Object obj = null;
 				int tsvPosition = detailEnum.ordinal();
-
+				String field = null;
+				if (tsvPosition < fields.length) {
+					field = fields[tsvPosition];
+				}
+				Object obj = null;
 				switch (detailEnum) {
 				case DATA_GET_DATE:
-					String dataGetDateStr = fields[tsvPosition];
-					obj = (Object) CalendarUtil
-							.createCalendarByStringyyyyMMdd(dataGetDateStr);
+					if (!isNoDataField(field)) {
+						obj = (Object) CalendarUtil
+								.createCalendarByStringyyyyMMdd(field);
+					}
+					break;
+				case LISTED_DATE:
+					if (!isNoDataField(field)) {
+						obj = (Object) CalendarUtil
+								.createCalendarByStringyyyyMMdd(field);
+					}
 					break;
 				default:
-					break;
-				}
-
-				if (obj == null && tsvPosition >= 0
-						&& tsvPosition < fields.length) {
-					field = fields[tsvPosition];
 					if (!isNoDataField(field)) {
 						obj = Util.convClass(field, dataValueClass);
 					}
+					break;
 				}
-				record.put(detailEnum, obj);
+
+				if (obj != null) {
+					record.put(detailEnum, obj);
+				}
 			}
 			recordList.add(record);
 		}
