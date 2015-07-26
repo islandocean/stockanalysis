@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 
 public final class CalendarUtil {
 
@@ -142,6 +143,47 @@ public final class CalendarUtil {
 		String dayStr = yyyyMMdd.substring(6, 8);
 		return createDay(Integer.parseInt(yearStr),
 				Integer.parseInt(monthStr) - 1, Integer.parseInt(dayStr));
+	}
+
+	/**
+	 * "2015年7月25日"　-> Calendar で返す。
+	 * 
+	 * @param dateStr
+	 * @return null if dateStr is null. Otherwize, return Calendar.
+	 * @throws InvalidDataException
+	 */
+	public static Calendar createCalendarByJapaneseString(String dateStr)
+			throws InvalidDataException {
+		if (dateStr == null) {
+			return null;
+		}
+		String s = dateStr;
+		s = s.trim();
+		s = Util.substringChopEndIfMatch(s, "日");
+		if (s.length() < 8) {
+			throw new InvalidDataException(
+					"Error: dateStr is invalid. dateStr=" + dateStr);
+		}
+
+		int year;
+		int month;
+		int day;
+		String[] p = s.split("年");
+		if (p.length != 2) {
+			throw new InvalidDataException(
+					"Error: dateStr is invalid. dateStr=" + dateStr);
+		}
+		year = Integer.parseInt(p[0]);
+
+		String[] q = p[1].split("月");
+		if (p.length != 2) {
+			throw new InvalidDataException(
+					"Error: dateStr is invalid. dateStr=" + dateStr);
+		}
+		month = Integer.parseInt(q[0]) - 1; /* because January==0 */
+		day = Integer.parseInt(q[1]);
+		Calendar cal = CalendarUtil.createDay(year, month, day);
+		return cal;
 	}
 
 	public static String format_yyyy(Calendar cal) {

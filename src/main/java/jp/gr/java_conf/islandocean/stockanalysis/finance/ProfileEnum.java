@@ -9,6 +9,9 @@ public enum ProfileEnum implements HasDataValueClass {
 	/** コード */
 	STOCK_CODE(String.class),
 
+	/** 銘柄名 */
+	STOCK_NAME(String.class),
+
 	/** 特色 */
 	FEATURE(String.class),
 
@@ -43,7 +46,7 @@ public enum ProfileEnum implements HasDataValueClass {
 	LISTED_DATE(Calendar.class),
 
 	/** 決算 */
-	SETTLING_DATE(Calendar.class),
+	SETTLING_DATE(String.class),
 
 	/** 単元株数 */
 	SHARE_UNIT_NUMBER(Double.class),

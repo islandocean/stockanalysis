@@ -68,7 +68,10 @@ public class Record extends EnumMap {
 		String[] a = line.split(DELIM);
 		if (a.length != allKeys.length) {
 			throw new InvalidDataException(
-					"Invalid tsv line data. Number of actual items is different from number of fields of record definition.");
+					"Invalid tsv line data. Number of actual items is different from number of fields of record definition."
+							+ " splitted data length="
+							+ a.length
+							+ " allKeys.length=" + allKeys.length);
 		}
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
@@ -77,22 +80,29 @@ public class Record extends EnumMap {
 				put(key, null);
 			} else {
 				Class clazz = EnumUtil.getDataValueClass(enumClass, idx);
-				if (clazz.equals(Double.class)) {
-					put(key, Double.parseDouble(s));
-				} else if (clazz.equals(String.class)) {
+				if (clazz.equals(String.class)) {
 					put(key, s);
-				} else if (clazz.equals(Long.class)) {
-					put(key, Long.parseLong(s));
-				} else if (clazz.equals(Integer.class)) {
-					put(key, Integer.parseInt(s));
-				} else if (clazz.equals(Calendar.class)) {
-					Calendar cal = null;
-					try {
-						cal = CalendarUtil.createCalendarByStringyyyyMMdd(s);
-					} catch (InvalidDataException e) {
-						throw e;
+				} else {
+					if (s.length() == 0) {
+						put(key, null);
+					} else {
+						if (clazz.equals(Double.class)) {
+							put(key, Double.parseDouble(s));
+						} else if (clazz.equals(Long.class)) {
+							put(key, Long.parseLong(s));
+						} else if (clazz.equals(Integer.class)) {
+							put(key, Integer.parseInt(s));
+						} else if (clazz.equals(Calendar.class)) {
+							Calendar cal = null;
+							try {
+								cal = CalendarUtil
+										.createCalendarByStringyyyyMMdd(s);
+							} catch (InvalidDataException e) {
+								throw e;
+							}
+							put(key, cal);
+						}
 					}
-					put(key, cal);
 				}
 			}
 		}

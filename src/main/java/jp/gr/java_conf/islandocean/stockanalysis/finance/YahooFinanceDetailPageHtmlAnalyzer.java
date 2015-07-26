@@ -21,7 +21,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	// "#rfindex dl";
 	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN =
 	// "#margin dl";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL = "dl";
+	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL = "#main dl";
 
 	private static final String CAPTION_PREVIOUS_CLOSING_PRICE = "前日終値";
 	private static final String CAPTION_OPENING_PRICE = "始値";
@@ -272,8 +272,8 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 					//
 					// TODO: unknown data format
 					//
-					System.out.println("caption=" + caption);
-					System.out.println("value=" + value);
+					System.out.println("unknown caption=" + caption);
+					System.out.println("unknown value=" + value);
 				}
 			}
 		}
@@ -384,7 +384,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = tradingValueOfMoneyStr;
 			if ((s = org) != null) {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
-				s = Util.substringChopEndIfMatch(s, "千円");
+				s = Util.substringChopEndIfMatch(s, "千円"); // thousand yen
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					record.put(DetailEnum.TRADING_VALUE_OF_MONEY,
@@ -418,7 +418,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = marketCapitalizationStr;
 			if ((s = org) != null) {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
-				s = Util.substringChopEndIfMatch(s, "百万円");
+				s = Util.substringChopEndIfMatch(s, "百万円"); // million yen
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					record.put(DetailEnum.MARKET_CAPITALIZATION,
@@ -562,7 +562,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				if (!s.endsWith("百万円")) {
 					// TODO: error or unknown data format
 				}
-				s = Util.substringChopEndIfMatch(s, "百万円");
+				s = Util.substringChopEndIfMatch(s, "百万円");// million yen
 				s = Util.removeCommaAndTrim(s);
 				if (!isNoData(s)) {
 					record.put(DetailEnum.NET_ASSETS, Double.parseDouble(s));

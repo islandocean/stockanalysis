@@ -2,6 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
 import static org.junit.Assert.*;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -29,8 +30,13 @@ public class DetailRecordTest {
 
 	@Test
 	public void test() {
+		System.out.println(Util.getCurrentClassNameAndMethodName());
 		DetailRecord record = new DetailRecord();
-		String org = "20150717\t1491\t中外鉱業(株)\t非鉄金属\t32.0\t-1.0\t33.0\t32.0\t33.0\t31.0\t735700.0\t23634.0\t63.0\t3.0\t9272.0\t2.89747982E8\t0.0\t0.0\t58.18\t1.3\t0.55\t24.66\t3200.0\t100.0\t34.0\t27.0\t1837100.0\t-190700.0\t0.0\t0.0\t0.0";
+		String org = "20150717\t1491\t中外鉱業(株)\t非鉄金属\t32.0\t-1.0\t33.0\t32.0\t33.0\t31.0";
+		org += "\t735700.0\t23634.0\t63.0\t3.0\t9272.0\t2.89747982E8\t0.0\t0.0\t58.18\t1.3";
+		org += "\t0.55\t24.66\t3200.0\t100.0\t34.0\t27.0\t\t\t\t";
+		org += "\t\t\t\t\t\t\t1837100.0\t-190700.0\t0.0\t0.0";
+		org += "\t0.0";
 		try {
 			record.fromTsvString(org);
 		} catch (InvalidDataException e) {

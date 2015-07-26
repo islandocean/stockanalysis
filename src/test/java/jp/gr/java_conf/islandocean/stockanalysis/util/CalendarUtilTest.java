@@ -84,4 +84,45 @@ public class CalendarUtilTest {
 					year == 2015 && month == Calendar.DECEMBER && day == 1);
 		}
 	}
+
+	@Test
+	public void testCreateCalendarByJapaneseString() {
+		System.out.println(Util.getCurrentClassNameAndMethodName());
+		{
+			String yyyyMMdd = "2015年01月31日";
+			Calendar cal = null;
+			try {
+				cal = CalendarUtil.createCalendarByJapaneseString(yyyyMMdd);
+			} catch (InvalidDataException e) {
+				fail();
+			}
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH);
+			int day = cal.get(Calendar.DAY_OF_MONTH);
+			System.out.println("Created Calendar= year=" + year + " month="
+					+ month + " day=" + day);
+			System.out.println("org String=" + yyyyMMdd);
+			assertTrue("failure - Calendar is not created as expected.",
+					year == 2015 && month == Calendar.JANUARY && day == 31);
+		}
+
+		{
+			String yyyyMMdd = "2015年12月01日";
+			Calendar cal = null;
+			try {
+				cal = CalendarUtil.createCalendarByJapaneseString(yyyyMMdd);
+			} catch (InvalidDataException e) {
+				fail();
+			}
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH);
+			int day = cal.get(Calendar.DAY_OF_MONTH);
+			System.out.println("Created Calendar= year=" + year + " month="
+					+ month + " day=" + day);
+			System.out.println("org String=" + yyyyMMdd);
+			assertTrue("failure - Calendar is not created as expected.",
+					year == 2015 && month == Calendar.DECEMBER && day == 1);
+		}
+	}
+
 }
