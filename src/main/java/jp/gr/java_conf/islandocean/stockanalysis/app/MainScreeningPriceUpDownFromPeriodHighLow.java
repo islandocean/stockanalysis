@@ -50,7 +50,7 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 	public static void main(String[] args) {
 		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
 		try {
-			app.scanningMain();
+			app.scanningMain(false, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

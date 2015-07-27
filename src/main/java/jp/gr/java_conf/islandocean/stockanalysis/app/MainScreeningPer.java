@@ -45,14 +45,10 @@ public class MainScreeningPer extends AbstractScanning {
 		return stockCodes;
 	}
 
-	public boolean useDetailInfo() {
-		return true;
-	}
-
 	public static void main(String[] args) {
 		MainScreeningPer app = new MainScreeningPer();
 		try {
-			app.scanningMain();
+			app.scanningMain(true, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

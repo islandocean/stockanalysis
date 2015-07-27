@@ -56,14 +56,10 @@ public class StandaloneScanningSample {
 		return stockCodes;
 	}
 
-	public boolean useDetailInfo() {
-		return false;
-	}
-
 	public static void main(String[] args) {
 		StandaloneScanningSample app = new StandaloneScanningSample();
 		try {
-			app.scanningMain();
+			app.scanningMain(false, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,7 +69,8 @@ public class StandaloneScanningSample {
 		}
 	}
 
-	private void scanningMain() throws IOException, InvalidDataException {
+	private void scanningMain(boolean useDetailInfo, boolean useProfileInfo)
+			throws IOException, InvalidDataException {
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
 		CalendarRange calendarRange = selectCalendarRange();
@@ -113,8 +110,12 @@ public class StandaloneScanningSample {
 		}
 		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
 
-		if (useDetailInfo()) {
+		if (useDetailInfo) {
 			financeManager.generateStockCodeToDetailRecordMap();
+		}
+
+		if (useProfileInfo) {
+			financeManager.generateStockCodeToProfileRecordMap();
 		}
 
 		printHeader();

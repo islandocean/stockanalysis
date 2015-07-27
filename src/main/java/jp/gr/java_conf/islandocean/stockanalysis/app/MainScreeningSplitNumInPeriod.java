@@ -57,7 +57,7 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 	public static void main(String[] args) {
 		MainScreeningSplitNumInPeriod app = new MainScreeningSplitNumInPeriod();
 		try {
-			app.scanningMain();
+			app.scanningMain(false, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

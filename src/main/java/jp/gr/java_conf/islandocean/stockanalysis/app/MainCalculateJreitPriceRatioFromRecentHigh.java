@@ -56,7 +56,7 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 	public static void main(String[] args) {
 		MainCalculateJreitPriceRatioFromRecentHigh app = new MainCalculateJreitPriceRatioFromRecentHigh();
 		try {
-			app.scanningMain();
+			app.scanningMain(false, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -35,15 +35,8 @@ abstract public class AbstractScanning {
 
 	abstract public void printFooter(int count);
 
-	public boolean useDetailInfo() {
-		return false;
-	}
-
-	public boolean useProfileInfo() {
-		return false;
-	}
-
-	public void scanningMain() throws IOException, InvalidDataException {
+	public void scanningMain(boolean useDetailInfo, boolean useProfileInfo)
+			throws IOException, InvalidDataException {
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
 		CalendarRange calendarRange = selectCalendarRange();
@@ -83,11 +76,11 @@ abstract public class AbstractScanning {
 		}
 		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
 
-		if (useDetailInfo()) {
+		if (useDetailInfo) {
 			financeManager.generateStockCodeToDetailRecordMap();
 		}
 
-		if (useProfileInfo()) {
+		if (useProfileInfo) {
 			financeManager.generateStockCodeToProfileRecordMap();
 		}
 

@@ -47,18 +47,10 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		return stockCodes;
 	}
 
-	public boolean useDetailInfo() {
-		return true;
-	}
-
-	public boolean useProfileInfo() {
-		return true;
-	}
-
 	public static void main(String[] args) {
 		MainScreeningPerAndSalary app = new MainScreeningPerAndSalary();
 		try {
-			app.scanningMain();
+			app.scanningMain(true, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
