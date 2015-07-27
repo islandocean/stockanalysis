@@ -8,6 +8,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileEnum;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreSouko;
@@ -16,9 +18,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainScreeningPer extends AbstractScanning {
+public class MainScreeningPerAndSalary extends AbstractScanning {
 
-	public MainScreeningPer() {
+	public MainScreeningPerAndSalary() {
 	}
 
 	@SuppressWarnings("unused")
@@ -49,8 +51,12 @@ public class MainScreeningPer extends AbstractScanning {
 		return true;
 	}
 
+	public boolean useProfileInfo() {
+		return true;
+	}
+
 	public static void main(String[] args) {
-		MainScreeningPer app = new MainScreeningPer();
+		MainScreeningPerAndSalary app = new MainScreeningPerAndSalary();
 		try {
 			app.scanningMain();
 		} catch (IOException e) {
@@ -71,11 +77,20 @@ public class MainScreeningPer extends AbstractScanning {
 		// Get information record of the corp.
 		//
 
-		Map<String, DetailRecord> map = financeManager
+		Map<String, DetailRecord> mapDetail = financeManager
 				.getStockCodeToDetailRecordMap();
-		DetailRecord detailRecord = map.get(stockCode);
+		DetailRecord detailRecord = mapDetail.get(stockCode);
 		if (detailRecord == null) {
 			System.out.println("Warning: Cannot get detail record. stockCode="
+					+ stockCode);
+			return hit;
+		}
+
+		Map<String, ProfileRecord> mapProfile = financeManager
+				.getStockCodeToProfileRecordMap();
+		ProfileRecord profileRecord = mapProfile.get(stockCode);
+		if (profileRecord == null) {
+			System.out.println("Warning: Cannot get profile record. stockCode="
 					+ stockCode);
 			return hit;
 		}
@@ -85,9 +100,13 @@ public class MainScreeningPer extends AbstractScanning {
 		//
 
 		Double per = (Double) detailRecord.get(DetailEnum.PER);
-		if (per != null && per.doubleValue() < 5.0d) {
+		Double salary = (Double) profileRecord
+				.get(ProfileEnum.AVERAGE_ANNUAL_SALARY);
+		if (per != null && per.doubleValue() < 5.0d && salary != null
+				&& salary.doubleValue() >= 8000.0) {
 			hit = true;
-			System.out.println(detailRecord.toTsvString());
+			System.out.println(detailRecord.toTsvString() + "\t"
+					+ profileRecord.toTsvString());
 		}
 
 		return hit;
@@ -95,7 +114,10 @@ public class MainScreeningPer extends AbstractScanning {
 
 	public void printHeader() {
 		System.out.println("------------------------------");
-		System.out.println(new DetailRecord().header());
+		System.out.print(new DetailRecord().header());
+		System.out.print("\t");
+		System.out.print(new ProfileRecord().header());
+		System.out.println();
 	}
 
 	public void printFooter(int count) {

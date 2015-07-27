@@ -24,6 +24,7 @@ public class FinanceManager {
 
 	private Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
 	private Map<String, DetailRecord> stockCodeToDetailRecordMap;
+	private Map<String, ProfileRecord> stockCodeToProfileRecordMap;
 
 	private FinanceManager() {
 		super();
@@ -38,13 +39,17 @@ public class FinanceManager {
 		return new FinanceManager();
 	}
 
-	public String getHtmlDetailPageSpec(String code) {
-		String spec = Config.getRemoteLocationStocksDetail() + code;
-		return spec;
-	}
+	//
+	// Read remote HTML page.
+	//
 
 	public String getHtmlChartPageSpec(String code) {
 		String spec = Config.getRemoteLocationStocksChart() + code;
+		return spec;
+	}
+
+	public String getHtmlDetailPageSpec(String code) {
+		String spec = Config.getRemoteLocationStocksDetail() + code;
 		return spec;
 	}
 
@@ -53,14 +58,14 @@ public class FinanceManager {
 		return spec;
 	}
 
-	public Document readRemoteHtmlDetailPage(String code) throws IOException {
-		String spec = getHtmlDetailPageSpec(code);
+	public Document readRemoteHtmlChartPage(String code) throws IOException {
+		String spec = getHtmlChartPageSpec(code);
 		Document doc = HtmlUtil.readRemoteHtml(spec);
 		return doc;
 	}
 
-	public Document readRemoteHtmlChartPage(String code) throws IOException {
-		String spec = getHtmlChartPageSpec(code);
+	public Document readRemoteHtmlDetailPage(String code) throws IOException {
+		String spec = getHtmlDetailPageSpec(code);
 		Document doc = HtmlUtil.readRemoteHtml(spec);
 		return doc;
 	}
@@ -71,13 +76,9 @@ public class FinanceManager {
 		return doc;
 	}
 
-	public String toSplitSearchStockCode(String stockCode) {
-		int index = stockCode.indexOf('-');
-		if (index >= 0) {
-			stockCode = stockCode.substring(0, index);
-		}
-		return stockCode;
-	}
+	//
+	// Read locally saved text.
+	//
 
 	public List<String> readLocalSplitInfoText() throws IOException {
 		String filename = Config.getSplitInformationFilename()
@@ -88,15 +89,53 @@ public class FinanceManager {
 		return lines;
 	}
 
+	public List<String> readLocalDetailInfoText() throws IOException {
+		String filename = Config.getDetailInformationFilename()
+				+ Config.getDetailInformationExt();
+		FileSystem fs = FileSystems.getDefault();
+		Path src = fs.getPath(filename);
+		List<String> lines = Files.readAllLines(src, StandardCharsets.UTF_8);
+		return lines;
+	}
+
+	public List<String> readLocalProfileInfoText() throws IOException {
+		String filename = Config.getProfileInformationFilename()
+				+ Config.getProfileInformationExt();
+		FileSystem fs = FileSystems.getDefault();
+		Path src = fs.getPath(filename);
+		List<String> lines = Files.readAllLines(src, StandardCharsets.UTF_8);
+		return lines;
+	}
+
+	//
+	// Stock code transform.
+	//
+
+	public String toSplitSearchStockCode(String stockCode) {
+		int index = stockCode.indexOf('-');
+		if (index >= 0) {
+			stockCode = stockCode.substring(0, index);
+		}
+		return stockCode;
+	}
+
+	public String toDetailSearchStockCode(String stockCode) {
+		return stockCode.replace('-', '.');
+	}
+
+	//
+	// Split Info
+	//
+
 	private Map<String, StockSplitInfo> listToMapForStockSplitInfo(
-			List<StockSplitInfo> stockSplitInfoList) {
+			List<StockSplitInfo> list) {
 		Map<String, StockSplitInfo> map = new HashMap<String, StockSplitInfo>();
-		for (StockSplitInfo stockSplitInfo : stockSplitInfoList) {
-			String stockCode = stockSplitInfo.getSplitSearchStockCode();
+		for (StockSplitInfo info : list) {
+			String stockCode = info.getSplitSearchStockCode();
 			if (stockCode != null) {
 				String splitSearchStockCode = toSplitSearchStockCode(stockCode);
 				if (map.get(splitSearchStockCode) == null) {
-					map.put(splitSearchStockCode, stockSplitInfo);
+					map.put(splitSearchStockCode, info);
 				}
 			}
 		}
@@ -107,14 +146,9 @@ public class FinanceManager {
 		List<String> lines = readLocalSplitInfoText();
 		SplitInfoTextAnalyzer analyzer = new SplitInfoTextAnalyzer();
 		analyzer.analyze(lines);
-		List<StockSplitInfo> stockSplitInfoList = analyzer
-				.getStockSplitInfoList();
-		Map<String, StockSplitInfo> map = listToMapForStockSplitInfo(stockSplitInfoList);
+		List<StockSplitInfo> list = analyzer.getStockSplitInfoList();
+		Map<String, StockSplitInfo> map = listToMapForStockSplitInfo(list);
 		this.stockCodeToSplitInfoMap = map;
-	}
-
-	public Map<String, StockSplitInfo> getStockCodeToSplitInfoMap() {
-		return this.stockCodeToSplitInfoMap;
 	}
 
 	public void checkAndWarnSplitInfo(List<StockRecord> list,
@@ -165,29 +199,20 @@ public class FinanceManager {
 		return splitCount;
 	}
 
-	public String toDetailSearchStockCode(String stockCode) {
-		return stockCode.replace('-', '.');
-	}
-
-	public List<String> readLocalDetailInfoText() throws IOException {
-		String filename = Config.getDetailInformationFilename()
-				+ Config.getDetailInformationExt();
-		FileSystem fs = FileSystems.getDefault();
-		Path src = fs.getPath(filename);
-		List<String> lines = Files.readAllLines(src, StandardCharsets.UTF_8);
-		return lines;
-	}
+	//
+	// Detail Info
+	//
 
 	private Map<String, DetailRecord> listToMapForDetailRecord(
-			List<DetailRecord> detailRecordList) {
+			List<DetailRecord> list) {
 		Map<String, DetailRecord> map = new HashMap<String, DetailRecord>();
-		for (DetailRecord detailRecord : detailRecordList) {
-			String stockCode = (String) detailRecord.get(DetailEnum.STOCK_CODE);
+		for (DetailRecord record : list) {
+			String stockCode = (String) record.get(DetailEnum.STOCK_CODE);
 			if (stockCode != null) {
 				// String splitSearchStockCode =
 				// toSplitSearchStockCode(stockCode);
 				if (map.get(stockCode) == null) {
-					map.put(stockCode, detailRecord);
+					map.put(stockCode, record);
 				}
 			}
 		}
@@ -199,12 +224,54 @@ public class FinanceManager {
 		List<String> lines = readLocalDetailInfoText();
 		DetailInfoTextAnalyzer analyzer = new DetailInfoTextAnalyzer();
 		analyzer.analyze(lines);
-		List<DetailRecord> detailRecordList = analyzer.getDetailRecordList();
-		Map<String, DetailRecord> map = listToMapForDetailRecord(detailRecordList);
+		List<DetailRecord> list = analyzer.getDetailRecordList();
+		Map<String, DetailRecord> map = listToMapForDetailRecord(list);
 		this.stockCodeToDetailRecordMap = map;
+	}
+
+	//
+	// Profile Info
+	//
+
+	private Map<String, ProfileRecord> listToMapForProfileRecord(
+			List<ProfileRecord> recordList) {
+		Map<String, ProfileRecord> map = new HashMap<String, ProfileRecord>();
+		for (ProfileRecord record : recordList) {
+			String stockCode = (String) record.get(ProfileEnum.STOCK_CODE);
+			if (stockCode != null) {
+				// String splitSearchStockCode =
+				// toSplitSearchStockCode(stockCode);
+				if (map.get(stockCode) == null) {
+					map.put(stockCode, record);
+				}
+			}
+		}
+		return map;
+	}
+
+	public void generateStockCodeToProfileRecordMap() throws IOException,
+			InvalidDataException {
+		List<String> lines = readLocalProfileInfoText();
+		ProfileInfoTextAnalyzer analyzer = new ProfileInfoTextAnalyzer();
+		analyzer.analyze(lines);
+		List<ProfileRecord> list = analyzer.getProfileRecordList();
+		Map<String, ProfileRecord> map = listToMapForProfileRecord(list);
+		this.stockCodeToProfileRecordMap = map;
+	}
+
+	//
+	// Getters
+	//
+
+	public Map<String, StockSplitInfo> getStockCodeToSplitInfoMap() {
+		return this.stockCodeToSplitInfoMap;
 	}
 
 	public Map<String, DetailRecord> getStockCodeToDetailRecordMap() {
 		return this.stockCodeToDetailRecordMap;
+	}
+
+	public Map<String, ProfileRecord> getStockCodeToProfileRecordMap() {
+		return this.stockCodeToProfileRecordMap;
 	}
 }

@@ -39,6 +39,10 @@ abstract public class AbstractScanning {
 		return false;
 	}
 
+	public boolean useProfileInfo() {
+		return false;
+	}
+
 	public void scanningMain() throws IOException, InvalidDataException {
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
@@ -81,6 +85,10 @@ abstract public class AbstractScanning {
 
 		if (useDetailInfo()) {
 			financeManager.generateStockCodeToDetailRecordMap();
+		}
+
+		if (useProfileInfo()) {
+			financeManager.generateStockCodeToProfileRecordMap();
 		}
 
 		printHeader();
