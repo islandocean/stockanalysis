@@ -149,6 +149,23 @@ public final class Util {
 		return sb.toString();
 	}
 
+	public static void dumpStringCodes(String org) {
+		if (org == null || org.length() == 0) {
+			return;
+		}
+		for (int idx = 0; idx < org.length(); ++idx) {
+			int code = org.charAt(idx);
+			System.out.print("idx=" + idx);
+			System.out.print(" ");
+			System.out.print("char=" + org.charAt(idx));
+			System.out.print(" ");
+			System.out.print("code(decimal)=" + code);
+			System.out.print(" ");
+			System.out.print("code(hex)=" + Integer.toHexString(code));
+			System.out.println();
+		}
+	}
+
 	private static final DecimalFormat percentFormat = new DecimalFormat(
 			"##0.00%");
 

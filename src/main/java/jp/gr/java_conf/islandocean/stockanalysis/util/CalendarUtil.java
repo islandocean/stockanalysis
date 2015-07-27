@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
-import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 
 public final class CalendarUtil {
 
@@ -173,15 +172,15 @@ public final class CalendarUtil {
 			throw new InvalidDataException(
 					"Error: dateStr is invalid. dateStr=" + dateStr);
 		}
-		year = Integer.parseInt(p[0]);
+		year = Integer.parseInt(p[0].trim());
 
 		String[] q = p[1].split("月");
-		if (p.length != 2) {
+		if (q.length != 2) {
 			throw new InvalidDataException(
 					"Error: dateStr is invalid. dateStr=" + dateStr);
 		}
-		month = Integer.parseInt(q[0]) - 1; /* because January==0 */
-		day = Integer.parseInt(q[1]);
+		month = Integer.parseInt(q[0].trim()) - 1; /* because January==0 */
+		day = Integer.parseInt(q[1].trim());
 		Calendar cal = CalendarUtil.createDay(year, month, day);
 		return cal;
 	}

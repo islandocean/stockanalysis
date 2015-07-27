@@ -111,7 +111,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	/**
 	 * Special value of raw detail info String
 	 */
-	private static final String NO_DATA = "---";
+	private static final String NO_DATA_IN_DETAIL = "---";
 
 	/**
 	 * Analyzed data
@@ -302,7 +302,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.REALTIME_PRICE, Double.parseDouble(s));
 				}
 			}
@@ -313,7 +313,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "前日比");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.PRICE_COMPARISON_WITH_PREVIOUS_DAY,
 							Double.parseDouble(s));
 				}
@@ -326,7 +326,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.PREVIOUS_CLOSING_PRICE,
 							Double.parseDouble(s));
 				}
@@ -339,7 +339,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.OPENING_PRICE, Double.parseDouble(s));
 				}
 			}
@@ -351,7 +351,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.HIGH_PRICE, Double.parseDouble(s));
 				}
 			}
@@ -363,7 +363,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "ストップ高");
 				s = Util.substringChopStartIfMatch(s, "ストップ安");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.LOW_PRICE, Double.parseDouble(s));
 				}
 			}
@@ -374,7 +374,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.TRADING_VOLUME_OF_STOCKS,
 							Double.parseDouble(s));
 				}
@@ -386,7 +386,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "千円"); // thousand yen
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.TRADING_VALUE_OF_MONEY,
 							Double.parseDouble(s));
 				}
@@ -400,14 +400,14 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				String[] ar = s.split("～");
 				if (ar.length >= 1) {
 					s = ar[0];
-					if (!isNoData(s)) {
+					if (!isNoDataInDetail(s)) {
 						record.put(DetailEnum.LOW_PRICE_LIMIT,
 								Double.parseDouble(s));
 					}
 				}
 				if (ar.length >= 2) {
 					s = ar[1];
-					if (!isNoData(s)) {
+					if (!isNoDataInDetail(s)) {
 						record.put(DetailEnum.HIGH_PRICE_LIMIT,
 								Double.parseDouble(s));
 					}
@@ -420,7 +420,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "百万円"); // million yen
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.MARKET_CAPITALIZATION,
 							Double.parseDouble(s));
 				}
@@ -432,7 +432,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.OUTSTANDING_STOCK_VOLUME,
 							Double.parseDouble(s));
 				}
@@ -444,7 +444,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "%");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.ANNUAL_INTEREST_RATE,
 							Double.parseDouble(s));
 				}
@@ -455,7 +455,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.DIVIDENDS_PER_SHARE,
 							Double.parseDouble(s));
 				}
@@ -469,7 +469,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.substringChopEndIfMatch(s, "倍");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.PER, Double.parseDouble(s));
 				}
 			}
@@ -482,7 +482,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.substringChopEndIfMatch(s, "倍");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.PBR, Double.parseDouble(s));
 				}
 			}
@@ -494,7 +494,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.EPS, Double.parseDouble(s));
 				}
 			}
@@ -506,7 +506,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringChopStartIfMatch(s, "(連)");
 				s = Util.substringChopStartIfMatch(s, "(単)");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.BPS, Double.parseDouble(s));
 				}
 			}
@@ -516,7 +516,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.MINIMUM_PURCHASE_AMOUNT,
 							Double.parseDouble(s));
 				}
@@ -527,7 +527,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.SHARE_UNIT_NUMBER,
 							Double.parseDouble(s));
 				}
@@ -539,7 +539,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "更新");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.YEARLY_HIGH, Double.parseDouble(s));
 				}
 			}
@@ -550,7 +550,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopStartIfMatch(s, "更新");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.YEARLY_LOW, Double.parseDouble(s));
 				}
 			}
@@ -564,7 +564,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				}
 				s = Util.substringChopEndIfMatch(s, "百万円");// million yen
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.NET_ASSETS, Double.parseDouble(s));
 				}
 			}
@@ -574,7 +574,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.UNIT_OF_TRADING,
 							Double.parseDouble(s));
 				}
@@ -584,7 +584,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = managementCompanyStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.MANAGEMENT_COMPANY, s);
 				}
 			}
@@ -593,7 +593,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = typeOfAssetsToBeInvestedStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.TYPE_OF_ASSETS_TO_BE_INVESTED, s);
 				}
 			}
@@ -602,7 +602,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = regionToBeInvestedStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.REGION_TO_BE_INVESTED, s);
 				}
 			}
@@ -611,7 +611,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			org = underlyingIndexStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.UNDERLYING_INDEX, s);
 				}
 			}
@@ -621,7 +621,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "回");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.SETTLEMENT_FREQUENCY,
 							Integer.parseInt(s));
 				}
@@ -632,7 +632,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "月");
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.SETTLEMENT_MONTH, s);
 				}
 			}
@@ -664,7 +664,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 					day = Integer.parseInt(q[1]);
 					Calendar cal = CalendarUtil.createDay(year, month, day);
 
-					if (!isNoData(s)) {
+					if (!isNoDataInDetail(s)) {
 						record.put(DetailEnum.LISTED_DATE, cal);
 					}
 				}
@@ -675,7 +675,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "%");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.TRUST_FEE, Double.parseDouble(s));
 				}
 			}
@@ -686,7 +686,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.MARGIN_DEBT_BALANCE,
 							Double.parseDouble(s));
 				}
@@ -698,7 +698,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(
 							DetailEnum.MARGIN_DEBT_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK,
 							Double.parseDouble(s));
@@ -711,7 +711,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.MARGIN_SELLING_BALANCE,
 							Double.parseDouble(s));
 				}
@@ -723,7 +723,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(
 							DetailEnum.MARGIN_SELLING_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK,
 							Double.parseDouble(s));
@@ -736,7 +736,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				s = Util.substringBeforeLastOpeningRoundParentheses(s);
 				s = Util.substringChopEndIfMatch(s, "倍");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInDetail(s)) {
 					record.put(DetailEnum.RATIO_OF_MARGIN_BALANCE,
 							Double.parseDouble(s));
 				}
@@ -752,8 +752,8 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		return record;
 	}
 
-	private boolean isNoData(String s) {
-		if (s == null || s.length() == 0 || s.equals(NO_DATA)) {
+	private boolean isNoDataInDetail(String s) {
+		if (s == null || s.length() == 0 || s.equals(NO_DATA_IN_DETAIL)) {
 			return true;
 		}
 		return false;

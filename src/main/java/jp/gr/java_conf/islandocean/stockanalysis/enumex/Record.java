@@ -66,7 +66,7 @@ public class Record extends EnumMap {
 	public void fromTsvString(String line) throws InvalidDataException {
 		Enum<?>[] allKeys = getEnumConstants();
 		String[] a = line.split(DELIM);
-		if (a.length != allKeys.length) {
+		if (a.length != allKeys.length && a.length != allKeys.length - 1) {
 			throw new InvalidDataException(
 					"Invalid tsv line data. Number of actual items is different from number of fields of record definition."
 							+ " splitted data length="
@@ -75,7 +75,11 @@ public class Record extends EnumMap {
 		}
 		for (int idx = 0; idx < allKeys.length; ++idx) {
 			Enum<?> key = (Enum<?>) allKeys[idx];
-			String s = a[idx];
+			String s = null;
+			if (idx <= a.length - 1) {
+				s = a[idx];
+			}
+
 			if (s == null) {
 				put(key, null);
 			} else {

@@ -8,10 +8,10 @@ public class Config extends AbstractConfig {
 
 	private static final String BASE_PATH = "finance" + File.separator;
 	private static final String REMOTE_LOCATION_STOCKS = "http://stocks.finance.yahoo.co.jp/stocks/";
-	private static final String REMOTE_LOCATION_STOCKS_DETAIL = REMOTE_LOCATION_STOCKS
-			+ "detail/?code=";
 	private static final String REMOTE_LOCATION_STOCKS_CHART = REMOTE_LOCATION_STOCKS
 			+ "chart/?code=";
+	private static final String REMOTE_LOCATION_STOCKS_DETAIL = REMOTE_LOCATION_STOCKS
+			+ "detail/?code=";
 	private static final String REMOTE_LOCATION_STOCKS_PROFILE = REMOTE_LOCATION_STOCKS
 			+ "profile/?code=";
 	private static final String baseFolder = AbstractConfig
@@ -37,6 +37,10 @@ public class Config extends AbstractConfig {
 	private static final String DETAIL_INFORMATION_FILENAME = getBaseFolder()
 			+ DETAIL_INFORMATION;
 
+	private static final String PROFILE_INFORMATION = "profile_information";
+	private static final String PROFILE_INFORMATION_FILENAME = getBaseFolder()
+			+ PROFILE_INFORMATION;
+
 	private Config() {
 	}
 
@@ -48,12 +52,12 @@ public class Config extends AbstractConfig {
 		return REMOTE_LOCATION_STOCKS;
 	}
 
-	public static String getRemoteLocationStocksDetail() {
-		return REMOTE_LOCATION_STOCKS_DETAIL;
-	}
-
 	public static String getRemoteLocationStocksChart() {
 		return REMOTE_LOCATION_STOCKS_CHART;
+	}
+
+	public static String getRemoteLocationStocksDetail() {
+		return REMOTE_LOCATION_STOCKS_DETAIL;
 	}
 
 	public static String getRemoteLocationStocksProfile() {
@@ -73,6 +77,14 @@ public class Config extends AbstractConfig {
 	}
 
 	public static String getDetailInformationExt() {
+		return ".csv";
+	}
+
+	public static String getProfileInformationFilename() {
+		return PROFILE_INFORMATION_FILENAME;
+	}
+
+	public static String getProfileInformationExt() {
 		return ".csv";
 	}
 }

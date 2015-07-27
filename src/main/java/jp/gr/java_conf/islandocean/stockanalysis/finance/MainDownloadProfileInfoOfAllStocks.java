@@ -23,9 +23,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 import org.jsoup.nodes.Document;
 
-public class MainDownloadDetailInfoOfAllStocks {
+public class MainDownloadProfileInfoOfAllStocks {
 
-	public MainDownloadDetailInfoOfAllStocks() {
+	public MainDownloadProfileInfoOfAllStocks() {
 		super();
 	}
 
@@ -59,11 +59,11 @@ public class MainDownloadDetailInfoOfAllStocks {
 				.get(dailyDataList.size() - 1);
 
 		FileSystem fs = FileSystems.getDefault();
-		String filename = Config.getDetailInformationFilename();
+		String filename = Config.getProfileInformationFilename();
 		String tempSuffix = "."
 				+ CalendarUtil.format_yyyyMMdd(CalendarUtil.createToday());
 		Path pathTemp = fs.getPath(filename + tempSuffix
-				+ Config.getDetailInformationExt());
+				+ Config.getProfileInformationExt());
 
 		try {
 			if (Files.exists(pathTemp)) {
@@ -89,7 +89,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 				for (int retry = 0; retry < maxTry; ++retry) {
 					try {
 						doc = financeManager
-								.readRemoteHtmlDetailPage(searchCode);
+								.readRemoteHtmlProfilePage(searchCode);
 						break;
 					} catch (IOException e) {
 						System.out
@@ -107,7 +107,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 					}
 				}
 
-				YahooFinanceDetailPageHtmlAnalyzer analyzer = new YahooFinanceDetailPageHtmlAnalyzer();
+				YahooFinanceProfilePageHtmlAnalyzer analyzer = new YahooFinanceProfilePageHtmlAnalyzer();
 				try {
 					analyzer.analyze(doc, today);
 				} catch (FailedToFindElementException e) {
@@ -124,8 +124,8 @@ public class MainDownloadDetailInfoOfAllStocks {
 					System.out.println(e);
 					continue;
 				}
-				DetailRecord record = analyzer.getDetailRecord();
-				record.put(DetailEnum.STOCK_CODE, stockCode);
+				ProfileRecord record = analyzer.getProfileRecord();
+				record.put(ProfileEnum.STOCK_CODE, stockCode);
 				String line = record.toTsvString();
 
 				if (!headerWritten) {
@@ -146,7 +146,7 @@ public class MainDownloadDetailInfoOfAllStocks {
 		}
 
 		Path pathRegular = fs.getPath(filename
-				+ Config.getDetailInformationExt());
+				+ Config.getProfileInformationExt());
 		Files.copy(pathTemp, pathRegular, StandardCopyOption.COPY_ATTRIBUTES,
 				StandardCopyOption.REPLACE_EXISTING);
 	}

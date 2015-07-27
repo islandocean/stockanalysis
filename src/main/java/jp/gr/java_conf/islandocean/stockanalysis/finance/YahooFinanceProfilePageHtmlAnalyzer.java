@@ -5,7 +5,6 @@ import java.util.Iterator;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.FailedToFindElementException;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
-import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 import org.jsoup.nodes.Document;
@@ -62,7 +61,8 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 	/**
 	 * Special value of raw detail info String
 	 */
-	private static final String NO_DATA = "---";
+	private static final String NO_DATA_IN_PROFILE_1 = "-"; // 0x2d
+	private static final String NO_DATA_IN_PROFILE_2 = "‐"; // 0x2010
 
 	/**
 	 * Analyzed data
@@ -146,9 +146,6 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 						.trim());
 				String value = Util.normalizeRoundParentheses(td.text().trim());
 
-				// System.out.println("caption=" + caption);
-				// System.out.println("value=" + value);
-
 				if (caption.startsWith(CAPTION_FEATURE)) {
 					featureStr = value;
 				} else if (caption.startsWith(CAPTION_CONSOLIDATED_OPERATIONS)) {
@@ -186,8 +183,16 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 				} else if (caption.startsWith(CAPTION_AVERAGE_ANNUAL_SALARY)) {
 					averageAnnualSalaryStr = value;
 				} else {
-					System.out.println("unknown caption=" + caption);
-					System.out.println("unknown value=" + value);
+					if (caption.equals("詳細情報")
+							&& value.equals("銘柄情報、保有物件、開示資料、分配金 リンク先は、外部サイトとなります")) {
+					} else {
+						System.out
+								.println("Warning: Unknown caption was found. stockCode="
+										+ stockCodeStr);
+						System.out.println("unknown caption=" + caption);
+						System.out.println("unknown value=" + value);
+					}
+
 				}
 			}
 		}
@@ -198,8 +203,6 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 		ProfileRecord record = new ProfileRecord();
 		String org = null;
 		String s = null;
-
-		// record.put(DetailEnum.DATA_GET_DATE, dataGetDate);
 
 		try {
 			// コード
@@ -212,7 +215,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = featureStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.FEATURE, s);
 				}
 			}
@@ -221,7 +224,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = consolidatedOperationsStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.CONSOLIDATED_OPERATIONS, s);
 				}
 			}
@@ -229,9 +232,11 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			// 本社所在地
 			org = locationOfHeadOfficeStr;
 			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "[主要事業所]");
 				s = s.trim();
 				s = Util.substringChopEndIfMatch(s, "[周辺地図]");
-				if (!isNoData(s)) {
+				s = s.trim();
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.LOCATION_OF_HEAD_OFFICE, s);
 				}
 			}
@@ -242,7 +247,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 				s = s.trim();
 				s = Util.substringChopStartIfMatch(s, "～");
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.NEAREST_STATION, s);
 				}
 			}
@@ -251,7 +256,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = telephoneNumberStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.TELEPHONE_NUMBER, s);
 				}
 			}
@@ -260,7 +265,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = sectorStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.SECTOR, s);
 				}
 			}
@@ -269,7 +274,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = stockNameInEnglishStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.STOCK_NAME_IN_ENGLISH, s);
 				}
 			}
@@ -277,8 +282,9 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			// 代表者名
 			org = representativeStr;
 			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "[役員]");
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.REPRESENTATIVE, s);
 				}
 			}
@@ -287,17 +293,17 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = foundationDateStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				Calendar cal = CalendarUtil.createCalendarByJapaneseString(s);
-				if (!isNoData(s)) {
-					record.put(ProfileEnum.FOUNDATION_DATE, cal);
+				if (!isNoDataInProfile(s)) {
+					record.put(ProfileEnum.FOUNDATION_DATE, s);
 				}
 			}
 
 			// 市場名
 			org = marketStr;
 			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "[株主情報]");
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.MARKET, s);
 				}
 			}
@@ -306,17 +312,17 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			org = listedDateStr;
 			if ((s = org) != null) {
 				s = s.trim();
-				Calendar cal = CalendarUtil.createCalendarByJapaneseString(s);
-				if (!isNoData(s)) {
-					record.put(ProfileEnum.LISTED_DATE, cal);
+				if (!isNoDataInProfile(s)) {
+					record.put(ProfileEnum.LISTED_DATE, s);
 				}
 			}
 
 			// 決算
 			org = settlingDateStr;
 			if ((s = org) != null) {
+				s = Util.substringChopEndIfMatch(s, "[決算情報　年次]");
 				s = s.trim();
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.SETTLING_DATE, s);
 				}
 			}
@@ -324,9 +330,10 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			// 単元株数
 			org = shareUnitNumberStr;
 			if ((s = org) != null) {
+				s = Util.substringChopStartIfMatch(s, "単元株制度なし");
 				s = Util.substringChopEndIfMatch(s, "株");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.SHARE_UNIT_NUMBER,
 							Double.parseDouble(s));
 				}
@@ -337,7 +344,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "人");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(
 							ProfileEnum.NON_CONSOLIDATED_NUMBER_OF_EMPLOYEES,
 							Integer.parseInt(s));
@@ -349,7 +356,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "人");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.CONSOLIDATED_NUMBER_OF_EMPLOYEES,
 							Integer.parseInt(s));
 				}
@@ -360,7 +367,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "歳");
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.AVERAGE_AGE, Double.parseDouble(s));
 				}
 			}
@@ -370,7 +377,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			if ((s = org) != null) {
 				s = Util.substringChopEndIfMatch(s, "千円"); // thousand yen
 				s = Util.removeCommaAndTrim(s);
-				if (!isNoData(s)) {
+				if (!isNoDataInProfile(s)) {
 					record.put(ProfileEnum.AVERAGE_ANNUAL_SALARY,
 							Double.parseDouble(s));
 				}
@@ -379,15 +386,21 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 		} catch (NumberFormatException e) { //
 			// TODO: debug
 			System.out
-					.println("##### NumberFormatException was caused by : org="
-							+ org + " stockCodeStr=" + stockCodeStr);
+					.println("Error: NumberFormatException was caused by : org="
+							+ org
+							+ " stockCodeStr="
+							+ stockCodeStr
+							+ " s="
+							+ s
+							+ " len(s)=" + s.length());
 			throw e;
 		}
 		return record;
 	}
 
-	private boolean isNoData(String s) {
-		if (s == null || s.length() == 0 || s.equals(NO_DATA)) {
+	private boolean isNoDataInProfile(String s) {
+		if (s == null || s.length() == 0 || s.equals(NO_DATA_IN_PROFILE_1)
+				|| s.equals(NO_DATA_IN_PROFILE_2)) {
 			return true;
 		}
 		return false;

@@ -1,7 +1,5 @@
 package jp.gr.java_conf.islandocean.stockanalysis.finance;
 
-import java.util.Calendar;
-
 import jp.gr.java_conf.islandocean.stockanalysis.enumex.HasDataValueClass;
 
 public enum ProfileEnum implements HasDataValueClass {
@@ -37,13 +35,15 @@ public enum ProfileEnum implements HasDataValueClass {
 	REPRESENTATIVE(String.class),
 
 	/** 設立年月日 */
-	FOUNDATION_DATE(Calendar.class),
+	FOUNDATION_DATE(String.class),
+	// FOUNDATION_DATE(Calendar.class),
 
 	/** 市場名 */
 	MARKET(String.class),
 
 	/** 上場年月日 */
-	LISTED_DATE(Calendar.class),
+	LISTED_DATE(String.class),
+	// LISTED_DATE(Calendar.class),
 
 	/** 決算 */
 	SETTLING_DATE(String.class),

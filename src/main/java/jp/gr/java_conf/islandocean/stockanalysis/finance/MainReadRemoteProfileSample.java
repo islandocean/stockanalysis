@@ -18,7 +18,7 @@ public class MainReadRemoteProfileSample {
 	public static void main(String[] args) throws IOException {
 
 		FinanceManager financeManager = FinanceManager.getInstance();
-		String[] codes = new String[] { "6143", "6674", "4565", "1305" };
+		String[] codes = new String[] { "1333", "6143", "6674", "4565", "1305" };
 		Calendar today = CalendarUtil.createToday();
 		for (String stockCode : codes) {
 			Document doc = financeManager.readRemoteHtmlProfilePage(stockCode);
