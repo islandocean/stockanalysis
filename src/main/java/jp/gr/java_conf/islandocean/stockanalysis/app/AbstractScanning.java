@@ -35,8 +35,11 @@ abstract public class AbstractScanning {
 
 	abstract public void printFooter(int count);
 
-	public void scanningMain(boolean useDetailInfo, boolean useProfileInfo)
-			throws IOException, InvalidDataException {
+	public void scanningMain(boolean useStockPrice, boolean useDetailInfo,
+			boolean useProfileInfo) throws IOException, InvalidDataException {
+		//
+		// stock manager
+		//
 		DataStore store = selectDataStore();
 		StockManager stockManager = StockManager.getInstance(store);
 		CalendarRange calendarRange = selectCalendarRange();
@@ -58,10 +61,12 @@ abstract public class AbstractScanning {
 				.getAllCorpDataListInDailyList();
 		List<StockRecord> lastData = allCorpDataListInDailyList
 				.get(allCorpDataListInDailyList.size() - 1);
-		List<Calendar> dailyDayList = stockManager.getDayList();
-		Calendar lastDay = dailyDayList.get(dailyDayList.size() - 1);
-		String[] stockCodes = selectCorps(stockManager, lastData);
+		// List<Calendar> dailyDayList = stockManager.getDayList();
+		// Calendar lastDay = dailyDayList.get(dailyDayList.size() - 1);
 
+		//
+		// finance manager
+		//
 		FinanceManager financeManager = FinanceManager.getInstance();
 		Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
 		try {
@@ -74,7 +79,10 @@ abstract public class AbstractScanning {
 			e.printStackTrace();
 			return;
 		}
-		financeManager.checkAndWarnSplitInfo(lastData, stockCodeToSplitInfoMap);
+		if (lastData != null) {
+			financeManager.checkAndWarnSplitInfo(lastData,
+					stockCodeToSplitInfoMap);
+		}
 
 		if (useDetailInfo) {
 			financeManager.generateStockCodeToDetailRecordMap();
@@ -84,12 +92,21 @@ abstract public class AbstractScanning {
 			financeManager.generateStockCodeToProfileRecordMap();
 		}
 
+		//
+		// stock codes
+		//
+		String[] stockCodes = selectCorps(stockManager, lastData);
+
+		//
+		// scan
+		//
 		printHeader();
 		Calendar currentDay = CalendarUtil.createToday();
 		int count = 0;
 		for (int idxCorp = 0; idxCorp < stockCodes.length; ++idxCorp) {
 			String stockCode = stockCodes[idxCorp];
-			List<StockRecord> oneCorpRecords = stockManager.retrieve(stockCode);
+			List<StockRecord> oneCorpRecords = null;
+			oneCorpRecords = stockManager.retrieve(stockCode);
 			if (oneCorpRecords.size() == 0) {
 				System.out
 						.println("Warning: No stock price record for one corp. stockCode="

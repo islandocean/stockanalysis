@@ -48,7 +48,7 @@ public class MainScreeningPer extends AbstractScanning {
 	public static void main(String[] args) {
 		MainScreeningPer app = new MainScreeningPer();
 		try {
-			app.scanningMain(true, false);
+			app.scanningMain(false, true, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

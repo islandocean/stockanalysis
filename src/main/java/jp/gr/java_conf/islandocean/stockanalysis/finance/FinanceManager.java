@@ -23,7 +23,11 @@ import org.jsoup.nodes.Document;
 public class FinanceManager {
 
 	private Map<String, StockSplitInfo> stockCodeToSplitInfoMap;
+
+	private List<DetailRecord> detailRecordlist;
 	private Map<String, DetailRecord> stockCodeToDetailRecordMap;
+
+	private List<ProfileRecord> profileRecordlist;
 	private Map<String, ProfileRecord> stockCodeToProfileRecordMap;
 
 	private FinanceManager() {
@@ -224,9 +228,8 @@ public class FinanceManager {
 		List<String> lines = readLocalDetailInfoText();
 		DetailInfoTextAnalyzer analyzer = new DetailInfoTextAnalyzer();
 		analyzer.analyze(lines);
-		List<DetailRecord> list = analyzer.getDetailRecordList();
-		Map<String, DetailRecord> map = listToMapForDetailRecord(list);
-		this.stockCodeToDetailRecordMap = map;
+		this.detailRecordlist = analyzer.getDetailRecordList();
+		this.stockCodeToDetailRecordMap = listToMapForDetailRecord(this.detailRecordlist);
 	}
 
 	//
@@ -254,9 +257,8 @@ public class FinanceManager {
 		List<String> lines = readLocalProfileInfoText();
 		ProfileInfoTextAnalyzer analyzer = new ProfileInfoTextAnalyzer();
 		analyzer.analyze(lines);
-		List<ProfileRecord> list = analyzer.getProfileRecordList();
-		Map<String, ProfileRecord> map = listToMapForProfileRecord(list);
-		this.stockCodeToProfileRecordMap = map;
+		this.profileRecordlist = analyzer.getProfileRecordList();
+		this.stockCodeToProfileRecordMap = listToMapForProfileRecord(this.profileRecordlist);
 	}
 
 	//
@@ -267,8 +269,16 @@ public class FinanceManager {
 		return this.stockCodeToSplitInfoMap;
 	}
 
+	public List<DetailRecord> getDetailRecordlist() {
+		return detailRecordlist;
+	}
+
 	public Map<String, DetailRecord> getStockCodeToDetailRecordMap() {
 		return this.stockCodeToDetailRecordMap;
+	}
+
+	public List<ProfileRecord> getProfileRecordlist() {
+		return profileRecordlist;
 	}
 
 	public Map<String, ProfileRecord> getStockCodeToProfileRecordMap() {

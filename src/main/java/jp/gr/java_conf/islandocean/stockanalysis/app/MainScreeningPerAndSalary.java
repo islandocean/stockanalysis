@@ -50,7 +50,7 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 	public static void main(String[] args) {
 		MainScreeningPerAndSalary app = new MainScreeningPerAndSalary();
 		try {
-			app.scanningMain(true, true);
+			app.scanningMain(false, true, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

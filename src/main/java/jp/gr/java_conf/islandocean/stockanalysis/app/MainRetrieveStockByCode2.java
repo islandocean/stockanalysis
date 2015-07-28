@@ -45,7 +45,7 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 	public static void main(String[] args) {
 		MainRetrieveStockByCode2 app = new MainRetrieveStockByCode2();
 		try {
-			app.scanningMain(false, false);
+			app.scanningMain(true, false, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
