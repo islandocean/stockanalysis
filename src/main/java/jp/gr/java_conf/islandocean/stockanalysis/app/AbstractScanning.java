@@ -25,7 +25,8 @@ abstract public class AbstractScanning {
 	abstract public CalendarRange selectCalendarRange();
 
 	abstract public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) throws IOException;
+			List<StockRecord> list, FinanceManager financeManager)
+			throws IOException;
 
 	abstract public boolean scanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
@@ -40,29 +41,35 @@ abstract public class AbstractScanning {
 		//
 		// stock manager
 		//
-		DataStore store = selectDataStore();
-		StockManager stockManager = StockManager.getInstance(store);
-		CalendarRange calendarRange = selectCalendarRange();
-		String stockCodeSuffixOfDefaultMarket = store
-				.getStockCodeSuffixOfDefaultMarket();
+		DataStore store = null;
+		StockManager stockManager = null;
+		List<StockRecord> lastData = null;
 
-		int recordCount = stockManager.load(calendarRange, false);
-		if (recordCount <= 0) {
-			System.out.println("Error: Cannot load any stock prirce data.");
-			return;
-		} else {
-			System.out
-					.println("Info: Succeeded in loading stock prirce data. recordCount="
-							+ recordCount);
+		if (useStockPrice) {
+			store = selectDataStore();
+			stockManager = StockManager.getInstance(store);
+			CalendarRange calendarRange = selectCalendarRange();
+			String stockCodeSuffixOfDefaultMarket = store
+					.getStockCodeSuffixOfDefaultMarket();
+
+			int recordCount = stockManager.load(calendarRange, false);
+			if (recordCount <= 0) {
+				System.out.println("Error: Cannot load any stock prirce data.");
+				return;
+			} else {
+				System.out
+						.println("Info: Succeeded in loading stock prirce data. recordCount="
+								+ recordCount);
+			}
+
+			stockManager.generateAllCorpDataMapInDailyList();
+			List<List<StockRecord>> allCorpDataListInDailyList = stockManager
+					.getAllCorpDataListInDailyList();
+			lastData = allCorpDataListInDailyList
+					.get(allCorpDataListInDailyList.size() - 1);
+			// List<Calendar> dailyDayList = stockManager.getDayList();
+			// Calendar lastDay = dailyDayList.get(dailyDayList.size() - 1);
 		}
-
-		stockManager.generateAllCorpDataMapInDailyList();
-		List<List<StockRecord>> allCorpDataListInDailyList = stockManager
-				.getAllCorpDataListInDailyList();
-		List<StockRecord> lastData = allCorpDataListInDailyList
-				.get(allCorpDataListInDailyList.size() - 1);
-		// List<Calendar> dailyDayList = stockManager.getDayList();
-		// Calendar lastDay = dailyDayList.get(dailyDayList.size() - 1);
 
 		//
 		// finance manager
@@ -95,7 +102,8 @@ abstract public class AbstractScanning {
 		//
 		// stock codes
 		//
-		String[] stockCodes = selectCorps(stockManager, lastData);
+		String[] stockCodes = selectCorps(stockManager, lastData,
+				financeManager);
 
 		//
 		// scan
@@ -106,8 +114,13 @@ abstract public class AbstractScanning {
 		for (int idxCorp = 0; idxCorp < stockCodes.length; ++idxCorp) {
 			String stockCode = stockCodes[idxCorp];
 			List<StockRecord> oneCorpRecords = null;
-			oneCorpRecords = stockManager.retrieve(stockCode);
-			if (oneCorpRecords.size() == 0) {
+			if (stockManager != null) {
+				oneCorpRecords = stockManager.retrieve(stockCode);
+			}
+
+			if (oneCorpRecords == null) {
+
+			} else if (oneCorpRecords.size() == 0) {
 				System.out
 						.println("Warning: No stock price record for one corp. stockCode="
 								+ stockCode);

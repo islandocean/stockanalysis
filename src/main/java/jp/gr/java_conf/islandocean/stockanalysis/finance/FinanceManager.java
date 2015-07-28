@@ -262,6 +262,30 @@ public class FinanceManager {
 	}
 
 	//
+	// To stock code array
+	//
+
+	public String[] toStockCodeArrayFromDetailRecordlist() {
+		List<DetailRecord> list = this.detailRecordlist;
+		String[] ar = new String[list.size()];
+		for (int idx = 0; idx < list.size(); ++idx) {
+			DetailRecord record = list.get(idx);
+			ar[idx] = (String) record.get(DetailEnum.STOCK_CODE);
+		}
+		return ar;
+	}
+
+	public String[] toStockCodeArrayFromProfileRecordlist() {
+		List<ProfileRecord> list = this.profileRecordlist;
+		String[] ar = new String[list.size()];
+		for (int idx = 0; idx < list.size(); ++idx) {
+			ProfileRecord record = list.get(idx);
+			ar[idx] = (String) record.get(ProfileEnum.STOCK_CODE);
+		}
+		return ar;
+	}
+
+	//
 	// Getters
 	//
 

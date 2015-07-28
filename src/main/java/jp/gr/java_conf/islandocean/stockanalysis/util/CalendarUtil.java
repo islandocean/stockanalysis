@@ -123,7 +123,7 @@ public final class CalendarUtil {
 		return new CalendarRange(begin, end);
 	}
 
-	public static CalendarRange createCalendarRangeRecent(int backdays) {
+	public static CalendarRange createCalendarRangeRecentDays(int backdays) {
 		Calendar end = CalendarUtil.createToday();
 		Calendar begin = (Calendar) end.clone();
 		begin.add(Calendar.DAY_OF_MONTH, -backdays);

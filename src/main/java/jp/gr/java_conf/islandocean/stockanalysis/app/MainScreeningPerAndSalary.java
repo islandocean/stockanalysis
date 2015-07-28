@@ -11,40 +11,26 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
-import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
-import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreSouko;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
-import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class MainScreeningPerAndSalary extends AbstractScanning {
 
 	public MainScreeningPerAndSalary() {
 	}
 
-	@SuppressWarnings("unused")
 	public DataStore selectDataStore() {
-		DataStore store;
-
-		store = new DataStoreKdb();
-		if (false) {
-			store = new DataStoreKdb();
-			store = new DataStoreSouko();
-		}
-
-		return store;
+		return null;
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(14);
+		return null;
 	}
 
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) {
-		String[] stockCodes;
-		stockCodes = stockManager.toStockCodeArray(list);
-		return stockCodes;
+			List<StockRecord> list, FinanceManager financeManager) {
+		return financeManager.toStockCodeArrayFromDetailRecordlist();
 	}
 
 	public static void main(String[] args) {

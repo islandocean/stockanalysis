@@ -37,11 +37,11 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(180);
+		return CalendarUtil.createCalendarRangeRecentDays(180);
 	}
 
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) {
+			List<StockRecord> list, FinanceManager financeManager) {
 		String[] stockCodes;
 		stockCodes = stockManager.toStockCodeArray(list);
 		return stockCodes;

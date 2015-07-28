@@ -15,14 +15,14 @@ public class MainDownloadSouko {
 	private static CalendarRange selectCalendarRange() {
 		CalendarRange calendarRange;
 
-		calendarRange = CalendarUtil.createCalendarRangeRecent(14);
+		calendarRange = CalendarUtil.createCalendarRangeRecentDays(14);
 		if (false) {
-			calendarRange = CalendarUtil.createCalendarRangeRecent(7);
-			calendarRange = CalendarUtil.createCalendarRangeRecent(14);
-			calendarRange = CalendarUtil.createCalendarRangeRecent(30);
-			calendarRange = CalendarUtil.createCalendarRangeRecent(90);
-			calendarRange = CalendarUtil.createCalendarRangeRecent(180);
-			calendarRange = CalendarUtil.createCalendarRangeRecent(365);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(7);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(14);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(30);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(90);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(180);
+			calendarRange = CalendarUtil.createCalendarRangeRecentDays(365);
 			calendarRange = CalendarUtil.createCalendarRangeYearMonth(2013,
 					Calendar.MAY);
 			calendarRange = CalendarUtil.createCalendarRangeYear(2000);

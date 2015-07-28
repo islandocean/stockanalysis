@@ -40,15 +40,15 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(14);
+		return CalendarUtil.createCalendarRangeRecentDays(14);
 	}
 
 	public CalendarRange selectSplitSearchCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(CONDITION_RECENT_DAYS);
+		return CalendarUtil.createCalendarRangeRecentDays(CONDITION_RECENT_DAYS);
 	}
 
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) {
+			List<StockRecord> list, FinanceManager financeManager) {
 		String[] stockCodes;
 		stockCodes = stockManager.toStockCodeArray(list);
 		return stockCodes;

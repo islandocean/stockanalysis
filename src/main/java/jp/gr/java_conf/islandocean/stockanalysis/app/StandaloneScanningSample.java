@@ -39,7 +39,7 @@ public class StandaloneScanningSample {
 	}
 
 	private static CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(180);
+		return CalendarUtil.createCalendarRangeRecentDays(180);
 	}
 
 	@SuppressWarnings("unused")

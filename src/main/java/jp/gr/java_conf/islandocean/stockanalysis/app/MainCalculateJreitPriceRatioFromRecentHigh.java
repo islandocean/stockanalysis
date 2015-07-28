@@ -39,11 +39,12 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(180);
+		return CalendarUtil.createCalendarRangeRecentDays(180);
 	}
 
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) throws IOException {
+			List<StockRecord> list, FinanceManager financeManager)
+			throws IOException {
 		JreitManager jreitManager = JreitManager.getInstance();
 		String[] stockCodes = jreitManager.readRemoteAndReturnStockCodeArray();
 		String suffix = stockManager.getStockCodeSuffixOfDefaultMarket();

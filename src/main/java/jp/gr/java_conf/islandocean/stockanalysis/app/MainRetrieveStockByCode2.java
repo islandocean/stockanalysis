@@ -32,11 +32,11 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecent(365 * 1);
+		return CalendarUtil.createCalendarRangeRecentDays(365 * 1);
 	}
 
 	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list) {
+			List<StockRecord> list, FinanceManager financeManager) {
 		String[] stockCodes = new String[] { "2928-S", "3093-T", "3598-T",
 				"3810-T", "4563-T", "7638-T" };
 		return stockCodes;
