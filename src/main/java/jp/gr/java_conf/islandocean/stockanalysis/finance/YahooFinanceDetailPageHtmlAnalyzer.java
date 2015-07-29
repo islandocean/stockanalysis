@@ -13,8 +13,8 @@ import org.jsoup.select.Elements;
 
 public class YahooFinanceDetailPageHtmlAnalyzer {
 
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO = ".stocksInfo";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_TABLE = ".stocksTable";
+	private static final String CSS_QUERY_TO_FIND_STOCKS_INFO = ".stocksInfo";
+	private static final String CSS_QUERY_TO_FIND_STOCKS_TABLE = ".stocksTable";
 	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL =
 	// "#detail dl";
 	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX =
@@ -131,7 +131,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	private void extractDataAsString(Document doc)
 			throws FailedToFindElementException {
 		Elements infoElements = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO);
+				.select(CSS_QUERY_TO_FIND_STOCKS_INFO);
 		if (infoElements == null || infoElements.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock info element.");
@@ -149,7 +149,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		}
 
 		Elements stocksTables = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_TABLE);
+				.select(CSS_QUERY_TO_FIND_STOCKS_TABLE);
 		if (stocksTables == null || stocksTables.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock table element.");

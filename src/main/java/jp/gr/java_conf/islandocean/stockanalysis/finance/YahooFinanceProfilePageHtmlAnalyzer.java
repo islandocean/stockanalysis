@@ -13,9 +13,9 @@ import org.jsoup.select.Elements;
 
 public class YahooFinanceProfilePageHtmlAnalyzer {
 
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO = ".stocksInfo";
-	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_TABLE = ".stocksTable";
-	private static final String CSS_QUERY_IN_PROFILE_PAGE_TO_FIND_TR_UNDER_DIV_MAIN = "#main table";
+	private static final String CSS_QUERY_TO_FIND_STOCKS_INFO = ".stocksInfo";
+	private static final String CSS_QUERY_TO_FIND_STOCKS_TABLE = ".stocksTable";
+	private static final String CSS_QUERY_IN_PROFILE_PAGE_TO_FIND_TABLE_UNDER_DIV_ID_MAIN = "#main table";
 
 	private static final String CAPTION_FEATURE = "特色";
 	private static final String CAPTION_CONSOLIDATED_OPERATIONS = "連結事業";
@@ -82,7 +82,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 	private void extractDataAsString(Document doc)
 			throws FailedToFindElementException {
 		Elements infoElements = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_INFO);
+				.select(CSS_QUERY_TO_FIND_STOCKS_INFO);
 		if (infoElements == null || infoElements.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock info element.");
@@ -100,7 +100,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 		}
 
 		Elements stocksTables = doc
-				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_STOCKS_TABLE);
+				.select(CSS_QUERY_TO_FIND_STOCKS_TABLE);
 		if (stocksTables == null || stocksTables.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock table element.");
@@ -113,7 +113,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 		}
 
 		Elements tables = doc
-				.select(CSS_QUERY_IN_PROFILE_PAGE_TO_FIND_TR_UNDER_DIV_MAIN);
+				.select(CSS_QUERY_IN_PROFILE_PAGE_TO_FIND_TABLE_UNDER_DIV_ID_MAIN);
 		Iterator<Element> iterator = tables.iterator();
 		Element profileTable = null;
 		while (iterator.hasNext()) {
