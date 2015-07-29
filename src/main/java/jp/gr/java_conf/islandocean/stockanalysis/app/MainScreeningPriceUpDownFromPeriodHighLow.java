@@ -62,7 +62,7 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager) {
 		return stockManager.toStockCodeArray(list);
 	}
@@ -116,6 +116,8 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 		if (lastHighRatio != null && lastHighRatio < 0.65d
 				&& lastLowRatio < 1.1d) {
 			hit = true;
+		}
+		if (hit) {
 			System.out.print(stockCode);
 			System.out.print(DELIM + stockName);
 			System.out.print(DELIM + periodHighPrice);

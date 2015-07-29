@@ -20,7 +20,7 @@ abstract public class AbstractScanning {
 		super();
 	}
 
-	abstract public String[] selectCorps(StockManager stockManager,
+	abstract public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager)
 			throws IOException;
 
@@ -44,9 +44,6 @@ abstract public class AbstractScanning {
 
 		if (useStockPrice) {
 			stockManager = StockManager.getInstance(store);
-			String stockCodeSuffixOfDefaultMarket = store
-					.getStockCodeSuffixOfDefaultMarket();
-
 			int recordCount = stockManager.load(calendarRange, false);
 			if (recordCount <= 0) {
 				System.out.println("Error: Cannot load any stock prirce data.");
@@ -62,8 +59,6 @@ abstract public class AbstractScanning {
 					.getAllCorpDataListInDailyList();
 			lastData = allCorpDataListInDailyList
 					.get(allCorpDataListInDailyList.size() - 1);
-			// List<Calendar> dailyDayList = stockManager.getDayList();
-			// Calendar lastDay = dailyDayList.get(dailyDayList.size() - 1);
 		}
 
 		//
@@ -97,7 +92,7 @@ abstract public class AbstractScanning {
 		//
 		// stock codes
 		//
-		String[] stockCodes = selectCorps(stockManager, lastData,
+		String[] stockCodes = doSelectCorps(stockManager, lastData,
 				financeManager);
 
 		//

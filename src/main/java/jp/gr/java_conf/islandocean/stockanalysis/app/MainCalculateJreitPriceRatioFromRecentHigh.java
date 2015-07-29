@@ -64,7 +64,7 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager)
 			throws IOException {
 		JreitManager jreitManager = JreitManager.getInstance();
@@ -125,56 +125,58 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 			lastLowRatio = lastPrice / periodLowPrice;
 		}
 
-		// if (ratio != null) {
 		hit = true;
-		// }
 
-		System.out.print(stockCode);
+		if (hit) {
+			System.out.print(stockCode);
 
-		System.out.print(DELIM);
-		if (stockName != null) {
-			System.out.print(stockName);
+			System.out.print(DELIM);
+			if (stockName != null) {
+				System.out.print(stockName);
+			}
+
+			System.out.print(DELIM);
+			if (periodHighPrice != null) {
+				System.out.print(periodHighPrice);
+			}
+
+			System.out.print(DELIM);
+			if (periodHighDay != null) {
+				System.out.print(CalendarUtil.format_yyyyMMdd(periodHighDay));
+			}
+
+			System.out.print(DELIM);
+			if (periodLowPrice != null) {
+				System.out.print(periodLowPrice);
+			}
+
+			System.out.print(DELIM);
+			if (periodLowDay != null) {
+				System.out.print(CalendarUtil.format_yyyyMMdd(periodLowDay));
+			}
+
+			System.out.print(DELIM);
+			if (lastPrice != null) {
+				System.out.print(lastPrice);
+			}
+
+			System.out.print(DELIM);
+			if (lastHighRatio != null) {
+				System.out
+						.print(Util.formatPercent(lastHighRatio.doubleValue()));
+			}
+
+			System.out.print(DELIM);
+			if (lastLowRatio != null) {
+				System.out
+						.print(Util.formatPercent(lastLowRatio.doubleValue()));
+			}
+
+			System.out.print(DELIM
+					+ financeManager.getHtmlChartPageSpec(financeManager
+							.toSplitSearchStockCode(stockCode)));
+			System.out.println();
 		}
-
-		System.out.print(DELIM);
-		if (periodHighPrice != null) {
-			System.out.print(periodHighPrice);
-		}
-
-		System.out.print(DELIM);
-		if (periodHighDay != null) {
-			System.out.print(CalendarUtil.format_yyyyMMdd(periodHighDay));
-		}
-
-		System.out.print(DELIM);
-		if (periodLowPrice != null) {
-			System.out.print(periodLowPrice);
-		}
-
-		System.out.print(DELIM);
-		if (periodLowDay != null) {
-			System.out.print(CalendarUtil.format_yyyyMMdd(periodLowDay));
-		}
-
-		System.out.print(DELIM);
-		if (lastPrice != null) {
-			System.out.print(lastPrice);
-		}
-
-		System.out.print(DELIM);
-		if (lastHighRatio != null) {
-			System.out.print(Util.formatPercent(lastHighRatio.doubleValue()));
-		}
-
-		System.out.print(DELIM);
-		if (lastLowRatio != null) {
-			System.out.print(Util.formatPercent(lastLowRatio.doubleValue()));
-		}
-
-		System.out.print(DELIM
-				+ financeManager.getHtmlChartPageSpec(financeManager
-						.toSplitSearchStockCode(stockCode)));
-		System.out.println();
 
 		return hit;
 	}

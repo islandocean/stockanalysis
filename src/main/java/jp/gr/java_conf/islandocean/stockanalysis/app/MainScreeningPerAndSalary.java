@@ -50,7 +50,7 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager) {
 		return financeManager.toStockCodeArrayFromDetailRecordlist();
 	}
@@ -93,6 +93,8 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		if (per != null && per.doubleValue() < 7.0d && salary != null
 				&& salary.doubleValue() >= 7000.0) {
 			hit = true;
+		}
+		if (hit) {
 			System.out.println(detailRecord.toTsvString() + "\t"
 					+ profileRecord.toTsvString());
 		}

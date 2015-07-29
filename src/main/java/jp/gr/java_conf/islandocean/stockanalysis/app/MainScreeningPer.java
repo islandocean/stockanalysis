@@ -48,7 +48,7 @@ public class MainScreeningPer extends AbstractScanning {
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager) {
 		return financeManager.toStockCodeArrayFromDetailRecordlist();
 	}
@@ -79,9 +79,10 @@ public class MainScreeningPer extends AbstractScanning {
 		Double per = (Double) detailRecord.get(DetailEnum.PER);
 		if (per != null && per.doubleValue() < 5.0d) {
 			hit = true;
+		}
+		if (hit) {
 			System.out.println(detailRecord.toTsvString());
 		}
-
 		return hit;
 	}
 

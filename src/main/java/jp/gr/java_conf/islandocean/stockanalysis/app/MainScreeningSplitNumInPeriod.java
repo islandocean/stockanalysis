@@ -70,7 +70,7 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager) {
 		return stockManager.toStockCodeArray(list);
 	}
@@ -99,6 +99,8 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 				selectSplitSearchCalendarRange());
 		if (splitCount >= CONDITION_SPLIT_COUNT_IS_AND_OVER) {
 			hit = true;
+		}
+		if (hit) {
 			System.out.print(stockCode);
 			System.out.print(DELIM + stockName);
 			System.out.print(DELIM + splitCount);

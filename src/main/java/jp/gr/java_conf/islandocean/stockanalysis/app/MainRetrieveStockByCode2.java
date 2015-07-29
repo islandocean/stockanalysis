@@ -57,13 +57,14 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 	}
 
 	@Override
-	public String[] selectCorps(StockManager stockManager,
+	public String[] doSelectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager) {
 		String[] stockCodes = new String[] { "2928-S", "3093-T", "3598-T",
 				"3810-T", "4563-T", "7638-T" };
 		return stockCodes;
 	}
 
+	@Override
 	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {

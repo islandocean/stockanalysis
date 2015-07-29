@@ -15,12 +15,6 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 
 	private static final String CSS_QUERY_TO_FIND_STOCKS_INFO = ".stocksInfo";
 	private static final String CSS_QUERY_TO_FIND_STOCKS_TABLE = ".stocksTable";
-	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_DETAIL =
-	// "#detail dl";
-	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_RFINDEX =
-	// "#rfindex dl";
-	// private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_MARGIN =
-	// "#margin dl";
 	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL = "#main dl";
 
 	private static final String CAPTION_PREVIOUS_CLOSING_PRICE = "前日終値";
