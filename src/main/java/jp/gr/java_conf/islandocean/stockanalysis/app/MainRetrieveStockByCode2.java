@@ -64,7 +64,6 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 		return stockCodes;
 	}
 
-	@Override
 	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
