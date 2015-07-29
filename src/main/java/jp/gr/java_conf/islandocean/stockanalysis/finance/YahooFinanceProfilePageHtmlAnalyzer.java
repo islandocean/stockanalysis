@@ -81,8 +81,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 
 	private void extractDataAsString(Document doc)
 			throws FailedToFindElementException {
-		Elements infoElements = doc
-				.select(CSS_QUERY_TO_FIND_STOCKS_INFO);
+		Elements infoElements = doc.select(CSS_QUERY_TO_FIND_STOCKS_INFO);
 		if (infoElements == null || infoElements.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock info element.");
@@ -99,8 +98,7 @@ public class YahooFinanceProfilePageHtmlAnalyzer {
 			}
 		}
 
-		Elements stocksTables = doc
-				.select(CSS_QUERY_TO_FIND_STOCKS_TABLE);
+		Elements stocksTables = doc.select(CSS_QUERY_TO_FIND_STOCKS_TABLE);
 		if (stocksTables == null || stocksTables.size() < 1) {
 			throw new FailedToFindElementException(
 					"Cannot find stock table element.");

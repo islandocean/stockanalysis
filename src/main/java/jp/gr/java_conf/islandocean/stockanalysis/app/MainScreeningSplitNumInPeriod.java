@@ -44,20 +44,18 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 	}
 
 	public CalendarRange selectSplitSearchCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecentDays(CONDITION_RECENT_DAYS);
-	}
-
-	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager) {
-		String[] stockCodes;
-		stockCodes = stockManager.toStockCodeArray(list);
-		return stockCodes;
+		return CalendarUtil
+				.createCalendarRangeRecentDays(CONDITION_RECENT_DAYS);
 	}
 
 	public static void main(String[] args) {
 		MainScreeningSplitNumInPeriod app = new MainScreeningSplitNumInPeriod();
 		try {
-			app.scanningMain(true, false, false);
+			boolean useStockPrice = true;
+			boolean useDetailInfo = false;
+			boolean useProfileInfo = false;
+			app.scanningMain(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,6 +65,13 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 		}
 	}
 
+	@Override
+	public String[] selectCorps(StockManager stockManager,
+			List<StockRecord> list, FinanceManager financeManager) {
+		return stockManager.toStockCodeArray(list);
+	}
+
+	@Override
 	public boolean scanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
@@ -102,6 +107,7 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print("stock code");
@@ -112,6 +118,7 @@ public class MainScreeningSplitNumInPeriod extends AbstractScanning {
 		System.out.println();
 	}
 
+	@Override
 	public void printFooter(int count) {
 		System.out.println("------------------------------");
 		System.out.println("hit count=" + count);

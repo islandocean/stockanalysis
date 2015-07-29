@@ -35,17 +35,14 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 		return CalendarUtil.createCalendarRangeRecentDays(365 * 1);
 	}
 
-	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager) {
-		String[] stockCodes = new String[] { "2928-S", "3093-T", "3598-T",
-				"3810-T", "4563-T", "7638-T" };
-		return stockCodes;
-	}
-
 	public static void main(String[] args) {
 		MainRetrieveStockByCode2 app = new MainRetrieveStockByCode2();
 		try {
-			app.scanningMain(true, false, false);
+			boolean useStockPrice = true;
+			boolean useDetailInfo = false;
+			boolean useProfileInfo = false;
+			app.scanningMain(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,6 +52,15 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 		}
 	}
 
+	@Override
+	public String[] selectCorps(StockManager stockManager,
+			List<StockRecord> list, FinanceManager financeManager) {
+		String[] stockCodes = new String[] { "2928-S", "3093-T", "3598-T",
+				"3810-T", "4563-T", "7638-T" };
+		return stockCodes;
+	}
+
+	@Override
 	public boolean scanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
@@ -68,9 +74,11 @@ public class MainRetrieveStockByCode2 extends AbstractScanning {
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 	}
 
+	@Override
 	public void printFooter(int count) {
 	}
 }
