@@ -28,15 +28,18 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		return null;
 	}
 
-	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager) {
-		return financeManager.toStockCodeArrayFromDetailRecordlist();
+	public static void main(String[] args) {
+		scanMain();
 	}
 
-	public static void main(String[] args) {
+	public static void scanMain() {
 		MainScreeningPerAndSalary app = new MainScreeningPerAndSalary();
 		try {
-			app.scanningMain(false, true, true);
+			boolean useStockPrice = false;
+			boolean useDetailInfo = true;
+			boolean useProfileInfo = true;
+			app.doScanCorps(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,7 +49,14 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		}
 	}
 
-	public boolean scanOneCorp(String stockCode,
+	@Override
+	public String[] selectCorps(StockManager stockManager,
+			List<StockRecord> list, FinanceManager financeManager) {
+		return financeManager.toStockCodeArrayFromDetailRecordlist();
+	}
+
+	@Override
+	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
 		boolean hit = false;
@@ -80,8 +90,8 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		Double per = (Double) detailRecord.get(DetailEnum.PER);
 		Double salary = (Double) profileRecord
 				.get(ProfileEnum.AVERAGE_ANNUAL_SALARY);
-		if (per != null && per.doubleValue() < 5.0d && salary != null
-				&& salary.doubleValue() >= 8000.0) {
+		if (per != null && per.doubleValue() < 7.0d && salary != null
+				&& salary.doubleValue() >= 7000.0) {
 			hit = true;
 			System.out.println(detailRecord.toTsvString() + "\t"
 					+ profileRecord.toTsvString());
@@ -90,6 +100,7 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print(new DetailRecord().header());
@@ -98,6 +109,7 @@ public class MainScreeningPerAndSalary extends AbstractScanning {
 		System.out.println();
 	}
 
+	@Override
 	public void printFooter(int count) {
 		System.out.println("------------------------------");
 		System.out.println("hit count=" + count);

@@ -26,15 +26,18 @@ public class MainScreeningPer extends AbstractScanning {
 		return null;
 	}
 
-	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager) {
-		return financeManager.toStockCodeArrayFromDetailRecordlist();
+	public static void main(String[] args) {
+		scanMain();
 	}
 
-	public static void main(String[] args) {
+	public static void scanMain() {
 		MainScreeningPer app = new MainScreeningPer();
 		try {
-			app.scanningMain(false, true, false);
+			boolean useStockPrice = false;
+			boolean useDetailInfo = true;
+			boolean useProfileInfo = false;
+			app.doScanCorps(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -44,7 +47,14 @@ public class MainScreeningPer extends AbstractScanning {
 		}
 	}
 
-	public boolean scanOneCorp(String stockCode,
+	@Override
+	public String[] selectCorps(StockManager stockManager,
+			List<StockRecord> list, FinanceManager financeManager) {
+		return financeManager.toStockCodeArrayFromDetailRecordlist();
+	}
+
+	@Override
+	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
 		boolean hit = false;
@@ -75,11 +85,13 @@ public class MainScreeningPer extends AbstractScanning {
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.println(new DetailRecord().header());
 	}
 
+	@Override
 	public void printFooter(int count) {
 		System.out.println("------------------------------");
 		System.out.println("hit count=" + count);

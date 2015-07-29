@@ -20,15 +20,11 @@ abstract public class AbstractScanning {
 		super();
 	}
 
-	abstract public DataStore selectDataStore();
-
-	abstract public CalendarRange selectCalendarRange();
-
 	abstract public String[] selectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager)
 			throws IOException;
 
-	abstract public boolean scanOneCorp(String stockCode,
+	abstract public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager);
 
@@ -36,19 +32,18 @@ abstract public class AbstractScanning {
 
 	abstract public void printFooter(int count);
 
-	public void scanningMain(boolean useStockPrice, boolean useDetailInfo,
+	public void doScanCorps(boolean useStockPrice, DataStore store,
+			CalendarRange calendarRange, boolean useDetailInfo,
 			boolean useProfileInfo) throws IOException, InvalidDataException {
+
 		//
 		// stock manager
 		//
-		DataStore store = null;
 		StockManager stockManager = null;
 		List<StockRecord> lastData = null;
 
 		if (useStockPrice) {
-			store = selectDataStore();
 			stockManager = StockManager.getInstance(store);
-			CalendarRange calendarRange = selectCalendarRange();
 			String stockCodeSuffixOfDefaultMarket = store
 					.getStockCodeSuffixOfDefaultMarket();
 
@@ -133,7 +128,7 @@ abstract public class AbstractScanning {
 						stockSplitInfo, currentDay);
 			}
 
-			if (scanOneCorp(stockCode, oneCorpRecords, stockManager,
+			if (doScanOneCorp(stockCode, oneCorpRecords, stockManager,
 					financeManager)) {
 				++count;
 			}

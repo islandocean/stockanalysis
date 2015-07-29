@@ -57,6 +57,10 @@ public class StandaloneScanningSample {
 	}
 
 	public static void main(String[] args) {
+		scanMain();
+	}
+
+	public static void scanMain() {
 		StandaloneScanningSample app = new StandaloneScanningSample();
 		try {
 			app.scanningMain(false, false);

@@ -40,17 +40,18 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 		return CalendarUtil.createCalendarRangeRecentDays(180);
 	}
 
-	public String[] selectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager) {
-		String[] stockCodes;
-		stockCodes = stockManager.toStockCodeArray(list);
-		return stockCodes;
+	public static void main(String[] args) {
+		scanMain();
 	}
 
-	public static void main(String[] args) {
+	public static void scanMain() {
 		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
 		try {
-			app.scanningMain(true, false, false);
+			boolean useStockPrice = true;
+			boolean useDetailInfo = false;
+			boolean useProfileInfo = false;
+			app.doScanCorps(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -60,7 +61,14 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 		}
 	}
 
-	public boolean scanOneCorp(String stockCode,
+	@Override
+	public String[] selectCorps(StockManager stockManager,
+			List<StockRecord> list, FinanceManager financeManager) {
+		return stockManager.toStockCodeArray(list);
+	}
+
+	@Override
+	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
 		boolean hit = false;
@@ -120,6 +128,8 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 			System.out.print(DELIM
 					+ Util.formatPercent(lastHighRatio.doubleValue()));
 			System.out.print(DELIM
+					+ Util.formatPercent(lastLowRatio.doubleValue()));
+			System.out.print(DELIM
 					+ financeManager.getHtmlChartPageSpec(financeManager
 							.toSplitSearchStockCode(stockCode)));
 			System.out.println();
@@ -128,6 +138,7 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print("stock code");
@@ -138,10 +149,12 @@ public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning 
 		System.out.print(DELIM + "period low day");
 		System.out.print(DELIM + "lastest price");
 		System.out.print(DELIM + "latest / high ratio");
+		System.out.print(DELIM + "latest / low ratio");
 		System.out.print(DELIM + "url");
 		System.out.println();
 	}
 
+	@Override
 	public void printFooter(int count) {
 		System.out.println("------------------------------");
 		System.out.println("hit count=" + count);

@@ -42,6 +42,28 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 		return CalendarUtil.createCalendarRangeRecentDays(180);
 	}
 
+	public static void main(String[] args) {
+		scanMain();
+	}
+
+	public static void scanMain() {
+		MainCalculateJreitPriceRatioFromRecentHigh app = new MainCalculateJreitPriceRatioFromRecentHigh();
+		try {
+			boolean useStockPrice = true;
+			boolean useDetailInfo = false;
+			boolean useProfileInfo = false;
+			app.doScanCorps(useStockPrice, app.selectDataStore(),
+					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public String[] selectCorps(StockManager stockManager,
 			List<StockRecord> list, FinanceManager financeManager)
 			throws IOException {
@@ -54,20 +76,8 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 		return stockCodes;
 	}
 
-	public static void main(String[] args) {
-		MainCalculateJreitPriceRatioFromRecentHigh app = new MainCalculateJreitPriceRatioFromRecentHigh();
-		try {
-			app.scanningMain(true, false, false);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidDataException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public boolean scanOneCorp(String stockCode,
+	@Override
+	public boolean doScanOneCorp(String stockCode,
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager) {
 		boolean hit = false;
@@ -105,9 +115,14 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 			}
 		}
 
-		Double ratio = null;
+		Double lastHighRatio = null;
 		if (periodHighPrice != null) {
-			ratio = lastPrice / periodHighPrice;
+			lastHighRatio = lastPrice / periodHighPrice;
+		}
+
+		Double lastLowRatio = null;
+		if (periodLowPrice != null) {
+			lastLowRatio = lastPrice / periodLowPrice;
 		}
 
 		// if (ratio != null) {
@@ -147,8 +162,13 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 		}
 
 		System.out.print(DELIM);
-		if (ratio != null) {
-			System.out.print(Util.formatPercent(ratio.doubleValue()));
+		if (lastHighRatio != null) {
+			System.out.print(Util.formatPercent(lastHighRatio.doubleValue()));
+		}
+
+		System.out.print(DELIM);
+		if (lastLowRatio != null) {
+			System.out.print(Util.formatPercent(lastLowRatio.doubleValue()));
 		}
 
 		System.out.print(DELIM
@@ -159,6 +179,7 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 		return hit;
 	}
 
+	@Override
 	public void printHeader() {
 		System.out.println("------------------------------");
 		System.out.print("stock code");
@@ -168,11 +189,13 @@ public class MainCalculateJreitPriceRatioFromRecentHigh extends
 		System.out.print(DELIM + "period low price");
 		System.out.print(DELIM + "period low day");
 		System.out.print(DELIM + "lastest price");
-		System.out.print(DELIM + "latest / high ratio");
+		System.out.print(DELIM + "latest high ratio");
+		System.out.print(DELIM + "latest low ratio");
 		System.out.print(DELIM + "url");
 		System.out.println();
 	}
 
+	@Override
 	public void printFooter(int count) {
 		System.out.println("------------------------------");
 		System.out.println("hit count=" + count);
