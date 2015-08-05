@@ -92,18 +92,6 @@ abstract public class DataStore {
 			File newfile = new File(parent);
 			newfile.mkdirs();
 
-			try {
-				if (Files.exists(pathRegular)) {
-					Files.delete(pathRegular);
-				}
-			} catch (IOException e) {
-				if (Files.exists(pathRegular)) {
-					System.out.println("Warning: Cannot delete old file. file="
-							+ fullPathRegular);
-				}
-				continue;
-			}
-
 			String[] tailCandidates = getRemoteUrlTailCandidates(day);
 			loop: for (String headCandidate : headCandidateList) {
 				for (String tailCandidate : tailCandidates) {
