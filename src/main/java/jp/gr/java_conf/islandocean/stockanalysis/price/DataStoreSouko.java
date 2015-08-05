@@ -159,5 +159,6 @@ public class DataStoreSouko extends DataStore {
 		File file = new File(fullPath);
 		ZipDecompresser za = new ZipDecompresser();
 		za.unzip(file, false);
+		file.delete();
 	}
 }

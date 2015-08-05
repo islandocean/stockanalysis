@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javafx.concurrent.Task;
+import jp.gr.java_conf.islandocean.stockanalysis.price.AppDownloadStockPrice.DownloadTask;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.IOUtil;
@@ -62,7 +62,7 @@ abstract public class DataStore {
 		return false;
 	}
 
-	public int download(CalendarRange calendarRange, Task task) {
+	public int download(CalendarRange calendarRange, DownloadTask task) {
 		Calendar today = CalendarUtil.createToday();
 		Calendar begin = calendarRange.getBegin();
 		Calendar end = calendarRange.getEnd();
@@ -74,6 +74,13 @@ abstract public class DataStore {
 		String[] headCandidates = getRemoteUrlHeadCandidates();
 		List<String> headCandidateList = Util.toList(headCandidates);
 		for (; day.compareTo(begin) >= 0; day.add(Calendar.DAY_OF_MONTH, -1)) {
+
+			if (task != null && task.isCancelled()) {
+				// Cancel
+				System.out.println("Task#call(): isCancelled() is true.");
+				return count;
+			}
+
 			if (day.compareTo(today) > 0) {
 				System.out.println("Info: Skip future day="
 						+ CalendarUtil.format_yyyyMMdd(day));
@@ -86,6 +93,12 @@ abstract public class DataStore {
 
 			System.out.println();
 			System.out.println("Info: fullPath=" + fullPathRegular);
+
+			if (task != null) {
+				task.upMessage("Downloading to " + fullPathRegular);
+				// updateTitle("titleeeeeeeeeeee" + counter);
+				// updateValue("valueeeeeeeee" + counter);
+			}
 
 			// Create parent folder if does not exist.
 			int idx = fullPathRegular.lastIndexOf(File.separator);
@@ -125,6 +138,14 @@ abstract public class DataStore {
 
 			} else {
 				System.out.println("Warning: Failed to download.");
+			}
+
+			if (task != null) {
+				// updateMessage("messageeeeeeeeee" + counter);
+				task.upProgress(end.getTimeInMillis() - day.getTimeInMillis(),
+						end.getTimeInMillis() - begin.getTimeInMillis());
+				// updateTitle("titleeeeeeeeeeee" + counter);
+				// updateValue("valueeeeeeeee" + counter);
 			}
 		}
 		return count;
