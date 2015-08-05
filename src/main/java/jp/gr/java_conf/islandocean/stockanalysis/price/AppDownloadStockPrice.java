@@ -70,7 +70,7 @@ public class AppDownloadStockPrice extends Application {
 		DownloadService service = new DownloadService();
 		Button buttonStart = new Button("Start Download");
 		Button buttonStop = new Button("Stop");
-		Button buttonReset = new Button("Reset");
+		Button buttonReset = new Button("Reset State");
 		Button buttonInfo = new Button("Console Out");
 		Button buttonExit = new Button("Exit");
 		ProgressBar bar = new ProgressBar();
@@ -138,7 +138,7 @@ public class AppDownloadStockPrice extends Application {
 		stage.show();
 
 		stage.setTitle("Stock Price Data Downloader");
-		stage.setWidth(800);
+		stage.setWidth(850);
 		stage.setHeight(300);
 
 		// Label
@@ -206,6 +206,7 @@ public class AppDownloadStockPrice extends Application {
 		buttonStop.setOnAction((ActionEvent e) -> {
 			service.cancel();
 		});
+		buttonStop.setDisable(true);
 		buttonReset.setOnAction((ActionEvent e) -> {
 			service.reset();
 			buttonStart.setDisable(false);
@@ -261,8 +262,8 @@ public class AppDownloadStockPrice extends Application {
 		vBox.getChildren().add(label);
 		vBox.getChildren().add(grid);
 		vBox.getChildren().add(hBoxButtons);
-		vBox.getChildren().addAll(hBoxMessage);
 		vBox.getChildren().add(hBoxTitle);
+		vBox.getChildren().addAll(hBoxMessage);
 		vBox.getChildren().add(hBoxValue);
 		vBox.getChildren().add(bar);
 		((Group) scene.getRoot()).getChildren().add(vBox);

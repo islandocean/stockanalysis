@@ -95,9 +95,8 @@ abstract public class DataStore {
 			System.out.println("Info: fullPath=" + fullPathRegular);
 
 			if (task != null) {
-				task.upMessage("Downloading to " + fullPathRegular);
-				// updateTitle("titleeeeeeeeeeee" + counter);
-				// updateValue("valueeeeeeeee" + counter);
+				task.upTitle("Try: " + fullPathRegular);
+				task.upValue(Integer.toOctalString(count));
 			}
 
 			// Create parent folder if does not exist.
@@ -125,9 +124,11 @@ abstract public class DataStore {
 				}
 			}
 
+			boolean success = false;
 			if (Files.exists(pathRegular)) {
 				try {
 					processAfterDownload(fullPathRegular, day);
+					success = true;
 					++count;
 				} catch (IOException e) {
 					// TODO
@@ -141,11 +142,15 @@ abstract public class DataStore {
 			}
 
 			if (task != null) {
-				// updateMessage("messageeeeeeeeee" + counter);
+				String msg = "Failed to download ";
+				if (success) {
+					msg = "Succeeded in downloading ";
+				}
+
 				task.upProgress(end.getTimeInMillis() - day.getTimeInMillis(),
 						end.getTimeInMillis() - begin.getTimeInMillis());
-				// updateTitle("titleeeeeeeeeeee" + counter);
-				// updateValue("valueeeeeeeee" + counter);
+				task.upMessage(msg + fullPathRegular);
+				task.upValue(Integer.toOctalString(count));
 			}
 		}
 		return count;
