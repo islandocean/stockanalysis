@@ -50,7 +50,7 @@ public class MainDownloadSouko {
 	public static void main(String[] args) {
 		DataStore store = new DataStoreSouko();
 		CalendarRange calendarRange = selectCalendarRange();
-		int count = store.download(calendarRange);
+		int count = store.download(calendarRange, null);
 		System.out.println("count=" + count);
 	}
 }

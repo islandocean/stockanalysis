@@ -43,7 +43,7 @@ public class MainDownloadKdb {
 	public static void main(String[] args) {
 		DataStore store = new DataStoreKdb();
 		CalendarRange calendarRange = selectCalendarRange();
-		int count = store.download(calendarRange);
+		int count = store.download(calendarRange, null);
 		System.out.println("count=" + count);
 	}
 }

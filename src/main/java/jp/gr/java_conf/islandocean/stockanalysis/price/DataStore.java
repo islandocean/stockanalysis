@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javafx.concurrent.Task;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.IOUtil;
@@ -61,7 +62,7 @@ abstract public class DataStore {
 		return false;
 	}
 
-	public int download(CalendarRange calendarRange) {
+	public int download(CalendarRange calendarRange, Task task) {
 		Calendar today = CalendarUtil.createToday();
 		Calendar begin = calendarRange.getBegin();
 		Calendar end = calendarRange.getEnd();
