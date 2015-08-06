@@ -16,6 +16,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	private static final String CSS_QUERY_TO_FIND_STOCKS_INFO = ".stocksInfo";
 	private static final String CSS_QUERY_TO_FIND_STOCKS_TABLE = ".stocksTable";
 	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_ALL_DL = "#main dl";
+	private static final String CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_SPAN_UNDER_ID_DEAL = "#deal span";
 
 	private static final String CAPTION_PREVIOUS_CLOSING_PRICE = "前日終値";
 	private static final String CAPTION_OPENING_PRICE = "始値";
@@ -58,6 +59,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 	 * Raw String data
 	 */
 	private String stockCodeStr;
+	private String marketStr;
 	private String stockNameStr;
 	private String sectorStr;
 
@@ -166,6 +168,38 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 					continue;
 				}
 				realtimePriceStr = text;
+			}
+		}
+
+		Elements spans = doc
+				.select(CSS_QUERY_IN_DETAIL_PAGE_TO_FIND_SPAN_UNDER_ID_DEAL);
+
+		// マザーズ,札証,札幌ア,東証,東証1部, 東証2部,東証JQG,東証JQS,東証外国,福岡Q, 福証
+		for (Element span : spans) {
+			String s = span.text().trim();
+			if (s.length() > 0
+					&& (s.indexOf("マ") >= 0 || s.indexOf("札") >= 0
+							|| s.indexOf("東") >= 0 || s.indexOf("福") >= 0)) {
+				int index = s.indexOf('(');
+				if (index >= 0) {
+					s = s.substring(0, index);
+				}
+				marketStr = s;
+				break;
+			}
+		}
+		if (marketStr == null) {
+			for (Element span : spans) {
+				String s = span.text().trim();
+				if (s.length() > 0 && !s.startsWith("(") && !s.equals("PTS")
+						&& !s.equals("OTC")) {
+					int index = s.indexOf('(');
+					if (index >= 0) {
+						s = s.substring(0, index);
+					}
+					marketStr = s;
+					break;
+				}
 			}
 		}
 
@@ -281,6 +315,9 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 		try {
 			// コード
 			record.put(DetailEnum.STOCK_CODE, stockCodeStr);
+
+			// 銘柄名
+			record.put(DetailEnum.MARKET, marketStr);
 
 			// 銘柄名
 			record.put(DetailEnum.STOCK_NAME, stockNameStr);
@@ -753,6 +790,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 
 	public void printAll() {
 		System.out.println("stockCodeStr=" + stockCodeStr);
+		System.out.println("marketStr=" + marketStr);
 		System.out.println("stockNameStr=" + stockNameStr);
 		System.out.println("sectorStr=" + sectorStr);
 		System.out.println("realtimePriceStr=" + realtimePriceStr);

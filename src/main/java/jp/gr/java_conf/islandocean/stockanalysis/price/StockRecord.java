@@ -1,8 +1,9 @@
 package jp.gr.java_conf.islandocean.stockanalysis.price;
 
 import jp.gr.java_conf.islandocean.stockanalysis.enumex.Record;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.IStockBasic;
 
-public class StockRecord extends Record {
+public class StockRecord extends Record implements IStockBasic {
 
 	public StockRecord() {
 		super(StockEnum.class);
@@ -44,5 +45,25 @@ public class StockRecord extends Record {
 		int splitCount = (int) this.get(StockEnum.SPLIT_COUNT);
 		++splitCount;
 		this.put(StockEnum.SPLIT_COUNT, splitCount);
+	}
+
+	@Override
+	public String getStockCode() {
+		return (String) this.get(StockEnum.STOCK_CODE);
+	}
+
+	@Override
+	public String getStockName() {
+		return (String) this.get(StockEnum.STOCK_NAME);
+	}
+
+	@Override
+	public String getMarket() {
+		return (String) this.get(StockEnum.MARKET);
+	}
+
+	@Override
+	public String getSector() {
+		return (String) this.get(StockEnum.SECTOR);
 	}
 }

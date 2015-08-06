@@ -18,7 +18,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class MainCalculateJreitPriceRatioFromRecentHigh extends
-		AbstractScanning {
+		AbstractScanTemplate {
 
 	private static final String DELIM = "\t";
 

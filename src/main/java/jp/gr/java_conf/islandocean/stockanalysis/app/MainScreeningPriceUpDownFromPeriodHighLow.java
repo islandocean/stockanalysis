@@ -16,7 +16,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
-public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanning {
+public class MainScreeningPriceUpDownFromPeriodHighLow extends AbstractScanTemplate {
 
 	private static final String DELIM = "\t";
 

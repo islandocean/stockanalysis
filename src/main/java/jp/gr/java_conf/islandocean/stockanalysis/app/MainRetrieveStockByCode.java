@@ -13,7 +13,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainRetrieveStockByCode extends AbstractScanning {
+public class MainRetrieveStockByCode extends AbstractScanTemplate {
 
 	public MainRetrieveStockByCode() {
 	}

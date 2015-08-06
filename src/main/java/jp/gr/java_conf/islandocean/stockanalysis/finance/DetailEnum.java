@@ -12,6 +12,9 @@ public enum DetailEnum implements HasDataValueClass {
 	/** コード */
 	STOCK_CODE(String.class),
 
+	/** 市場 */
+	MARKET(String.class),
+
 	/** 銘柄名 */
 	STOCK_NAME(String.class),
 

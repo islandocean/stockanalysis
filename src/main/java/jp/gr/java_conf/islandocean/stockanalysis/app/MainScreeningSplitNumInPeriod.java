@@ -16,7 +16,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainScreeningSplitNumInPeriod extends AbstractScanning {
+public class MainScreeningSplitNumInPeriod extends AbstractScanTemplate {
 
 	private static final String DELIM = "\t";
 

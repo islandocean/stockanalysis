@@ -15,7 +15,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 
-public class MainScreeningPerAndSalary extends AbstractScanning {
+public class MainScreeningPerAndSalary extends AbstractScanTemplate {
 
 	public MainScreeningPerAndSalary() {
 	}
