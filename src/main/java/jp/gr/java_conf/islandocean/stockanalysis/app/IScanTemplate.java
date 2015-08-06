@@ -14,25 +14,19 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-abstract public class AbstractScanTemplate {
+public interface IScanTemplate {
 
-	public AbstractScanTemplate() {
-		super();
-	}
+	String[] doSelectCorps(StockManager stockManager, List<StockRecord> list,
+			FinanceManager financeManager) throws IOException;
 
-	abstract public String[] doSelectCorps(StockManager stockManager,
-			List<StockRecord> list, FinanceManager financeManager)
-			throws IOException;
+	boolean doScanOneCorp(String stockCode, List<StockRecord> oneCorpRecords,
+			StockManager stockManager, FinanceManager financeManager);
 
-	abstract public boolean doScanOneCorp(String stockCode,
-			List<StockRecord> oneCorpRecords, StockManager stockManager,
-			FinanceManager financeManager);
+	void printHeader();
 
-	abstract public void printHeader();
+	void printFooter(int count);
 
-	abstract public void printFooter(int count);
-
-	public void doScanCorps(boolean useStockPrice, DataStore store,
+	default void doScanCorps(boolean useStockPrice, DataStore store,
 			CalendarRange calendarRange, boolean useDetailInfo,
 			boolean useProfileInfo) throws IOException, InvalidDataException {
 
