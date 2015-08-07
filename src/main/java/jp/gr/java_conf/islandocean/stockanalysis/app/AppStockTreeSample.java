@@ -14,6 +14,8 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -29,6 +31,7 @@ public class AppStockTreeSample extends Application implements
 
 	// TODO: debug
 	private Set set = new HashSet();
+
 	// TODO: debug
 
 	public AppStockTreeSample() {
@@ -56,6 +59,13 @@ public class AppStockTreeSample extends Application implements
 
 		// Add tree items.
 		scanMain();
+
+		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
+		rootItem.getChildren().forEach(
+				marketTreeItem -> {
+					marketTreeItem.getChildren().sort(
+							SectorUtil.sectorTreeComparator());
+				});
 
 		TreeView<String> tree = new TreeView<String>(rootItem);
 		StackPane root = new StackPane();

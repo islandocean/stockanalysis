@@ -3,6 +3,8 @@ package jp.gr.java_conf.islandocean.stockanalysis.finance;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import javafx.scene.control.TreeItem;
+
 public class SectorUtil {
 
 	private SectorUtil() {
@@ -114,6 +116,31 @@ public class SectorUtil {
 
 	//
 	};
+
+	public static Comparator<TreeItem> sectorTreeComparator() {
+		return new Comparator<TreeItem>() {
+			@Override
+			public int compare(TreeItem t0, TreeItem t1) {
+				String s0 = (String) t0.getValue();
+				String s1 = (String) t1.getValue();
+				int idx0 = idxOfSector(s0);
+				int idx1 = idxOfSector(s1);
+				if (idx0 >= 0) {
+					if (idx1 >= 0) {
+						return idx0 - idx1;
+					} else {
+						return -1;
+					}
+				} else {
+					if (idx1 >= 0) {
+						return 1;
+					} else {
+						return s0.compareTo(s1);
+					}
+				}
+			}
+		};
+	}
 
 	public static Comparator<String> sectorComparator() {
 		return new Comparator<String>() {
