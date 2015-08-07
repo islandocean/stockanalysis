@@ -13,7 +13,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainRetrieveStockByCode2 implements IScanTemplate {
+public class MainRetrieveStockByCode2 implements IScanCorpsTemplate {
 
 	public MainRetrieveStockByCode2() {
 	}
@@ -36,17 +36,17 @@ public class MainRetrieveStockByCode2 implements IScanTemplate {
 	}
 
 	public static void main(String[] args) {
-		scanMain();
+		MainRetrieveStockByCode2 app = new MainRetrieveStockByCode2();
+		app.scanMain();
 	}
 
-	public static void scanMain() {
-		MainRetrieveStockByCode2 app = new MainRetrieveStockByCode2();
+	public void scanMain() {
 		try {
 			boolean useStockPrice = true;
 			boolean useDetailInfo = false;
 			boolean useProfileInfo = false;
-			app.doScanCorps(useStockPrice, app.selectDataStore(),
-					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
+			doScanCorps(useStockPrice, selectDataStore(),
+					selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

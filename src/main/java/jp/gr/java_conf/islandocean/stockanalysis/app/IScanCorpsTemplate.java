@@ -14,7 +14,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public interface IScanTemplate {
+public interface IScanCorpsTemplate {
 
 	String[] doSelectCorps(StockManager stockManager, List<StockRecord> list,
 			FinanceManager financeManager) throws IOException;

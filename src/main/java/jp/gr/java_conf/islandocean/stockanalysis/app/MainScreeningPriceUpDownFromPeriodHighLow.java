@@ -16,7 +16,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
-public class MainScreeningPriceUpDownFromPeriodHighLow implements IScanTemplate {
+public class MainScreeningPriceUpDownFromPeriodHighLow implements
+		IScanCorpsTemplate {
 
 	private static final String DELIM = "\t";
 
@@ -41,17 +42,17 @@ public class MainScreeningPriceUpDownFromPeriodHighLow implements IScanTemplate 
 	}
 
 	public static void main(String[] args) {
-		scanMain();
+		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
+		app.scanMain();
 	}
 
-	public static void scanMain() {
-		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
+	public void scanMain() {
 		try {
 			boolean useStockPrice = true;
 			boolean useDetailInfo = false;
 			boolean useProfileInfo = false;
-			app.doScanCorps(useStockPrice, app.selectDataStore(),
-					app.selectCalendarRange(), useDetailInfo, useProfileInfo);
+			doScanCorps(useStockPrice, selectDataStore(),
+					selectCalendarRange(), useDetailInfo, useProfileInfo);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,7 +1,10 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -19,9 +22,14 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class AppStockTreeSample extends Application implements IScanTemplate {
+public class AppStockTreeSample extends Application implements
+		IScanCorpsTemplate {
 
 	private TreeItem<String> rootItem;
+
+	// TODO: debug
+	private Set set = new HashSet();
+	// TODO: debug
 
 	public AppStockTreeSample() {
 	}
@@ -116,7 +124,7 @@ public class AppStockTreeSample extends Application implements IScanTemplate {
 				}
 			}
 			if (!foundMarket) {
-				System.out.println("market=" + market);
+				// System.out.println("market=" + market);
 				TreeItem<String> newMarketItem = new TreeItem<String>(market);
 				newMarketItem.setExpanded(true);
 				rootItem.getChildren().add(newMarketItem);
@@ -135,7 +143,7 @@ public class AppStockTreeSample extends Application implements IScanTemplate {
 				}
 			}
 			if (!foundSector) {
-				System.out.println("sector=" + sector);
+				// System.out.println("sector=" + sector);
 				TreeItem<String> newSectorItem = new TreeItem<String>(sector);
 				newSectorItem.setExpanded(false);
 				currentMarketItem.getChildren().add(newSectorItem);
@@ -145,6 +153,22 @@ public class AppStockTreeSample extends Application implements IScanTemplate {
 			// stock name
 			TreeItem<String> stockNameItem = new TreeItem<String>(stockName);
 			currentSectorItem.getChildren().add(stockNameItem);
+
+			// TODO: debug
+			String s = currentSectorItem.getValue();
+			Iterator iterator = set.iterator();
+			boolean found = false;
+			while (iterator.hasNext()) {
+				String p = (String) iterator.next();
+				if (p.equals(s)) {
+					found = true;
+				}
+			}
+			if (!found) {
+				set.add(s);
+				System.out.println(s);
+			}
+			// TODO: debug
 
 			break;
 		}
