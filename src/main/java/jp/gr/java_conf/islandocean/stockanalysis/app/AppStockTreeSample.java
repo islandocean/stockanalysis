@@ -1,15 +1,14 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
@@ -27,12 +26,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 public class AppStockTreeSample extends Application implements
 		IScanCorpsTemplate {
 
-	private TreeItem<String> rootItem;
-
-	// TODO: debug
-	private Set set = new HashSet();
-
-	// TODO: debug
+	private TreeItem<Object> rootItem;
 
 	public AppStockTreeSample() {
 	}
@@ -54,12 +48,18 @@ public class AppStockTreeSample extends Application implements
 	public void start(Stage stage) {
 		stage.setTitle("Stock Tree View Sample");
 
-		rootItem = new TreeItem<String>("All Markets");
+		//
+		// Tree items
+		//
+
+		// Create root item.
+		rootItem = new TreeItem<Object>("All Markets");
 		rootItem.setExpanded(true);
 
 		// Add tree items.
 		scanMain();
 
+		// Sort tree items.
 		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
 		rootItem.getChildren().forEach(
 				marketTreeItem -> {
@@ -67,7 +67,17 @@ public class AppStockTreeSample extends Application implements
 							SectorUtil.sectorTreeComparator());
 				});
 
-		TreeView<String> tree = new TreeView<String>(rootItem);
+		//
+		// Tree view
+		//
+
+		TreeView<Object> tree = new TreeView<Object>(rootItem);
+		tree.setOnMouseClicked(createTreeMouseEventHandler(tree));
+
+		//
+		// Layout
+		//
+
 		StackPane root = new StackPane();
 		root.getChildren().add(tree);
 		stage.setScene(new Scene(root, 500, 800));
@@ -124,10 +134,10 @@ public class AppStockTreeSample extends Application implements
 			}
 
 			// market
-			TreeItem<String> currentMarketItem = null;
+			TreeItem<Object> currentMarketItem = null;
 			boolean foundMarket = false;
-			for (TreeItem<String> oldMarketItem : rootItem.getChildren()) {
-				if (oldMarketItem.getValue().contentEquals(market)) {
+			for (TreeItem<Object> oldMarketItem : rootItem.getChildren()) {
+				if (oldMarketItem.getValue().equals(market)) {
 					currentMarketItem = oldMarketItem;
 					foundMarket = true;
 					break;
@@ -135,50 +145,33 @@ public class AppStockTreeSample extends Application implements
 			}
 			if (!foundMarket) {
 				// System.out.println("market=" + market);
-				TreeItem<String> newMarketItem = new TreeItem<String>(market);
+				TreeItem<Object> newMarketItem = new TreeItem<Object>(market);
 				newMarketItem.setExpanded(true);
 				rootItem.getChildren().add(newMarketItem);
 				currentMarketItem = newMarketItem;
 			}
 
 			// sector
-			TreeItem<String> currentSectorItem = null;
+			TreeItem<Object> currentSectorItem = null;
 			boolean foundSector = false;
-			for (TreeItem<String> oldSectorItem : currentMarketItem
+			for (TreeItem<Object> oldSectorItem : currentMarketItem
 					.getChildren()) {
-				if (oldSectorItem.getValue().contentEquals(sector)) {
+				if (oldSectorItem.getValue().equals(sector)) {
 					currentSectorItem = oldSectorItem;
 					foundSector = true;
 					break;
 				}
 			}
 			if (!foundSector) {
-				// System.out.println("sector=" + sector);
-				TreeItem<String> newSectorItem = new TreeItem<String>(sector);
+				TreeItem<Object> newSectorItem = new TreeItem<Object>(sector);
 				newSectorItem.setExpanded(false);
 				currentMarketItem.getChildren().add(newSectorItem);
 				currentSectorItem = newSectorItem;
 			}
 
 			// stock name
-			TreeItem<String> stockNameItem = new TreeItem<String>(stockName);
+			TreeItem<Object> stockNameItem = new TreeItem<Object>(record);
 			currentSectorItem.getChildren().add(stockNameItem);
-
-			// TODO: debug
-			String s = currentSectorItem.getValue();
-			Iterator iterator = set.iterator();
-			boolean found = false;
-			while (iterator.hasNext()) {
-				String p = (String) iterator.next();
-				if (p.equals(s)) {
-					found = true;
-				}
-			}
-			if (!found) {
-				set.add(s);
-				System.out.println(s);
-			}
-			// TODO: debug
 
 			break;
 		}
@@ -191,5 +184,24 @@ public class AppStockTreeSample extends Application implements
 
 	@Override
 	public void printFooter(int count) {
+	}
+
+	public EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
+		return new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 2) {
+					TreeItem item = (TreeItem) tree.getSelectionModel()
+							.getSelectedItem();
+					Object value = item.getValue();
+
+					System.out.println("Selected Text : " + value);
+					if (value instanceof StockRecord) {
+						StockRecord record = (StockRecord) value;
+						System.out.println("record=" + record.toTsvString());
+					}
+				}
+			}
+		};
 	}
 }

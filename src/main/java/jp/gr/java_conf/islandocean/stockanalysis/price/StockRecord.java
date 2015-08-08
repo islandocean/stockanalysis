@@ -47,6 +47,19 @@ public class StockRecord extends Record implements IStockBasic {
 		this.put(StockEnum.SPLIT_COUNT, splitCount);
 	}
 
+	/**
+	 * For TreeItem. (TreeItem seems to use Object#toString() to display item in
+	 * the tree.)
+	 */
+	@Override
+	public String toString() {
+		return getStockName();
+	}
+
+	/**
+	 * Getters, Setters
+	 */
+
 	@Override
 	public String getStockCode() {
 		return (String) this.get(StockEnum.STOCK_CODE);
