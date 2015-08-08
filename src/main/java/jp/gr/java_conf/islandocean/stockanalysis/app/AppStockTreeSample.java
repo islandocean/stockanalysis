@@ -4,12 +4,25 @@ import java.io.IOException;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
@@ -26,7 +39,29 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 public class AppStockTreeSample extends Application implements
 		IScanCorpsTemplate {
 
+	private VBox rootPane;
+
+	private MenuBar menuBar;
+	private Menu menuFile;
+	private Menu menuView;
+
+	private Button buttonDummy1;
+	private Button buttonDummy2;
+
+	private Button buttonTreeCollapse;
+	private Button buttonTreeExpand;
+	private TreeView<Object> treeView;
 	private TreeItem<Object> rootItem;
+
+	private TextField searchTextField;
+	private Button buttonTableSearch;
+	private Label label0;
+
+	private Label label1;
+
+	private Button buttonDummy3;
+	private TextArea consoleTextArea;
+	private Button buttonDummy4;
 
 	public AppStockTreeSample() {
 	}
@@ -71,16 +106,103 @@ public class AppStockTreeSample extends Application implements
 		// Tree view
 		//
 
-		TreeView<Object> tree = new TreeView<Object>(rootItem);
-		tree.setOnMouseClicked(createTreeMouseEventHandler(tree));
+		treeView = new TreeView<Object>(rootItem);
+		treeView.setOnMouseClicked(createTreeMouseEventHandler(treeView));
+		treeView.setMinHeight(700d);
+
+		// Tree controls
+		HBox treeControlPane = new HBox();
+		buttonTreeCollapse = new Button("Collapse");
+		buttonTreeCollapse.setOnAction((ActionEvent e) -> {
+			rootItem.getChildren().forEach(market -> {
+				((TreeItem) market).setExpanded(false);
+			});
+		});
+
+		buttonTreeExpand = new Button("Expand");
+		buttonTreeExpand.setOnAction((ActionEvent e) -> {
+			rootItem.getChildren().forEach(market -> {
+				((TreeItem) market).setExpanded(true);
+			});
+		});
+
+		treeControlPane.getChildren().addAll(buttonTreeCollapse,
+				buttonTreeExpand);
+		treeControlPane.setSpacing(10);
+		treeControlPane.setAlignment(Pos.CENTER_LEFT);
+		treeControlPane.setPadding(new Insets(10, 10, 10, 10));
+
+		// Table controls
+		HBox tableControlPane = new HBox();
+		buttonTableSearch = new Button("Search");
+		searchTextField = new TextField();
+		tableControlPane.getChildren().addAll(searchTextField,
+				buttonTableSearch);
+		tableControlPane.setSpacing(10);
+		tableControlPane.setAlignment(Pos.CENTER_LEFT);
+		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
+		tableControlPane.setMaxHeight(50d);
+
+		//
+		// Top pane
+		//
+		HBox topPane = new HBox();
+		buttonDummy1 = new Button("Dummy1");
+		buttonDummy2 = new Button("Dummy2");
+		topPane.setSpacing(10);
+		topPane.setAlignment(Pos.CENTER_LEFT);
+		topPane.setPadding(new Insets(10, 10, 10, 10));
+		createMenu();
+		topPane.getChildren().addAll(menuBar, buttonDummy1, buttonDummy2);
+
+		//
+		// Bottom pane
+		//
+		HBox bottomPane = new HBox();
+		buttonDummy3 = new Button("Dummy3");
+		buttonDummy4 = new Button("Dummy4");
+		consoleTextArea = new TextArea();
+		consoleTextArea.setMinSize(400d, 50d);
+		consoleTextArea.setMaxSize(400d, 50d);
+		bottomPane.setSpacing(10);
+		bottomPane.setAlignment(Pos.CENTER_LEFT);
+		bottomPane.setPadding(new Insets(10, 10, 10, 10));
+		bottomPane.getChildren().addAll(buttonDummy3, consoleTextArea,
+				buttonDummy4);
 
 		//
 		// Layout
 		//
 
-		StackPane root = new StackPane();
-		root.getChildren().add(tree);
-		stage.setScene(new Scene(root, 500, 800));
+		// center
+		final SplitPane centerPane = new SplitPane();
+		centerPane.setOrientation(Orientation.VERTICAL);
+		label0 = new Label("Label 0");
+		centerPane.getItems().addAll(tableControlPane, label0,
+				new Button("Hi!"));
+		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
+
+		// right
+		final StackPane rightPane = new StackPane();
+		label1 = new Label("Label1");
+		rightPane.getChildren().add(label1);
+
+		// left
+		VBox leftPane = new VBox();
+		leftPane.getChildren().addAll(treeControlPane, treeView);
+
+		// middle = left + center + right
+		SplitPane middlePane = new SplitPane();
+		middlePane.setOrientation(Orientation.HORIZONTAL);
+		middlePane.getItems().addAll(leftPane, centerPane, rightPane);
+		middlePane.setDividerPositions(0.3f, 0.8f, 1.0f);
+		middlePane.setMinSize(600d, 735d);
+
+		// root pane = top + middle + bottom
+		rootPane = new VBox();
+		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
+
+		stage.setScene(new Scene(rootPane, 1000, 870));
 		stage.show();
 	}
 
@@ -144,7 +266,6 @@ public class AppStockTreeSample extends Application implements
 				}
 			}
 			if (!foundMarket) {
-				// System.out.println("market=" + market);
 				TreeItem<Object> newMarketItem = new TreeItem<Object>(market);
 				newMarketItem.setExpanded(true);
 				rootItem.getChildren().add(newMarketItem);
@@ -186,6 +307,13 @@ public class AppStockTreeSample extends Application implements
 	public void printFooter(int count) {
 	}
 
+	private void createMenu() {
+		menuBar = new MenuBar();
+		menuFile = new Menu("File");
+		menuView = new Menu("View");
+		menuBar.getMenus().addAll(menuFile, menuView);
+	}
+
 	public EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
 		return new EventHandler<MouseEvent>() {
 			@Override
@@ -193,12 +321,15 @@ public class AppStockTreeSample extends Application implements
 				if (mouseEvent.getClickCount() == 2) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
-					Object value = item.getValue();
-
-					System.out.println("Selected Text : " + value);
-					if (value instanceof StockRecord) {
-						StockRecord record = (StockRecord) value;
-						System.out.println("record=" + record.toTsvString());
+					if (item != null) {
+						Object value = item.getValue();
+						// System.out.println("Selected Text : " + value);
+						if (value instanceof StockRecord) {
+							StockRecord record = (StockRecord) value;
+							String tsv = record.toTsvString();
+							label1.setText(tsv.replace("\t",
+									System.lineSeparator()));
+						}
 					}
 				}
 			}
