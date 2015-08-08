@@ -4,12 +4,21 @@ import java.io.IOException;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
@@ -27,6 +36,8 @@ public class AppStockTreeSample extends Application implements
 		IScanCorpsTemplate {
 
 	private TreeItem<Object> rootItem;
+	private Label label0;
+	private Label label1;
 
 	public AppStockTreeSample() {
 	}
@@ -74,13 +85,57 @@ public class AppStockTreeSample extends Application implements
 		TreeView<Object> tree = new TreeView<Object>(rootItem);
 		tree.setOnMouseClicked(createTreeMouseEventHandler(tree));
 
+		// Buttons
+		HBox hBoxButtons = new HBox();
+		Button buttonCollapse = new Button("Collapse Markets");
+		buttonCollapse.setOnAction((ActionEvent e) -> {
+			List markets = rootItem.getChildren();
+			markets.forEach(market -> {
+				((TreeItem) market).setExpanded(false);
+			});
+		});
+
+		Button buttonExpand = new Button("Expand Markets");
+		buttonExpand.setOnAction((ActionEvent e) -> {
+			List markets = rootItem.getChildren();
+			markets.forEach(market -> {
+				((TreeItem) market).setExpanded(true);
+			});
+		});
+
+		hBoxButtons.getChildren().addAll(buttonCollapse, buttonExpand);
+		hBoxButtons.setSpacing(10);
+		hBoxButtons.setAlignment(Pos.CENTER_LEFT);
+		hBoxButtons.setPadding(new Insets(10, 0, 0, 10));
+
 		//
 		// Layout
 		//
 
-		StackPane root = new StackPane();
-		root.getChildren().add(tree);
-		stage.setScene(new Scene(root, 500, 800));
+		final StackPane stackPane1 = new StackPane();
+		label0 = new Label("Label One");
+		stackPane1.getChildren().add(label0);
+		final StackPane stackPane2 = new StackPane();
+		label1 = new Label("Label Two");
+		stackPane2.getChildren().add(label1);
+
+		StackPane treePane = new StackPane();
+		treePane.getChildren().addAll(tree);
+
+		SplitPane splitPane = new SplitPane();
+		splitPane.getItems().addAll(treePane, stackPane1, stackPane2);
+		splitPane.setDividerPositions(0.3f, 0.8f, 1.0f);
+		splitPane.setMinSize(600d, 750d);
+
+		VBox vBox = new VBox();
+		Region spacer1 = new Region();
+		spacer1.setMinHeight(7d);
+		Region spacer2 = new Region();
+		spacer2.setMinHeight(7d);
+		vBox.getChildren().addAll(hBoxButtons, spacer1, splitPane, spacer2,
+				new Button("Nop"));
+
+		stage.setScene(new Scene(vBox, 1000, 850));
 		stage.show();
 	}
 
@@ -193,12 +248,17 @@ public class AppStockTreeSample extends Application implements
 				if (mouseEvent.getClickCount() == 2) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
-					Object value = item.getValue();
+					if (item != null) {
+						Object value = item.getValue();
+						System.out.println("Selected Text : " + value);
+						if (value instanceof StockRecord) {
+							StockRecord record = (StockRecord) value;
+							String tsv = record.toTsvString();
+							System.out.println("record=" + tsv);
 
-					System.out.println("Selected Text : " + value);
-					if (value instanceof StockRecord) {
-						StockRecord record = (StockRecord) value;
-						System.out.println("record=" + record.toTsvString());
+							label1.setText(tsv.replace("\t",
+									System.lineSeparator()));
+						}
 					}
 				}
 			}
