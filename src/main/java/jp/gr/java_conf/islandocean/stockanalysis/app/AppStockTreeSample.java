@@ -50,6 +50,7 @@ public class AppStockTreeSample extends Application implements
 
 	private Button buttonTreeCollapse;
 	private Button buttonTreeExpand;
+
 	private TreeView<Object> treeView;
 	private TreeItem<Object> rootItem;
 
@@ -103,9 +104,10 @@ public class AppStockTreeSample extends Application implements
 				});
 
 		//
-		// Tree view
+		// GUI Parts
 		//
 
+		// Tree view
 		treeView = new TreeView<Object>(rootItem);
 		treeView.setOnMouseClicked(createTreeMouseEventHandler(treeView));
 		treeView.setMinHeight(700d);
@@ -144,8 +146,10 @@ public class AppStockTreeSample extends Application implements
 		tableControlPane.setMaxHeight(50d);
 
 		//
-		// Top pane
+		// Layout
 		//
+
+		// Top
 		HBox topPane = new HBox();
 		buttonDummy1 = new Button("Dummy1");
 		buttonDummy2 = new Button("Dummy2");
@@ -155,24 +159,9 @@ public class AppStockTreeSample extends Application implements
 		createMenu();
 		topPane.getChildren().addAll(menuBar, buttonDummy1, buttonDummy2);
 
-		//
-		// Bottom pane
-		//
-		HBox bottomPane = new HBox();
-		buttonDummy3 = new Button("Dummy3");
-		buttonDummy4 = new Button("Dummy4");
-		consoleTextArea = new TextArea();
-		consoleTextArea.setMinSize(400d, 50d);
-		consoleTextArea.setMaxSize(400d, 50d);
-		bottomPane.setSpacing(10);
-		bottomPane.setAlignment(Pos.CENTER_LEFT);
-		bottomPane.setPadding(new Insets(10, 10, 10, 10));
-		bottomPane.getChildren().addAll(buttonDummy3, consoleTextArea,
-				buttonDummy4);
-
-		//
-		// Layout
-		//
+		// left
+		VBox leftPane = new VBox();
+		leftPane.getChildren().addAll(treeControlPane, treeView);
 
 		// center
 		final SplitPane centerPane = new SplitPane();
@@ -187,10 +176,6 @@ public class AppStockTreeSample extends Application implements
 		label1 = new Label("Label1");
 		rightPane.getChildren().add(label1);
 
-		// left
-		VBox leftPane = new VBox();
-		leftPane.getChildren().addAll(treeControlPane, treeView);
-
 		// middle = left + center + right
 		SplitPane middlePane = new SplitPane();
 		middlePane.setOrientation(Orientation.HORIZONTAL);
@@ -198,11 +183,25 @@ public class AppStockTreeSample extends Application implements
 		middlePane.setDividerPositions(0.3f, 0.8f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
-		// root pane = top + middle + bottom
+		// Bottom
+		HBox bottomPane = new HBox();
+		buttonDummy3 = new Button("Dummy3");
+		buttonDummy4 = new Button("Dummy4");
+		consoleTextArea = new TextArea();
+		consoleTextArea.setMinSize(400d, 50d);
+		consoleTextArea.setMaxSize(400d, 50d);
+		bottomPane.setSpacing(10);
+		bottomPane.setAlignment(Pos.CENTER_LEFT);
+		bottomPane.setPadding(new Insets(10, 10, 10, 10));
+		bottomPane.getChildren().addAll(buttonDummy3, consoleTextArea,
+				buttonDummy4);
+
+		// root = top + middle + bottom
 		rootPane = new VBox();
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
 		stage.setScene(new Scene(rootPane, 1000, 870));
+
 		stage.show();
 	}
 
@@ -323,10 +322,11 @@ public class AppStockTreeSample extends Application implements
 							.getSelectedItem();
 					if (item != null) {
 						Object value = item.getValue();
-						// System.out.println("Selected Text : " + value);
+						System.out.println("Selected Text : " + value);
 						if (value instanceof StockRecord) {
 							StockRecord record = (StockRecord) value;
 							String tsv = record.toTsvString();
+							System.out.println("record=" + tsv);
 							label1.setText(tsv.replace("\t",
 									System.lineSeparator()));
 						}
