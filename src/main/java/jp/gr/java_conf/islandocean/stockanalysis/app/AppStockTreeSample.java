@@ -170,10 +170,6 @@ public class AppStockTreeSample extends Application implements
 		bottomPane.getChildren().addAll(buttonDummy3, consoleTextArea,
 				buttonDummy4);
 
-		//
-		// Layout
-		//
-
 		// center
 		final SplitPane centerPane = new SplitPane();
 		centerPane.setOrientation(Orientation.VERTICAL);
@@ -203,6 +199,7 @@ public class AppStockTreeSample extends Application implements
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
 		stage.setScene(new Scene(rootPane, 1000, 870));
+
 		stage.show();
 	}
 
@@ -323,10 +320,11 @@ public class AppStockTreeSample extends Application implements
 							.getSelectedItem();
 					if (item != null) {
 						Object value = item.getValue();
-						// System.out.println("Selected Text : " + value);
+						System.out.println("Selected Text : " + value);
 						if (value instanceof StockRecord) {
 							StockRecord record = (StockRecord) value;
 							String tsv = record.toTsvString();
+							System.out.println("record=" + tsv);
 							label1.setText(tsv.replace("\t",
 									System.lineSeparator()));
 						}
