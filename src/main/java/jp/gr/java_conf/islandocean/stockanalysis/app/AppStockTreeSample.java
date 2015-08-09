@@ -338,7 +338,27 @@ public class AppStockTreeSample extends Application implements
 		return new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
-				if (mouseEvent.getClickCount() == 2) {
+				if (mouseEvent.getClickCount() == 1) {
+					TreeItem item = (TreeItem) tree.getSelectionModel()
+							.getSelectedItem();
+					if (item != null) {
+						Object value = item.getValue();
+						if (value instanceof MarketItemValue) {
+							System.out.println("MarketItemValue="
+									+ value.toString());
+						} else if (value instanceof SectorItemValue) {
+							System.out.println("SectorItemValue="
+									+ value.toString());
+							TreeItem parent = item.getParent();
+							System.out.println("parent="
+									+ parent.getValue().toString());
+						} else if (value instanceof StockRecord) {
+							System.out.println("StockRecord");
+						} else {
+							System.out.println("unknown item");
+						}
+					}
+				} else if (mouseEvent.getClickCount() == 2) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
 					if (item != null) {
