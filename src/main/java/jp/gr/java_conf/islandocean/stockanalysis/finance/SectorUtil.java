@@ -121,8 +121,8 @@ public class SectorUtil {
 		return new Comparator<TreeItem>() {
 			@Override
 			public int compare(TreeItem t0, TreeItem t1) {
-				String s0 = (String) t0.getValue();
-				String s1 = (String) t1.getValue();
+				String s0 = (String) t0.getValue().toString();
+				String s1 = (String) t1.getValue().toString();
 				int idx0 = idxOfSector(s0);
 				int idx1 = idxOfSector(s1);
 				if (idx0 >= 0) {

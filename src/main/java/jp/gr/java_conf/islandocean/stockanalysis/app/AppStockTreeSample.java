@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,6 +18,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -33,6 +38,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
+import jp.gr.java_conf.islandocean.stockanalysis.ui.MarketItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.ui.SectorItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
@@ -58,6 +65,9 @@ public class AppStockTreeSample extends Application implements
 	private Button buttonTableSearch;
 	private Label label0;
 
+	private TableView table;
+	private TableColumn stockCodeCol;
+	private TableColumn stockNameCol;
 	private Label label1;
 
 	private Button buttonDummy3;
@@ -109,8 +119,10 @@ public class AppStockTreeSample extends Application implements
 
 		// Tree view
 		treeView = new TreeView<Object>(rootItem);
-		treeView.setOnMouseClicked(createTreeMouseEventHandler(treeView));
 		treeView.setMinHeight(700d);
+		treeView.setOnMouseClicked(createTreeMouseEventHandler(treeView));
+		treeView.getSelectionModel().selectedItemProperty()
+				.addListener(createTreeChangeListener());
 
 		// Tree controls
 		HBox treeControlPane = new HBox();
@@ -145,6 +157,13 @@ public class AppStockTreeSample extends Application implements
 		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
 		tableControlPane.setMaxHeight(50d);
 
+		// Table View
+		TableView tableView = new TableView();
+		TableColumn stockCodeCol = new TableColumn("Stock Code");
+		TableColumn stockNameCol = new TableColumn("Stock Name");
+		tableView.getColumns().addAll(stockCodeCol, stockNameCol);
+		tableView.setPlaceholder(new Label(""));
+
 		//
 		// Layout
 		//
@@ -167,7 +186,7 @@ public class AppStockTreeSample extends Application implements
 		final SplitPane centerPane = new SplitPane();
 		centerPane.setOrientation(Orientation.VERTICAL);
 		label0 = new Label("Label 0");
-		centerPane.getItems().addAll(tableControlPane, label0,
+		centerPane.getItems().addAll(tableControlPane, label0, tableView,
 				new Button("Hi!"));
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
@@ -258,14 +277,15 @@ public class AppStockTreeSample extends Application implements
 			TreeItem<Object> currentMarketItem = null;
 			boolean foundMarket = false;
 			for (TreeItem<Object> oldMarketItem : rootItem.getChildren()) {
-				if (oldMarketItem.getValue().equals(market)) {
+				if (oldMarketItem.getValue().toString().equals(market)) {
 					currentMarketItem = oldMarketItem;
 					foundMarket = true;
 					break;
 				}
 			}
 			if (!foundMarket) {
-				TreeItem<Object> newMarketItem = new TreeItem<Object>(market);
+				TreeItem<Object> newMarketItem = new TreeItem<Object>(
+						new MarketItemValue(market));
 				newMarketItem.setExpanded(true);
 				rootItem.getChildren().add(newMarketItem);
 				currentMarketItem = newMarketItem;
@@ -276,14 +296,15 @@ public class AppStockTreeSample extends Application implements
 			boolean foundSector = false;
 			for (TreeItem<Object> oldSectorItem : currentMarketItem
 					.getChildren()) {
-				if (oldSectorItem.getValue().equals(sector)) {
+				if (oldSectorItem.getValue().toString().equals(sector)) {
 					currentSectorItem = oldSectorItem;
 					foundSector = true;
 					break;
 				}
 			}
 			if (!foundSector) {
-				TreeItem<Object> newSectorItem = new TreeItem<Object>(sector);
+				TreeItem<Object> newSectorItem = new TreeItem<Object>(
+						new SectorItemValue(sector));
 				newSectorItem.setExpanded(false);
 				currentMarketItem.getChildren().add(newSectorItem);
 				currentSectorItem = newSectorItem;
@@ -334,5 +355,60 @@ public class AppStockTreeSample extends Application implements
 				}
 			}
 		};
+	}
+
+	public ChangeListener<TreeItem<Object>> createTreeChangeListener() {
+		return new ChangeListener<TreeItem<Object>>() {
+			@Override
+			public void changed(
+					ObservableValue<? extends TreeItem<Object>> observable,
+					TreeItem<Object> oldValue, TreeItem<Object> newValue) {
+				TreeItem<Object> item = (TreeItem<Object>) newValue;
+				if (item != null) {
+					Object value = item.getValue();
+					if (value instanceof MarketItemValue) {
+						System.out.println("MarketItemValue="
+								+ value.toString());
+					} else if (value instanceof SectorItemValue) {
+						System.out.println("SectorItemValue="
+								+ value.toString());
+						TreeItem<Object> parent = item.getParent();
+						System.out.println("parent="
+								+ parent.getValue().toString());
+					} else if (value instanceof StockRecord) {
+						StockRecord record = (StockRecord) value;
+						System.out.println("record=" + record.toTsvString());
+					} else {
+						System.out.println("unknown item");
+					}
+				}
+			}
+		};
+	}
+
+	public static class Stock {
+		private final SimpleStringProperty stockCode;
+		private final SimpleStringProperty stockName;
+
+		private Stock(String stockCode, String stockName) {
+			this.stockCode = new SimpleStringProperty(stockCode);
+			this.stockName = new SimpleStringProperty(stockName);
+		}
+
+		public String getSockCode() {
+			return stockCode.get();
+		}
+
+		public void setStockCode(String s) {
+			stockCode.set(s);
+		}
+
+		public String getStockName() {
+			return stockName.get();
+		}
+
+		public void setStockName(String s) {
+			stockName.set(s);
+		}
 	}
 }
