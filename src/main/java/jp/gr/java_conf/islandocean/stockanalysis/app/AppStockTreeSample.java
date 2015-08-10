@@ -2,6 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,7 +22,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
@@ -31,12 +31,13 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
@@ -55,13 +56,28 @@ public class AppStockTreeSample extends Application implements
 	// Data
 	//
 	private CorpsAllData allData;
-	private ObservableList<TableStockData> tableStockData = FXCollections
+	private StockManager stockManager;
+	private FinanceManager financeManager;
+	private List<StockRecord> lastData;
+	private String[] stockCodes;
+	private Map stockCodeToDetailRecordMap;
+	private Map stockCodeToProfileRecordMap;
+
+	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
 
 	//
 	// Controls
 	//
 	private VBox rootPane;
+	private HBox topPane;
+	private VBox leftPane;
+	private SplitPane centerPane;
+	private HBox rightPane;
+	private SplitPane middlePane;
+	private HBox bottomPane;
+	private HBox treeControlPane;
+	private HBox tableControlPane;
 
 	private MenuBar menuBar;
 	private Menu menuFile;
@@ -114,8 +130,17 @@ public class AppStockTreeSample extends Application implements
 		rootItem = new TreeItem<Object>("All Markets");
 		rootItem.setExpanded(true);
 
-		// Add tree items.
+		// Get data and add tree items.
 		scanMain();
+
+		this.stockManager = allData.getStockManager();
+		this.financeManager = allData.getFinanceManager();
+		this.lastData = allData.getLastData();
+		this.stockCodes = allData.getStockCodes();
+		this.stockCodeToDetailRecordMap = financeManager
+				.getStockCodeToDetailRecordMap();
+		this.stockCodeToProfileRecordMap = financeManager
+				.getStockCodeToProfileRecordMap();
 
 		// Sort tree items.
 		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
@@ -137,7 +162,7 @@ public class AppStockTreeSample extends Application implements
 				.addListener(createTreeChangeListener());
 
 		// Tree controls
-		HBox treeControlPane = new HBox();
+		treeControlPane = new HBox();
 		buttonTreeCollapse = new Button("Collapse");
 		buttonTreeCollapse.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
@@ -159,7 +184,7 @@ public class AppStockTreeSample extends Application implements
 		treeControlPane.setPadding(new Insets(10, 10, 10, 10));
 
 		// Table controls
-		HBox tableControlPane = new HBox();
+		tableControlPane = new HBox();
 		buttonTableSearch = new Button("Search");
 		buttonTableSearch.setDisable(true); //
 		searchTextField = new TextField();
@@ -186,7 +211,7 @@ public class AppStockTreeSample extends Application implements
 		tableView.getColumns().addAll(stockCodeCol, stockNameCol, marketCol,
 				sectorCol);
 		tableView.setPlaceholder(new Label(""));
-		tableView.setItems(tableStockData);
+		tableView.setItems(tableStockDataList);
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(createTableChangeListener());
 
@@ -195,7 +220,7 @@ public class AppStockTreeSample extends Application implements
 		//
 
 		// Top
-		HBox topPane = new HBox();
+		topPane = new HBox();
 		topPane.setSpacing(10);
 		topPane.setAlignment(Pos.CENTER_LEFT);
 		topPane.setPadding(new Insets(10, 10, 10, 10));
@@ -203,29 +228,29 @@ public class AppStockTreeSample extends Application implements
 		topPane.getChildren().addAll(menuBar);
 
 		// left
-		VBox leftPane = new VBox();
+		leftPane = new VBox();
 		leftPane.getChildren().addAll(treeControlPane, treeView);
 
 		// center
-		final SplitPane centerPane = new SplitPane();
+		centerPane = new SplitPane();
 		centerPane.setOrientation(Orientation.VERTICAL);
 		centerPane.getItems().addAll(tableControlPane, tableView);
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
 		// right
-		final StackPane rightPane = new StackPane();
-		label1 = new Label("Label1");
-		rightPane.getChildren().add(label1);
+		rightPane = new HBox();
+		// label1 = new Label("");
+		// rightPane.getChildren().add(label1);
 
 		// middle = left + center + right
-		SplitPane middlePane = new SplitPane();
+		middlePane = new SplitPane();
 		middlePane.setOrientation(Orientation.HORIZONTAL);
 		middlePane.getItems().addAll(leftPane, centerPane, rightPane);
 		middlePane.setDividerPositions(0.17f, 0.55f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
 		// Bottom
-		HBox bottomPane = new HBox();
+		bottomPane = new HBox();
 		buttonDummy1 = new Button("Dummy1");
 		consoleTextArea = new TextArea();
 		consoleTextArea.setMinSize(400d, 50d);
@@ -247,8 +272,8 @@ public class AppStockTreeSample extends Application implements
 	public void scanMain() {
 		try {
 			boolean useStockPrice = true;
-			boolean useDetailInfo = false;
-			boolean useProfileInfo = false;
+			boolean useDetailInfo = true;
+			boolean useProfileInfo = true;
 			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
 					selectCalendarRange(), useDetailInfo, useProfileInfo);
 			doScanCorps(allData);
@@ -388,11 +413,6 @@ public class AppStockTreeSample extends Application implements
 						Object value = item.getValue();
 						// System.out.println("Selected Text : " + value);
 						if (value instanceof StockRecord) {
-							StockRecord record = (StockRecord) value;
-							String tsv = record.toTsvString();
-							// System.out.println("record=" + tsv);
-							label1.setText(tsv.replace("\t",
-									System.lineSeparator()));
 						}
 					}
 				}
@@ -418,16 +438,19 @@ public class AppStockTreeSample extends Application implements
 		}
 		Object value = item.getValue();
 		if (value instanceof MarketItemValue) {
-			tableStockData.clear();
+			tableStockDataList.clear();
 		} else if (value instanceof SectorItemValue) {
-			tableStockData.clear();
+			tableStockDataList.clear();
 			item.getChildren()
 					.forEach(
 							stockItem -> {
 								TableStockData stock = stockRecordToStock((StockRecord) stockItem
 										.getValue());
-								tableStockData.add(stock);
+								tableStockDataList.add(stock);
 							});
+		} else if (value instanceof StockRecord) {
+			String stockCode = ((StockRecord) value).getStockCode();
+			reloadRightPane(stockCode);
 		}
 	}
 
@@ -492,15 +515,49 @@ public class AppStockTreeSample extends Application implements
 				if (tableView.getSelectionModel().getSelectedItem() != null) {
 					TableViewSelectionModel selectionModel = tableView
 							.getSelectionModel();
-					ObservableList selectedCells = selectionModel
-							.getSelectedCells();
-					TablePosition tablePosition = (TablePosition) selectedCells
-							.get(0);
-					Object val = tablePosition.getTableColumn().getCellData(
-							newValue);
-					System.out.println("Selected Value" + val);
+					// ObservableList selectedCells = selectionModel
+					// .getSelectedCells();
+					// TablePosition tablePosition = (TablePosition)
+					// selectedCells
+					// .get(0);
+					// Object val = tablePosition.getTableColumn().getCellData(
+					// newValue);
+					// System.out.println("Selected Value" + val);
+
+					int index = selectionModel.getSelectedIndex();
+					if (index >= 0) {
+						TableStockData tableStockData = tableStockDataList
+								.get(index);
+						if (tableStockData != null) {
+							String stockCode = tableStockData.getStockCode();
+							reloadRightPane(stockCode);
+						}
+					}
 				}
 			}
 		};
+	}
+
+	private void reloadRightPane(String stockCode) {
+		rightPane.getChildren().clear();
+
+		ProfileRecord profileRecord = (ProfileRecord) stockCodeToProfileRecordMap
+				.get(stockCode);
+		DetailRecord detailRecord = (DetailRecord) stockCodeToDetailRecordMap
+				.get(stockCode);
+
+		if (detailRecord != null) {
+			String detail = detailRecord.toTsvString().replace("\t", "\n");
+			Label labelDetail = new Label(detail);
+			labelDetail.setMinWidth(60d);
+			rightPane.getChildren().add(labelDetail);
+		}
+
+		if (profileRecord != null) {
+			String profile = profileRecord.toTsvString().replace("\t", "\n");
+			Label labelProfile = new Label(profile);
+			labelProfile.setMinWidth(200d);
+			rightPane.getChildren().addAll(new Label(" "), labelProfile);
+		}
 	}
 }
