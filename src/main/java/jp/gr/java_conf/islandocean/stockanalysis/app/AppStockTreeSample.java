@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -24,6 +26,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -49,7 +52,9 @@ public class AppStockTreeSample extends Application implements
 	//
 	// Data
 	//
-	CorpsAllData allData;
+	private CorpsAllData allData;
+	private ObservableList<TableStockData> tableStockData = FXCollections
+			.observableArrayList();
 
 	//
 	// Controls
@@ -60,9 +65,6 @@ public class AppStockTreeSample extends Application implements
 	private Menu menuFile;
 	private Menu menuView;
 
-	private Button buttonDummy1;
-	private Button buttonDummy2;
-
 	private Button buttonTreeCollapse;
 	private Button buttonTreeExpand;
 
@@ -71,16 +73,16 @@ public class AppStockTreeSample extends Application implements
 
 	private TextField searchTextField;
 	private Button buttonTableSearch;
-	private Label label0;
 
-	private TableView table;
+	private TableView tableView;
 	private TableColumn stockCodeCol;
 	private TableColumn stockNameCol;
+	private TableColumn marketCol;
+	private TableColumn sectorCol;
 	private Label label1;
 
-	private Button buttonDummy3;
 	private TextArea consoleTextArea;
-	private Button buttonDummy4;
+	private Button buttonDummy1;
 
 	public AppStockTreeSample() {
 	}
@@ -157,6 +159,7 @@ public class AppStockTreeSample extends Application implements
 		// Table controls
 		HBox tableControlPane = new HBox();
 		buttonTableSearch = new Button("Search");
+		buttonTableSearch.setDisable(true); //
 		searchTextField = new TextField();
 		tableControlPane.getChildren().addAll(searchTextField,
 				buttonTableSearch);
@@ -166,11 +169,22 @@ public class AppStockTreeSample extends Application implements
 		tableControlPane.setMaxHeight(50d);
 
 		// Table View
-		TableView tableView = new TableView();
-		TableColumn stockCodeCol = new TableColumn("Stock Code");
-		TableColumn stockNameCol = new TableColumn("Stock Name");
-		tableView.getColumns().addAll(stockCodeCol, stockNameCol);
+		tableView = new TableView();
+		stockCodeCol = new TableColumn("Stock Code");
+		stockNameCol = new TableColumn("Stock Name");
+		stockNameCol.setMinWidth(200);
+		marketCol = new TableColumn("Market");
+		sectorCol = new TableColumn("Sector");
+		stockCodeCol
+				.setCellValueFactory(new PropertyValueFactory<>("stockCode"));
+		stockNameCol
+				.setCellValueFactory(new PropertyValueFactory<>("stockName"));
+		marketCol.setCellValueFactory(new PropertyValueFactory<>("market"));
+		sectorCol.setCellValueFactory(new PropertyValueFactory<>("sector"));
+		tableView.getColumns().addAll(stockCodeCol, stockNameCol, marketCol,
+				sectorCol);
 		tableView.setPlaceholder(new Label(""));
+		tableView.setItems(tableStockData);
 
 		//
 		// Layout
@@ -178,13 +192,11 @@ public class AppStockTreeSample extends Application implements
 
 		// Top
 		HBox topPane = new HBox();
-		buttonDummy1 = new Button("Dummy1");
-		buttonDummy2 = new Button("Dummy2");
 		topPane.setSpacing(10);
 		topPane.setAlignment(Pos.CENTER_LEFT);
 		topPane.setPadding(new Insets(10, 10, 10, 10));
 		createMenu();
-		topPane.getChildren().addAll(menuBar, buttonDummy1, buttonDummy2);
+		topPane.getChildren().addAll(menuBar);
 
 		// left
 		VBox leftPane = new VBox();
@@ -193,9 +205,7 @@ public class AppStockTreeSample extends Application implements
 		// center
 		final SplitPane centerPane = new SplitPane();
 		centerPane.setOrientation(Orientation.VERTICAL);
-		label0 = new Label("Label 0");
-		centerPane.getItems().addAll(tableControlPane, label0, tableView,
-				new Button("Hi!"));
+		centerPane.getItems().addAll(tableControlPane, tableView);
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
 		// right
@@ -212,16 +222,14 @@ public class AppStockTreeSample extends Application implements
 
 		// Bottom
 		HBox bottomPane = new HBox();
-		buttonDummy3 = new Button("Dummy3");
-		buttonDummy4 = new Button("Dummy4");
+		buttonDummy1 = new Button("Dummy1");
 		consoleTextArea = new TextArea();
 		consoleTextArea.setMinSize(400d, 50d);
 		consoleTextArea.setMaxSize(400d, 50d);
 		bottomPane.setSpacing(10);
 		bottomPane.setAlignment(Pos.CENTER_LEFT);
 		bottomPane.setPadding(new Insets(10, 10, 10, 10));
-		bottomPane.getChildren().addAll(buttonDummy3, consoleTextArea,
-				buttonDummy4);
+		bottomPane.getChildren().addAll(consoleTextArea, buttonDummy1);
 
 		// root = top + middle + bottom
 		rootPane = new VBox();
@@ -339,7 +347,9 @@ public class AppStockTreeSample extends Application implements
 	private void createMenu() {
 		menuBar = new MenuBar();
 		menuFile = new Menu("File");
+		menuFile.setDisable(true); //
 		menuView = new Menu("View");
+		menuView.setDisable(true); //
 		menuBar.getMenus().addAll(menuFile, menuView);
 	}
 
@@ -353,18 +363,18 @@ public class AppStockTreeSample extends Application implements
 					if (item != null) {
 						Object value = item.getValue();
 						if (value instanceof MarketItemValue) {
-							System.out.println("MarketItemValue="
-									+ value.toString());
+							// System.out.println("MarketItemValue="
+							// + value.toString());
 						} else if (value instanceof SectorItemValue) {
-							System.out.println("SectorItemValue="
-									+ value.toString());
-							TreeItem parent = item.getParent();
-							System.out.println("parent="
-									+ parent.getValue().toString());
+							// System.out.println("SectorItemValue="
+							// + value.toString());
+							// TreeItem parent = item.getParent();
+							// System.out.println("parent="
+							// + parent.getValue().toString());
 						} else if (value instanceof StockRecord) {
-							System.out.println("StockRecord");
+							// System.out.println("StockRecord");
 						} else {
-							System.out.println("unknown item");
+							// System.out.println("unknown item");
 						}
 					}
 				} else if (mouseEvent.getClickCount() == 2) {
@@ -372,11 +382,11 @@ public class AppStockTreeSample extends Application implements
 							.getSelectedItem();
 					if (item != null) {
 						Object value = item.getValue();
-						System.out.println("Selected Text : " + value);
+						// System.out.println("Selected Text : " + value);
 						if (value instanceof StockRecord) {
 							StockRecord record = (StockRecord) value;
 							String tsv = record.toTsvString();
-							System.out.println("record=" + tsv);
+							// System.out.println("record=" + tsv);
 							label1.setText(tsv.replace("\t",
 									System.lineSeparator()));
 						}
@@ -393,36 +403,43 @@ public class AppStockTreeSample extends Application implements
 					ObservableValue<? extends TreeItem<Object>> observable,
 					TreeItem<Object> oldValue, TreeItem<Object> newValue) {
 				TreeItem<Object> item = (TreeItem<Object>) newValue;
-				if (item != null) {
-					Object value = item.getValue();
-					if (value instanceof MarketItemValue) {
-						System.out.println("MarketItemValue="
-								+ value.toString());
-					} else if (value instanceof SectorItemValue) {
-						System.out.println("SectorItemValue="
-								+ value.toString());
-						TreeItem<Object> parent = item.getParent();
-						System.out.println("parent="
-								+ parent.getValue().toString());
-					} else if (value instanceof StockRecord) {
-						StockRecord record = (StockRecord) value;
-						System.out.println("record=" + record.toTsvString());
-					} else {
-						System.out.println("unknown item");
-					}
-				}
+				reloadTableData(item);
 			}
 		};
 	}
 
-	public static class Stock {
+	private void reloadTableData(TreeItem<Object> item) {
+		if (item == null) {
+			return;
+		}
+		Object value = item.getValue();
+		if (value instanceof MarketItemValue) {
+			tableStockData.clear();
+		} else if (value instanceof SectorItemValue) {
+			tableStockData.clear();
+			item.getChildren()
+					.forEach(
+							stockItem -> {
+								TableStockData stock = stockRecordToStock((StockRecord) stockItem
+										.getValue());
+								tableStockData.add(stock);
+							});
+		}
+	}
+
+	private TableStockData stockRecordToStock(StockRecord record) {
+		return new TableStockData(record.getStockCode(), record.getStockName(),
+				record.getMarket(), record.getSector());
+	}
+
+	public static class TableStockData {
 		private final SimpleStringProperty stockCode;
 		private final SimpleStringProperty stockName;
 		private final SimpleStringProperty market;
 		private final SimpleStringProperty sector;
 
-		private Stock(String stockCode, String stockName, String market,
-				String sector) {
+		private TableStockData(String stockCode, String stockName,
+				String market, String sector) {
 			this.stockCode = new SimpleStringProperty(stockCode);
 			this.stockName = new SimpleStringProperty(stockName);
 			this.market = new SimpleStringProperty(market);
