@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.application.Application;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -46,6 +45,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.ui.MarketItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.ui.SectorItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.ui.TableStockData;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
@@ -129,17 +129,10 @@ public class AppStockTreeSample extends Application implements
 		rootItem = new TreeItem<Object>("All Markets");
 		rootItem.setExpanded(true);
 
-		// Get data and add tree items.
+		// ---------------------------------------
+		// Get stock all data, and add tree items.
+		// ---------------------------------------
 		scanMain();
-
-		this.stockManager = allData.getStockManager();
-		this.financeManager = allData.getFinanceManager();
-		this.lastData = allData.getLastData();
-		this.stockCodes = allData.getStockCodes();
-		this.stockCodeToDetailRecordMap = financeManager
-				.getStockCodeToDetailRecordMap();
-		this.stockCodeToProfileRecordMap = financeManager
-				.getStockCodeToProfileRecordMap();
 
 		// Sort tree items.
 		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
@@ -271,7 +264,6 @@ public class AppStockTreeSample extends Application implements
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
 		stage.setScene(new Scene(rootPane, 1200, 870));
-
 		stage.show();
 	}
 
@@ -280,9 +272,22 @@ public class AppStockTreeSample extends Application implements
 			boolean useStockPrice = true;
 			boolean useDetailInfo = true;
 			boolean useProfileInfo = true;
+
+			// Initialize
 			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
 					selectCalendarRange(), useDetailInfo, useProfileInfo);
+
+			// Scan corps
 			doScanCorps(allData);
+
+			this.stockManager = allData.getStockManager();
+			this.financeManager = allData.getFinanceManager();
+			this.lastData = allData.getLastData();
+			this.stockCodes = allData.getStockCodes();
+			this.stockCodeToDetailRecordMap = financeManager
+					.getStockCodeToDetailRecordMap();
+			this.stockCodeToProfileRecordMap = financeManager
+					.getStockCodeToProfileRecordMap();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -338,7 +343,7 @@ public class AppStockTreeSample extends Application implements
 			if (!foundMarket) {
 				TreeItem<Object> newMarketItem = new TreeItem<Object>(
 						new MarketItemValue(market));
-				newMarketItem.setExpanded(true);
+				newMarketItem.setExpanded(false);
 				rootItem.getChildren().add(newMarketItem);
 				currentMarketItem = newMarketItem;
 			}
@@ -398,18 +403,9 @@ public class AppStockTreeSample extends Application implements
 					if (item != null) {
 						Object value = item.getValue();
 						if (value instanceof MarketItemValue) {
-							// System.out.println("MarketItemValue="
-							// + value.toString());
 						} else if (value instanceof SectorItemValue) {
-							// System.out.println("SectorItemValue="
-							// + value.toString());
-							// TreeItem parent = item.getParent();
-							// System.out.println("parent="
-							// + parent.getValue().toString());
 						} else if (value instanceof StockRecord) {
-							// System.out.println("StockRecord");
 						} else {
-							// System.out.println("unknown item");
 						}
 					}
 				} else if (mouseEvent.getClickCount() == 2) {
@@ -417,7 +413,6 @@ public class AppStockTreeSample extends Application implements
 							.getSelectedItem();
 					if (item != null) {
 						Object value = item.getValue();
-						// System.out.println("Selected Text : " + value);
 						if (value instanceof StockRecord) {
 						}
 					}
@@ -447,68 +442,13 @@ public class AppStockTreeSample extends Application implements
 			tableStockDataList.clear();
 		} else if (value instanceof SectorItemValue) {
 			tableStockDataList.clear();
-			item.getChildren()
-					.forEach(
-							stockItem -> {
-								TableStockData stock = toTableStockData((StockRecord) stockItem
-										.getValue());
-								tableStockDataList.add(stock);
-							});
+			item.getChildren().forEach(stockItem -> {
+				StockRecord record = (StockRecord) stockItem.getValue();
+				tableStockDataList.add(new TableStockData(record));
+			});
 		} else if (value instanceof StockRecord) {
 			String stockCode = ((StockRecord) value).getStockCode();
 			reloadRightPane(stockCode);
-		}
-	}
-
-	private TableStockData toTableStockData(StockRecord record) {
-		return new TableStockData(record.getStockCode(), record.getStockName(),
-				record.getMarket(), record.getSector());
-	}
-
-	public static class TableStockData {
-		private final SimpleStringProperty stockCode;
-		private final SimpleStringProperty stockName;
-		private final SimpleStringProperty market;
-		private final SimpleStringProperty sector;
-
-		private TableStockData(String stockCode, String stockName,
-				String market, String sector) {
-			this.stockCode = new SimpleStringProperty(stockCode);
-			this.stockName = new SimpleStringProperty(stockName);
-			this.market = new SimpleStringProperty(market);
-			this.sector = new SimpleStringProperty(sector);
-		}
-
-		public String getStockCode() {
-			return stockCode.get();
-		}
-
-		public void setStockCode(String s) {
-			stockCode.set(s);
-		}
-
-		public String getStockName() {
-			return stockName.get();
-		}
-
-		public void setStockName(String s) {
-			stockName.set(s);
-		}
-
-		public String getMarket() {
-			return market.get();
-		}
-
-		public void setMarket(String s) {
-			market.set(s);
-		}
-
-		public String getSector() {
-			return sector.get();
-		}
-
-		public void setSector(String s) {
-			sector.set(s);
 		}
 	}
 
@@ -584,8 +524,7 @@ public class AppStockTreeSample extends Application implements
 							.contains(text))
 					|| (sector != null && sector.length() > 0 && sector
 							.contains(text))) {
-				TableStockData stock = toTableStockData(record);
-				tableStockDataList.add(stock);
+				tableStockDataList.add(new TableStockData(record));
 			}
 		});
 	}
