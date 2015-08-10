@@ -97,10 +97,9 @@ public class AppStockTreeSample extends Application implements
 	private TableColumn stockNameColumn;
 	private TableColumn marketColumn;
 	private TableColumn sectorColumn;
-	private Label label1;
 
 	private TextArea consoleTextArea;
-	private Button dummy1Button;
+	private Button clearButton;
 
 	public AppStockTreeSample() {
 	}
@@ -245,8 +244,6 @@ public class AppStockTreeSample extends Application implements
 
 		// right
 		rightPane = new HBox();
-		// label1 = new Label("");
-		// rightPane.getChildren().add(label1);
 
 		// middle = left + center + right
 		middlePane = new SplitPane();
@@ -257,14 +254,17 @@ public class AppStockTreeSample extends Application implements
 
 		// Bottom
 		bottomPane = new HBox();
-		dummy1Button = new Button("Dummy1");
 		consoleTextArea = new TextArea();
 		consoleTextArea.setMinSize(400d, 50d);
 		consoleTextArea.setMaxSize(400d, 50d);
+		clearButton = new Button("Clear");
+		clearButton.setOnAction((ActionEvent e) -> {
+			consoleTextArea.clear();
+		});
 		bottomPane.setSpacing(10);
 		bottomPane.setAlignment(Pos.CENTER_LEFT);
 		bottomPane.setPadding(new Insets(10, 10, 10, 10));
-		bottomPane.getChildren().addAll(consoleTextArea, dummy1Button);
+		bottomPane.getChildren().addAll(consoleTextArea, clearButton);
 
 		// root = top + middle + bottom
 		rootPane = new VBox();
@@ -450,7 +450,7 @@ public class AppStockTreeSample extends Application implements
 			item.getChildren()
 					.forEach(
 							stockItem -> {
-								TableStockData stock = stockRecordToStock((StockRecord) stockItem
+								TableStockData stock = toTableStockData((StockRecord) stockItem
 										.getValue());
 								tableStockDataList.add(stock);
 							});
@@ -460,7 +460,7 @@ public class AppStockTreeSample extends Application implements
 		}
 	}
 
-	private TableStockData stockRecordToStock(StockRecord record) {
+	private TableStockData toTableStockData(StockRecord record) {
 		return new TableStockData(record.getStockCode(), record.getStockName(),
 				record.getMarket(), record.getSector());
 	}
@@ -553,14 +553,16 @@ public class AppStockTreeSample extends Application implements
 				.get(stockCode);
 
 		if (detailRecord != null) {
-			String detail = detailRecord.toTsvString().replace("\t", "\n");
+			String detail = detailRecord.toTsvString().replace("\t",
+					System.lineSeparator());
 			Label labelDetail = new Label(detail);
 			labelDetail.setMinWidth(60d);
 			rightPane.getChildren().add(labelDetail);
 		}
 
 		if (profileRecord != null) {
-			String profile = profileRecord.toTsvString().replace("\t", "\n");
+			String profile = profileRecord.toTsvString().replace("\t",
+					System.lineSeparator());
 			Label labelProfile = new Label(profile);
 			labelProfile.setMinWidth(200d);
 			rightPane.getChildren().addAll(new Label(" "), labelProfile);
@@ -582,7 +584,7 @@ public class AppStockTreeSample extends Application implements
 							.contains(text))
 					|| (sector != null && sector.length() > 0 && sector
 							.contains(text))) {
-				TableStockData stock = stockRecordToStock(record);
+				TableStockData stock = toTableStockData(record);
 				tableStockDataList.add(stock);
 			}
 		});
