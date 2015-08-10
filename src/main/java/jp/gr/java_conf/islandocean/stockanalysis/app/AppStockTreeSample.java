@@ -80,27 +80,27 @@ public class AppStockTreeSample extends Application implements
 	private HBox tableControlPane;
 
 	private MenuBar menuBar;
-	private Menu menuFile;
-	private Menu menuView;
+	private Menu fileMenu;
+	private Menu viewMenu;
 
-	private Button buttonTreeCollapse;
-	private Button buttonTreeExpand;
+	private Button treeCollapseButton;
+	private Button treeExpandButton;
 
 	private TreeView<Object> treeView;
 	private TreeItem<Object> rootItem;
 
 	private TextField searchTextField;
-	private Button buttonTableSearch;
+	private Button searchButton;
 
 	private TableView tableView;
-	private TableColumn stockCodeCol;
-	private TableColumn stockNameCol;
-	private TableColumn marketCol;
-	private TableColumn sectorCol;
+	private TableColumn stockCodeColumn;
+	private TableColumn stockNameColumn;
+	private TableColumn marketColumn;
+	private TableColumn sectorColumn;
 	private Label label1;
 
 	private TextArea consoleTextArea;
-	private Button buttonDummy1;
+	private Button dummy1Button;
 
 	public AppStockTreeSample() {
 	}
@@ -163,33 +163,39 @@ public class AppStockTreeSample extends Application implements
 
 		// Tree controls
 		treeControlPane = new HBox();
-		buttonTreeCollapse = new Button("Collapse");
-		buttonTreeCollapse.setOnAction((ActionEvent e) -> {
+		treeCollapseButton = new Button("Collapse");
+		treeCollapseButton.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(false);
 			});
 		});
 
-		buttonTreeExpand = new Button("Expand");
-		buttonTreeExpand.setOnAction((ActionEvent e) -> {
+		treeExpandButton = new Button("Expand");
+		treeExpandButton.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(true);
 			});
 		});
 
-		treeControlPane.getChildren().addAll(buttonTreeCollapse,
-				buttonTreeExpand);
+		treeControlPane.getChildren().addAll(treeCollapseButton,
+				treeExpandButton);
 		treeControlPane.setSpacing(10);
 		treeControlPane.setAlignment(Pos.CENTER_LEFT);
 		treeControlPane.setPadding(new Insets(10, 10, 10, 10));
 
 		// Table controls
 		tableControlPane = new HBox();
-		buttonTableSearch = new Button("Search");
-		buttonTableSearch.setDisable(true); //
 		searchTextField = new TextField();
-		tableControlPane.getChildren().addAll(searchTextField,
-				buttonTableSearch);
+		searchTextField.setPromptText("Enter search string.");
+		searchTextField.setMinWidth(230d);
+		searchButton = new Button("Search");
+		searchButton.setOnAction((ActionEvent e) -> {
+			String text = searchTextField.getText();
+			if (text != null && text.length() >= 1) {
+				searchCorps(text);
+			}
+		});
+		tableControlPane.getChildren().addAll(searchTextField, searchButton);
 		tableControlPane.setSpacing(10);
 		tableControlPane.setAlignment(Pos.CENTER_LEFT);
 		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
@@ -197,19 +203,19 @@ public class AppStockTreeSample extends Application implements
 
 		// Table View
 		tableView = new TableView();
-		stockCodeCol = new TableColumn("Stock Code");
-		stockNameCol = new TableColumn("Stock Name");
-		stockNameCol.setMinWidth(200);
-		marketCol = new TableColumn("Market");
-		sectorCol = new TableColumn("Sector");
-		stockCodeCol
-				.setCellValueFactory(new PropertyValueFactory<>("stockCode"));
-		stockNameCol
-				.setCellValueFactory(new PropertyValueFactory<>("stockName"));
-		marketCol.setCellValueFactory(new PropertyValueFactory<>("market"));
-		sectorCol.setCellValueFactory(new PropertyValueFactory<>("sector"));
-		tableView.getColumns().addAll(stockCodeCol, stockNameCol, marketCol,
-				sectorCol);
+		stockCodeColumn = new TableColumn("Stock Code");
+		stockNameColumn = new TableColumn("Stock Name");
+		stockNameColumn.setMinWidth(200);
+		marketColumn = new TableColumn("Market");
+		sectorColumn = new TableColumn("Sector");
+		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockCode"));
+		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockName"));
+		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
+		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
+		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
+				marketColumn, sectorColumn);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setItems(tableStockDataList);
 		tableView.getSelectionModel().selectedItemProperty()
@@ -251,14 +257,14 @@ public class AppStockTreeSample extends Application implements
 
 		// Bottom
 		bottomPane = new HBox();
-		buttonDummy1 = new Button("Dummy1");
+		dummy1Button = new Button("Dummy1");
 		consoleTextArea = new TextArea();
 		consoleTextArea.setMinSize(400d, 50d);
 		consoleTextArea.setMaxSize(400d, 50d);
 		bottomPane.setSpacing(10);
 		bottomPane.setAlignment(Pos.CENTER_LEFT);
 		bottomPane.setPadding(new Insets(10, 10, 10, 10));
-		bottomPane.getChildren().addAll(consoleTextArea, buttonDummy1);
+		bottomPane.getChildren().addAll(consoleTextArea, dummy1Button);
 
 		// root = top + middle + bottom
 		rootPane = new VBox();
@@ -375,11 +381,11 @@ public class AppStockTreeSample extends Application implements
 
 	private void createMenu() {
 		menuBar = new MenuBar();
-		menuFile = new Menu("File");
-		menuFile.setDisable(true); //
-		menuView = new Menu("View");
-		menuView.setDisable(true); //
-		menuBar.getMenus().addAll(menuFile, menuView);
+		fileMenu = new Menu("File");
+		fileMenu.setDisable(true); //
+		viewMenu = new Menu("View");
+		viewMenu.setDisable(true); //
+		menuBar.getMenus().addAll(fileMenu, viewMenu);
 	}
 
 	public EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
@@ -559,5 +565,26 @@ public class AppStockTreeSample extends Application implements
 			labelProfile.setMinWidth(200d);
 			rightPane.getChildren().addAll(new Label(" "), labelProfile);
 		}
+	}
+
+	private void searchCorps(String text) {
+		tableStockDataList.clear();
+		lastData.forEach(record -> {
+			String stockCode = record.getStockCode();
+			String stockName = record.getStockName();
+			String market = record.getMarket();
+			String sector = record.getSector();
+			if ((stockCode != null && stockCode.length() > 0 && stockCode
+					.contains(text))
+					|| (stockName != null && stockName.length() > 0 && stockName
+							.contains(text))
+					|| (market != null && market.length() > 0 && market
+							.contains(text))
+					|| (sector != null && sector.length() > 0 && sector
+							.contains(text))) {
+				TableStockData stock = stockRecordToStock(record);
+				tableStockDataList.add(stock);
+			}
+		});
 	}
 }
