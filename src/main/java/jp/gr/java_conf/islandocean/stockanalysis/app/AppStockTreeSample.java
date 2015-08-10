@@ -221,7 +221,7 @@ public class AppStockTreeSample extends Application implements
 		SplitPane middlePane = new SplitPane();
 		middlePane.setOrientation(Orientation.HORIZONTAL);
 		middlePane.getItems().addAll(leftPane, centerPane, rightPane);
-		middlePane.setDividerPositions(0.3f, 0.8f, 1.0f);
+		middlePane.setDividerPositions(0.17f, 0.55f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
 		// Bottom
@@ -239,7 +239,7 @@ public class AppStockTreeSample extends Application implements
 		rootPane = new VBox();
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
-		stage.setScene(new Scene(rootPane, 1000, 870));
+		stage.setScene(new Scene(rootPane, 1200, 870));
 
 		stage.show();
 	}
