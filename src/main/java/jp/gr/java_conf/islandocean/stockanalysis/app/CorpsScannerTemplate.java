@@ -14,7 +14,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public interface ScanCorpsTemplate {
+public interface CorpsScannerTemplate {
 
 	String[] doSelectCorps(StockManager stockManager, List<StockRecord> list,
 			FinanceManager financeManager) throws IOException;
@@ -26,9 +26,13 @@ public interface ScanCorpsTemplate {
 
 	void printFooter(int count);
 
-	default void doScanCorps(boolean useStockPrice, DataStore store,
-			CalendarRange calendarRange, boolean useDetailInfo,
-			boolean useProfileInfo) throws IOException, InvalidDataException {
+	default CorpsAllData initializeCorpsAllData(boolean useStockPrice,
+			DataStore store, CalendarRange calendarRange,
+			boolean useDetailInfo, boolean useProfileInfo) throws IOException,
+			InvalidDataException {
+
+		CorpsAllData corpsAllData = new CorpsAllData(useStockPrice, store,
+				calendarRange, useDetailInfo, useProfileInfo);
 
 		//
 		// stock manager
@@ -41,7 +45,8 @@ public interface ScanCorpsTemplate {
 			int recordCount = stockManager.load(calendarRange, false);
 			if (recordCount <= 0) {
 				System.out.println("Error: Cannot load any stock prirce data.");
-				return;
+				throw new InvalidDataException(
+						"Cannot load any stock prirce data.");
 			} else {
 				System.out
 						.println("Info: Succeeded in loading stock prirce data. recordCount="
@@ -68,7 +73,7 @@ public interface ScanCorpsTemplate {
 			System.out
 					.println("Error: Failed to create stock split infomation.");
 			e.printStackTrace();
-			return;
+			throw e;
 		}
 		if (lastData != null) {
 			financeManager.checkAndWarnSplitInfo(lastData,
@@ -88,6 +93,30 @@ public interface ScanCorpsTemplate {
 		//
 		String[] stockCodes = doSelectCorps(stockManager, lastData,
 				financeManager);
+
+		//
+		// Set data
+		//
+		corpsAllData.setStockManager(stockManager);
+		corpsAllData.setLastData(lastData);
+		corpsAllData.setFinanceManager(financeManager);
+		corpsAllData.setStockCodes(stockCodes);
+
+		return corpsAllData;
+	}
+
+	default void doScanCorps(CorpsAllData corpsAllData) throws IOException,
+			InvalidDataException {
+
+		//
+		// Get data
+		//
+		StockManager stockManager = corpsAllData.getStockManager();
+		List<StockRecord> lastData = corpsAllData.getLastData();
+		FinanceManager financeManager = corpsAllData.getFinanceManager();
+		Map<String, StockSplitInfo> stockCodeToSplitInfoMap = financeManager
+				.getStockCodeToSplitInfoMap();
+		String[] stockCodes = corpsAllData.getStockCodes();
 
 		//
 		// scan

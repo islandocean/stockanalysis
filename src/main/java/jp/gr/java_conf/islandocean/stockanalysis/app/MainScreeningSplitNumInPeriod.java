@@ -16,7 +16,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class MainScreeningSplitNumInPeriod implements ScanCorpsTemplate {
+public class MainScreeningSplitNumInPeriod implements CorpsScannerTemplate {
 
 	private static final String DELIM = "\t";
 
@@ -58,8 +58,10 @@ public class MainScreeningSplitNumInPeriod implements ScanCorpsTemplate {
 			boolean useStockPrice = true;
 			boolean useDetailInfo = false;
 			boolean useProfileInfo = false;
-			doScanCorps(useStockPrice, selectDataStore(),
-					selectCalendarRange(), useDetailInfo, useProfileInfo);
+			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
+					selectDataStore(), selectCalendarRange(), useDetailInfo,
+					useProfileInfo);
+			doScanCorps(allData);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

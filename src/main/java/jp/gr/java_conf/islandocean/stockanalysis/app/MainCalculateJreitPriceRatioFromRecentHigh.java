@@ -18,7 +18,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class MainCalculateJreitPriceRatioFromRecentHigh implements
-		ScanCorpsTemplate {
+		CorpsScannerTemplate {
 
 	private static final String DELIM = "\t";
 
@@ -52,8 +52,10 @@ public class MainCalculateJreitPriceRatioFromRecentHigh implements
 			boolean useStockPrice = true;
 			boolean useDetailInfo = false;
 			boolean useProfileInfo = false;
-			doScanCorps(useStockPrice, selectDataStore(),
-					selectCalendarRange(), useDetailInfo, useProfileInfo);
+			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
+					selectDataStore(), selectCalendarRange(), useDetailInfo,
+					useProfileInfo);
+			doScanCorps(allData);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

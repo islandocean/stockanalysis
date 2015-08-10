@@ -44,8 +44,16 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class AppStockTreeSample extends Application implements
-		ScanCorpsTemplate {
+		CorpsScannerTemplate {
 
+	//
+	// Data
+	//
+	CorpsAllData allData;
+
+	//
+	// Controls
+	//
 	private VBox rootPane;
 
 	private MenuBar menuBar;
@@ -229,8 +237,9 @@ public class AppStockTreeSample extends Application implements
 			boolean useStockPrice = true;
 			boolean useDetailInfo = false;
 			boolean useProfileInfo = false;
-			doScanCorps(useStockPrice, selectDataStore(),
+			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
 					selectCalendarRange(), useDetailInfo, useProfileInfo);
+			doScanCorps(allData);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -409,13 +418,18 @@ public class AppStockTreeSample extends Application implements
 	public static class Stock {
 		private final SimpleStringProperty stockCode;
 		private final SimpleStringProperty stockName;
+		private final SimpleStringProperty market;
+		private final SimpleStringProperty sector;
 
-		private Stock(String stockCode, String stockName) {
+		private Stock(String stockCode, String stockName, String market,
+				String sector) {
 			this.stockCode = new SimpleStringProperty(stockCode);
 			this.stockName = new SimpleStringProperty(stockName);
+			this.market = new SimpleStringProperty(market);
+			this.sector = new SimpleStringProperty(sector);
 		}
 
-		public String getSockCode() {
+		public String getStockCode() {
 			return stockCode.get();
 		}
 
@@ -429,6 +443,22 @@ public class AppStockTreeSample extends Application implements
 
 		public void setStockName(String s) {
 			stockName.set(s);
+		}
+
+		public String getMarket() {
+			return market.get();
+		}
+
+		public void setMarket(String s) {
+			market.set(s);
+		}
+
+		public String getSector() {
+			return sector.get();
+		}
+
+		public void setSector(String s) {
+			sector.set(s);
 		}
 	}
 }

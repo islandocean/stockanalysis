@@ -15,7 +15,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 
-public class MainScreeningPerAndSalary implements ScanCorpsTemplate {
+public class MainScreeningPerAndSalary implements CorpsScannerTemplate {
 
 	public MainScreeningPerAndSalary() {
 	}
@@ -38,8 +38,10 @@ public class MainScreeningPerAndSalary implements ScanCorpsTemplate {
 			boolean useStockPrice = false;
 			boolean useDetailInfo = true;
 			boolean useProfileInfo = true;
-			doScanCorps(useStockPrice, selectDataStore(),
-					selectCalendarRange(), useDetailInfo, useProfileInfo);
+			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
+					selectDataStore(), selectCalendarRange(), useDetailInfo,
+					useProfileInfo);
+			doScanCorps(allData);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
