@@ -280,6 +280,7 @@ public class AppStockTreeSample extends Application implements
 			// Scan corps
 			doScanCorps(allData);
 
+			// Save to reuse
 			this.stockManager = allData.getStockManager();
 			this.financeManager = allData.getFinanceManager();
 			this.lastData = allData.getLastData();
