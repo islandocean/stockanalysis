@@ -21,7 +21,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
@@ -185,6 +187,8 @@ public class AppStockTreeSample extends Application implements
 				sectorCol);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setItems(tableStockData);
+		tableView.getSelectionModel().selectedItemProperty()
+				.addListener(createTableChangeListener());
 
 		//
 		// Layout
@@ -477,5 +481,26 @@ public class AppStockTreeSample extends Application implements
 		public void setSector(String s) {
 			sector.set(s);
 		}
+	}
+
+	public ChangeListener createTableChangeListener() {
+		return new ChangeListener() {
+			@Override
+			public void changed(ObservableValue observable, Object oldValue,
+					Object newValue) {
+
+				if (tableView.getSelectionModel().getSelectedItem() != null) {
+					TableViewSelectionModel selectionModel = tableView
+							.getSelectionModel();
+					ObservableList selectedCells = selectionModel
+							.getSelectedCells();
+					TablePosition tablePosition = (TablePosition) selectedCells
+							.get(0);
+					Object val = tablePosition.getTableColumn().getCellData(
+							newValue);
+					System.out.println("Selected Value" + val);
+				}
+			}
+		};
 	}
 }
