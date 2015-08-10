@@ -13,7 +13,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 
-public class MainScreeningPer implements IScanCorpsTemplate {
+public class MainScreeningPer implements ScanCorpsTemplate {
 
 	public MainScreeningPer() {
 	}

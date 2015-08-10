@@ -44,7 +44,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class AppStockTreeSample extends Application implements
-		IScanCorpsTemplate {
+		ScanCorpsTemplate {
 
 	private VBox rootPane;
 
