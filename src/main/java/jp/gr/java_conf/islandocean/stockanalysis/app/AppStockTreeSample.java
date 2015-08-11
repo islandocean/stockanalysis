@@ -144,6 +144,9 @@ public class AppStockTreeSample extends Application implements
 							SectorUtil.sectorTreeComparator());
 				});
 
+		// Set tree captions
+		setTreeCaptions();
+
 		//
 		// GUI Parts
 		//
@@ -481,6 +484,33 @@ public class AppStockTreeSample extends Application implements
 				});
 			});
 		});
+	}
+
+	private void setTreeCaptions() {
+		ItemValue rootItemValue = (ItemValue) (rootItem.getValue());
+		rootItemValue.setNumChildren(0);
+		rootItem.getChildren().forEach(marketItem -> {
+			ItemValue marketItemValue = (ItemValue) (marketItem.getValue());
+			marketItemValue.setNumChildren(0);
+			marketItem.getChildren().forEach(item -> {
+				ItemValue sectorItemValue = (ItemValue) (item.getValue());
+
+				int num = item.getChildren().size();
+				sectorItemValue.setNumChildren(num);
+				constructItemCaption(sectorItemValue);
+
+				marketItemValue.addNumChildren(num);
+				rootItemValue.addNumChildren(num);
+			});
+			constructItemCaption(marketItemValue);
+		});
+		constructItemCaption(rootItemValue);
+	}
+
+	private void constructItemCaption(ItemValue itemValue) {
+		String caption = itemValue.getName() + " ("
+				+ itemValue.getNumChildren() + ")";
+		itemValue.setCaption(caption);
 	}
 
 	public ChangeListener createTableChangeListener() {

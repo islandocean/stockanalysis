@@ -4,6 +4,7 @@ public class ItemValue {
 
 	private String name;
 	private String caption;
+	private int numChildren = 0;
 
 	public ItemValue() {
 		super();
@@ -12,6 +13,10 @@ public class ItemValue {
 	public ItemValue(String name) {
 		super();
 		setName(name);
+	}
+
+	public void addNumChildren(int add) {
+		numChildren += add;
 	}
 
 	@Override
@@ -36,5 +41,13 @@ public class ItemValue {
 
 	public void setCaption(String caption) {
 		this.caption = caption;
+	}
+
+	public int getNumChildren() {
+		return numChildren;
+	}
+
+	public void setNumChildren(int numChildren) {
+		this.numChildren = numChildren;
 	}
 }
