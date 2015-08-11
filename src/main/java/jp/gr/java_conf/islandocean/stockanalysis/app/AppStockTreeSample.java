@@ -439,8 +439,19 @@ public class AppStockTreeSample extends Application implements
 			return;
 		}
 		Object value = item.getValue();
-		if (value instanceof MarketItemValue) {
+		if (item == rootItem) {
+			reloadTableByAll();
+		} else if (value instanceof MarketItemValue) {
 			tableStockDataList.clear();
+			item.getChildren().forEach(sectorItem -> {
+				sectorItem.getChildren().forEach(stockItem -> {
+					if (!(stockItem.getValue() instanceof StockRecord)) {
+						return; // continue
+					}
+					StockRecord record = (StockRecord) stockItem.getValue();
+					tableStockDataList.add(new TableStockData(record));
+				});
+			});
 		} else if (value instanceof SectorItemValue) {
 			tableStockDataList.clear();
 			item.getChildren().forEach(stockItem -> {
@@ -451,6 +462,21 @@ public class AppStockTreeSample extends Application implements
 			String stockCode = ((StockRecord) value).getStockCode();
 			reloadRightPane(stockCode);
 		}
+	}
+
+	private void reloadTableByAll() {
+		tableStockDataList.clear();
+		rootItem.getChildren().forEach(marketItem -> {
+			marketItem.getChildren().forEach(sectorItem -> {
+				sectorItem.getChildren().forEach(stockItem -> {
+					if (!(stockItem.getValue() instanceof StockRecord)) {
+						return; // continue
+					}
+					StockRecord record = (StockRecord) stockItem.getValue();
+					tableStockDataList.add(new TableStockData(record));
+				});
+			});
+		});
 	}
 
 	public ChangeListener createTableChangeListener() {
