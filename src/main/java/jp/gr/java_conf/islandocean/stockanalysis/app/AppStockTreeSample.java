@@ -299,14 +299,14 @@ public class AppStockTreeSample extends Application implements
 	}
 
 	private void initializeResource() {
-		resource = ResourceBundle.getBundle("app");
+		resource = ResourceBundle.getBundle("resources");
 		Locale defaultLocale = Locale.getDefault();
 
 		Locale.setDefault(Locale.JAPAN);
-		jaResource = ResourceBundle.getBundle("app");
+		jaResource = ResourceBundle.getBundle("resources");
 
 		Locale.setDefault(Locale.ENGLISH);
-		enResource = ResourceBundle.getBundle("app");
+		enResource = ResourceBundle.getBundle("resources");
 
 		Locale.setDefault(defaultLocale);
 
