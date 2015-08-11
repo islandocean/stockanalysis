@@ -3,7 +3,6 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -35,6 +34,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.Message;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ResourceBundleWithUtf8;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.RootItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.SectorItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.TableStockData;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
@@ -46,11 +52,6 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
-import jp.gr.java_conf.islandocean.stockanalysis.ui.ItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.ui.MarketItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.ui.RootItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.ui.SectorItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.ui.TableStockData;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
@@ -70,8 +71,6 @@ public class AppStockTreeSample extends Application implements
 	private Map stockCodeToProfileRecordMap;
 
 	private ResourceBundle resource;
-	private ResourceBundle jaResource;
-	private ResourceBundle enResource;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -141,7 +140,8 @@ public class AppStockTreeSample extends Application implements
 		//
 
 		// Create root item.
-		rootItem = new TreeItem<Object>(new RootItemValue("All Markets"));
+		rootItem = new TreeItem<Object>(new RootItemValue(
+				resource.getString(Message.ALL_MARKETS)));
 		rootItem.setExpanded(true);
 
 		// ---------------------------------------
@@ -173,14 +173,15 @@ public class AppStockTreeSample extends Application implements
 
 		// Tree controls
 		treeControlPane = new HBox();
-		treeCollapseButton = new Button("Collapse");
+		treeCollapseButton = new Button(
+				resource.getString(Message.COLLAPSE_BUTTON));
 		treeCollapseButton.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(false);
 			});
 		});
 
-		treeExpandButton = new Button("Expand");
+		treeExpandButton = new Button(resource.getString(Message.EXPAND_BUTTON));
 		treeExpandButton.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(true);
@@ -196,9 +197,10 @@ public class AppStockTreeSample extends Application implements
 		// Table controls
 		tableControlPane = new HBox();
 		searchTextField = new TextField();
-		searchTextField.setPromptText("Enter search string.");
+		searchTextField.setPromptText(resource
+				.getString(Message.SEARCH_PROMPT_TEXT));
 		searchTextField.setMinWidth(230d);
-		searchButton = new Button("Search");
+		searchButton = new Button(resource.getString(Message.SEARCH_BUTTON));
 		searchButton.setOnAction((ActionEvent e) -> {
 			String text = searchTextField.getText();
 			if (text != null && text.length() >= 1) {
@@ -213,11 +215,13 @@ public class AppStockTreeSample extends Application implements
 
 		// Table View
 		tableView = new TableView();
-		stockCodeColumn = new TableColumn("Stock Code");
-		stockNameColumn = new TableColumn("Stock Name");
+		stockCodeColumn = new TableColumn(
+				resource.getString(Message.STOCK_CODE));
+		stockNameColumn = new TableColumn(
+				resource.getString(Message.STOCK_NAME));
 		stockNameColumn.setMinWidth(200);
-		marketColumn = new TableColumn("Market");
-		sectorColumn = new TableColumn("Sector");
+		marketColumn = new TableColumn(resource.getString(Message.MARKET));
+		sectorColumn = new TableColumn(resource.getString(Message.SECTOR));
 		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
 				"stockCode"));
 		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
@@ -293,31 +297,20 @@ public class AppStockTreeSample extends Application implements
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
 		// stage
-		stage.setTitle("Stock Tree View Sample");
+		stage.setTitle(resource.getString(Message.STAGE_TITLE));
 		stage.setScene(new Scene(rootPane, 1200, 870));
 		stage.show();
 	}
 
 	private void initializeResource() {
-		resource = ResourceBundle.getBundle("resources");
-		Locale defaultLocale = Locale.getDefault();
+		// Locale defaultLocale = Locale.getDefault();
+		// Locale.setDefault(Locale.JAPAN);
+		// Locale.setDefault(Locale.ENGLISH);
 
-		Locale.setDefault(Locale.JAPAN);
-		jaResource = ResourceBundle.getBundle("resources");
+		resource = ResourceBundle.getBundle("resources",
+				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
 
-		Locale.setDefault(Locale.ENGLISH);
-		enResource = ResourceBundle.getBundle("resources");
-
-		Locale.setDefault(defaultLocale);
-
-		System.out.println("#### ALL_MARKETS="
-				+ resource.getString(Message.ALL_MARKETS));
-		System.out.println("#### STOCK_CODE="
-				+ resource.getString(Message.STOCK_CODE));
-		System.out.println("#### STOCK_NAME="
-				+ resource.getString(Message.STOCK_NAME));
-		System.out.println("#### MARKET=" + resource.getString(Message.MARKET));
-		System.out.println("#### SECTOR=" + resource.getString(Message.SECTOR));
+		// Locale.setDefault(defaultLocale);
 	}
 
 	public void scanMain() {

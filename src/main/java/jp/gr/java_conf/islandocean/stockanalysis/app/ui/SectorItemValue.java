@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.ui;
+package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
 public class SectorItemValue extends ItemValue {
 
