@@ -43,7 +43,9 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
+import jp.gr.java_conf.islandocean.stockanalysis.ui.ItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.ui.MarketItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.ui.RootItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.ui.SectorItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.ui.TableStockData;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
@@ -126,7 +128,7 @@ public class AppStockTreeSample extends Application implements
 		//
 
 		// Create root item.
-		rootItem = new TreeItem<Object>("All Markets");
+		rootItem = new TreeItem<Object>(new RootItemValue("All Markets"));
 		rootItem.setExpanded(true);
 
 		// ---------------------------------------
@@ -335,7 +337,8 @@ public class AppStockTreeSample extends Application implements
 			TreeItem<Object> currentMarketItem = null;
 			boolean foundMarket = false;
 			for (TreeItem<Object> oldMarketItem : rootItem.getChildren()) {
-				if (oldMarketItem.getValue().toString().equals(market)) {
+				if (((ItemValue) oldMarketItem.getValue()).getName().equals(
+						market)) {
 					currentMarketItem = oldMarketItem;
 					foundMarket = true;
 					break;
@@ -354,7 +357,8 @@ public class AppStockTreeSample extends Application implements
 			boolean foundSector = false;
 			for (TreeItem<Object> oldSectorItem : currentMarketItem
 					.getChildren()) {
-				if (oldSectorItem.getValue().toString().equals(sector)) {
+				if (((ItemValue) oldSectorItem.getValue()).getName().equals(
+						sector)) {
 					currentSectorItem = oldSectorItem;
 					foundSector = true;
 					break;
