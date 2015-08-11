@@ -104,7 +104,7 @@ public class StockManager {
 		return records;
 	}
 
-	public void generateCorpDataListInCodeMap() throws Exception {
+	public void generateCorpDataListInCodeMap() {
 		this.corpDataListInCodeMap = new LinkedHashMap<String, List<StockRecord>>();
 		List<StockRecord> lastData = allCorpDataListInDailyList
 				.get(allCorpDataListInDailyList.size() - 1);

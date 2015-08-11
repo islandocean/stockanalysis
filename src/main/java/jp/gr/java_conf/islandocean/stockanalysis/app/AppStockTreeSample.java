@@ -1,8 +1,11 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -59,11 +62,16 @@ public class AppStockTreeSample extends Application implements
 	//
 	private CorpsAllData allData;
 	private StockManager stockManager;
+	private LinkedHashMap<String, List<StockRecord>> corpDataListInCodeMap;
 	private FinanceManager financeManager;
 	private List<StockRecord> lastData;
 	private String[] stockCodes;
 	private Map stockCodeToDetailRecordMap;
 	private Map stockCodeToProfileRecordMap;
+
+	private ResourceBundle resource;
+	private ResourceBundle jaResource;
+	private ResourceBundle enResource;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -101,6 +109,8 @@ public class AppStockTreeSample extends Application implements
 	private TableColumn sectorColumn;
 
 	private TextArea consoleTextArea;
+	private Button updateButton;
+	private Button getButton;
 	private Button clearButton;
 
 	public AppStockTreeSample() {
@@ -121,7 +131,10 @@ public class AppStockTreeSample extends Application implements
 
 	@Override
 	public void start(Stage stage) {
-		stage.setTitle("Stock Tree View Sample");
+		//
+		// Initialize resource bundle
+		//
+		initializeResource();
 
 		//
 		// Tree items
@@ -253,8 +266,18 @@ public class AppStockTreeSample extends Application implements
 		// Bottom
 		bottomPane = new HBox();
 		consoleTextArea = new TextArea();
-		consoleTextArea.setMinSize(400d, 50d);
-		consoleTextArea.setMaxSize(400d, 50d);
+		consoleTextArea.setMinSize(200d, 50d);
+		consoleTextArea.setMaxSize(200d, 50d);
+		consoleTextArea
+				.setPromptText("Enter stock codes separated by comma or line separator.");
+		updateButton = new Button("Update Table");
+		updateButton.setOnAction((ActionEvent e) -> {
+			updateTable();
+		});
+		getButton = new Button("Get Stock Codes from Table");
+		getButton.setOnAction((ActionEvent e) -> {
+			getFromTable();
+		});
 		clearButton = new Button("Clear");
 		clearButton.setOnAction((ActionEvent e) -> {
 			consoleTextArea.clear();
@@ -262,14 +285,39 @@ public class AppStockTreeSample extends Application implements
 		bottomPane.setSpacing(10);
 		bottomPane.setAlignment(Pos.CENTER_LEFT);
 		bottomPane.setPadding(new Insets(10, 10, 10, 10));
-		bottomPane.getChildren().addAll(consoleTextArea, clearButton);
+		bottomPane.getChildren().addAll(consoleTextArea, updateButton,
+				getButton, clearButton);
 
 		// root = top + middle + bottom
 		rootPane = new VBox();
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
+		// stage
+		stage.setTitle("Stock Tree View Sample");
 		stage.setScene(new Scene(rootPane, 1200, 870));
 		stage.show();
+	}
+
+	private void initializeResource() {
+		resource = ResourceBundle.getBundle("app");
+		Locale defaultLocale = Locale.getDefault();
+
+		Locale.setDefault(Locale.JAPAN);
+		jaResource = ResourceBundle.getBundle("app");
+
+		Locale.setDefault(Locale.ENGLISH);
+		enResource = ResourceBundle.getBundle("app");
+
+		Locale.setDefault(defaultLocale);
+
+		System.out.println("#### ALL_MARKETS="
+				+ resource.getString(Message.ALL_MARKETS));
+		System.out.println("#### STOCK_CODE="
+				+ resource.getString(Message.STOCK_CODE));
+		System.out.println("#### STOCK_NAME="
+				+ resource.getString(Message.STOCK_NAME));
+		System.out.println("#### MARKET=" + resource.getString(Message.MARKET));
+		System.out.println("#### SECTOR=" + resource.getString(Message.SECTOR));
 	}
 
 	public void scanMain() {
@@ -287,6 +335,9 @@ public class AppStockTreeSample extends Application implements
 
 			// Save to reuse
 			this.stockManager = allData.getStockManager();
+			this.stockManager.generateCorpDataListInCodeMap();
+			this.corpDataListInCodeMap = stockManager
+					.getCorpDataListInCodeMap();
 			this.financeManager = allData.getFinanceManager();
 			this.lastData = allData.getLastData();
 			this.stockCodes = allData.getStockCodes();
@@ -588,5 +639,43 @@ public class AppStockTreeSample extends Application implements
 				tableStockDataList.add(new TableStockData(record));
 			}
 		});
+	}
+
+	private void updateTable() {
+		tableStockDataList.clear();
+		String text = consoleTextArea.getText();
+		text = text.trim();
+		text = text.replace("\r\n", ",");
+		text = text.replace("\r", ",");
+		text = text.replace("\n", ",");
+		String[] codes = text.split(",");
+		for (String code : codes) {
+			if (code == null) {
+				continue;
+			}
+			String stockCode = code.trim();
+			if (stockCode.length() == 0) {
+				continue;
+			}
+			List<StockRecord> list = corpDataListInCodeMap.get(stockCode);
+			if (list == null || list.size() == 0) {
+				continue;
+			}
+			for (StockRecord record : list) {
+				tableStockDataList.add(new TableStockData(record));
+				break;
+			}
+		}
+	}
+
+	private void getFromTable() {
+		StringBuilder sb = new StringBuilder();
+		for (TableStockData stockData : tableStockDataList) {
+			if (sb.length() != 0) {
+				sb.append(System.lineSeparator());
+			}
+			sb.append(stockData.getStockCode());
+		}
+		consoleTextArea.setText(sb.toString());
 	}
 }
