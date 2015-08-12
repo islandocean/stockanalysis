@@ -115,8 +115,11 @@ public class AppStockTreeSample extends Application implements
 	private Button getButton;
 	private Button clearButton;
 
-	private Accordion accordion;
-	private CorpInfoPane corpInfoPane;
+	private Accordion accordionPriceInfo;
+	private CorpInfoPane corpPriceInfoPane;
+
+	private Accordion accordionProfileInfo;
+	private CorpInfoPane corpProfileInfoPane;
 
 	public AppStockTreeSample() {
 	}
@@ -244,10 +247,16 @@ public class AppStockTreeSample extends Application implements
 				.addListener(createTableChangeListener());
 
 		// Accordion
-		accordion = new Accordion();
-		corpInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
-		accordion.getPanes().addAll(corpInfoPane);
-		accordion.setExpandedPane(corpInfoPane);
+		accordionPriceInfo = new Accordion();
+		corpPriceInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
+		accordionPriceInfo.getPanes().addAll(corpPriceInfoPane);
+		accordionPriceInfo.setExpandedPane(corpPriceInfoPane);
+
+		accordionProfileInfo = new Accordion();
+		corpProfileInfoPane = new CorpInfoPane(CorpViewType.PROFILE_INFO,
+				resource);
+		accordionProfileInfo.getPanes().addAll(corpProfileInfoPane);
+		accordionProfileInfo.setExpandedPane(corpProfileInfoPane);
 
 		//
 		// Layout
@@ -604,31 +613,15 @@ public class AppStockTreeSample extends Application implements
 	}
 
 	private void reloadRightPane(String stockCode) {
-		rightPane.getChildren().clear();
-
 		ProfileRecord profileRecord = (ProfileRecord) stockCodeToProfileRecordMap
 				.get(stockCode);
 		DetailRecord detailRecord = (DetailRecord) stockCodeToDetailRecordMap
 				.get(stockCode);
-
-		corpInfoPane.setDetailRecord(detailRecord);
-		rightPane.getChildren().add(accordion);
-
-		if (profileRecord != null) {
-			String profile = profileRecord.toTsvString().replace("\t",
-					System.lineSeparator());
-			Label labelProfile = new Label(profile);
-			labelProfile.setMinWidth(200d);
-			rightPane.getChildren().addAll(new Label(" "), labelProfile);
-		}
-
-		// if (detailRecord != null) {
-		// String detail = detailRecord.toTsvString().replace("\t",
-		// System.lineSeparator());
-		// Label labelDetail = new Label(detail);
-		// labelDetail.setMinWidth(60d);
-		// rightPane.getChildren().add(labelDetail);
-		// }
+		corpPriceInfoPane.setDetailRecord(detailRecord);
+		corpProfileInfoPane.setProfileRecord(profileRecord);
+		rightPane.getChildren().clear();
+		rightPane.getChildren()
+				.addAll(accordionPriceInfo, accordionProfileInfo);
 	}
 
 	private void searchCorps(String text) {
