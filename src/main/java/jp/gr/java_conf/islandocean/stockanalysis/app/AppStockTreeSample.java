@@ -118,6 +118,9 @@ public class AppStockTreeSample extends Application implements
 	private Accordion accordionPriceInfo;
 	private CorpInfoPane corpPriceInfoPane;
 
+	private Accordion accordionReferenceInfo;
+	private CorpInfoPane corpReferenceInfoPane;
+
 	private Accordion accordionProfileInfo;
 	private CorpInfoPane corpProfileInfoPane;
 
@@ -251,6 +254,12 @@ public class AppStockTreeSample extends Application implements
 		corpPriceInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
 		accordionPriceInfo.getPanes().addAll(corpPriceInfoPane);
 		accordionPriceInfo.setExpandedPane(corpPriceInfoPane);
+
+		accordionReferenceInfo = new Accordion();
+		corpReferenceInfoPane = new CorpInfoPane(CorpViewType.REFERENCE_INFO,
+				resource);
+		accordionReferenceInfo.getPanes().addAll(corpReferenceInfoPane);
+		accordionReferenceInfo.setExpandedPane(corpReferenceInfoPane);
 
 		accordionProfileInfo = new Accordion();
 		corpProfileInfoPane = new CorpInfoPane(CorpViewType.PROFILE_INFO,
@@ -619,9 +628,10 @@ public class AppStockTreeSample extends Application implements
 				.get(stockCode);
 		corpPriceInfoPane.setDetailRecord(detailRecord);
 		corpProfileInfoPane.setProfileRecord(profileRecord);
+		corpReferenceInfoPane.setDetailRecord(detailRecord);
 		rightPane.getChildren().clear();
-		rightPane.getChildren()
-				.addAll(accordionPriceInfo, accordionProfileInfo);
+		rightPane.getChildren().addAll(accordionPriceInfo,
+				accordionReferenceInfo, accordionProfileInfo);
 	}
 
 	private void searchCorps(String text) {

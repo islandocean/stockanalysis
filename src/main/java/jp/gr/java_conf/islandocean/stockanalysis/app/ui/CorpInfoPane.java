@@ -163,10 +163,71 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(getDetailString(DetailEnum.LOW_PRICE_LIMIT)), 1,
 					row);
 			break;
+			
 		case REFERENCE_INFO:
+			grid.add(new Label(resource.getString(MessageKey.MARKET_CAPITALIZATION)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.MARKET_CAPITALIZATION)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.OUTSTANDING_STOCK_VOLUME)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.OUTSTANDING_STOCK_VOLUME)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.ANNUAL_INTEREST_RATE)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.ANNUAL_INTEREST_RATE)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.DIVIDENDS_PER_SHARE)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.DIVIDENDS_PER_SHARE)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.PER)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.PER)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.PBR)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.PBR)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.EPS)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.EPS)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.BPS)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.BPS)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.MINIMUM_PURCHASE_AMOUNT)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.MINIMUM_PURCHASE_AMOUNT)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.SHARE_UNIT_NUMBER)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.SHARE_UNIT_NUMBER)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.YEARLY_HIGH)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.YEARLY_HIGH)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.YEARLY_LOW)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.YEARLY_LOW)), 1, row);
 			break;
+			
 		case MARGIN_INFO:
 			break;
+			
 		case PROFILE_INFO:
 			grid.add(new Label(resource.getString(MessageKey.STOCK_NAME)), 0,
 					row);
