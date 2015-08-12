@@ -53,8 +53,8 @@ public class CorpInfoPane extends TitledPane {
 		grid.setVgap(4);
 		grid.setPadding(new Insets(5, 5, 5, 5));
 
-		int col1MinWidth = 70;
-		int col2MinWidth = 330;
+		int col1MinWidth = 100;
+		int col2MinWidth = 100;
 		switch (corpViewType) {
 		case PRICE_INFO:
 			break;
@@ -64,7 +64,7 @@ public class CorpInfoPane extends TitledPane {
 			break;
 		case PROFILE_INFO:
 			col1MinWidth = 100;
-			col2MinWidth = 300;
+			col2MinWidth = 100;
 			break;
 		}
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -162,57 +162,74 @@ public class CorpInfoPane extends TitledPane {
 					0, row);
 			grid.add(new Label(getDetailString(DetailEnum.LOW_PRICE_LIMIT)), 1,
 					row);
+
 			break;
-			
+
 		case REFERENCE_INFO:
-			grid.add(new Label(resource.getString(MessageKey.MARKET_CAPITALIZATION)), 0,
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.MARKET_CAPITALIZATION)), 0,
 					row);
-			grid.add(new Label(getDetailString(DetailEnum.MARKET_CAPITALIZATION)), 1, row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.MARKET_CAPITALIZATION)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.OUTSTANDING_STOCK_VOLUME)), 0,
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.OUTSTANDING_STOCK_VOLUME)),
+					0, row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.OUTSTANDING_STOCK_VOLUME)), 1,
 					row);
-			grid.add(new Label(getDetailString(DetailEnum.OUTSTANDING_STOCK_VOLUME)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.ANNUAL_INTEREST_RATE)), 0,
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.ANNUAL_INTEREST_RATE)), 0,
 					row);
-			grid.add(new Label(getDetailString(DetailEnum.ANNUAL_INTEREST_RATE)), 1, row);
+			grid.add(
+					new Label(getDetailString(DetailEnum.ANNUAL_INTEREST_RATE)),
+					1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.DIVIDENDS_PER_SHARE)), 0,
-					row);
-			grid.add(new Label(getDetailString(DetailEnum.DIVIDENDS_PER_SHARE)), 1, row);
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.DIVIDENDS_PER_SHARE)), 0, row);
+			grid.add(
+					new Label(getDetailString(DetailEnum.DIVIDENDS_PER_SHARE)),
+					1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.PER)), 0,
-					row);
+			grid.add(new Label(resource.getString(MessageKey.PER)), 0, row);
 			grid.add(new Label(getDetailString(DetailEnum.PER)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.PBR)), 0,
-					row);
+			grid.add(new Label(resource.getString(MessageKey.PBR)), 0, row);
 			grid.add(new Label(getDetailString(DetailEnum.PBR)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.EPS)), 0,
-					row);
+			grid.add(new Label(resource.getString(MessageKey.EPS)), 0, row);
 			grid.add(new Label(getDetailString(DetailEnum.EPS)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.BPS)), 0,
-					row);
+			grid.add(new Label(resource.getString(MessageKey.BPS)), 0, row);
 			grid.add(new Label(getDetailString(DetailEnum.BPS)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.MINIMUM_PURCHASE_AMOUNT)), 0,
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.MINIMUM_PURCHASE_AMOUNT)), 0,
 					row);
-			grid.add(new Label(getDetailString(DetailEnum.MINIMUM_PURCHASE_AMOUNT)), 1, row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.MINIMUM_PURCHASE_AMOUNT)), 1,
+					row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.SHARE_UNIT_NUMBER)), 0,
-					row);
-			grid.add(new Label(getDetailString(DetailEnum.SHARE_UNIT_NUMBER)), 1, row);
+			grid.add(
+					new Label(resource.getString(MessageKey.SHARE_UNIT_NUMBER)),
+					0, row);
+			grid.add(new Label(getDetailString(DetailEnum.SHARE_UNIT_NUMBER)),
+					1, row);
 
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.YEARLY_HIGH)), 0,
@@ -223,11 +240,56 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(resource.getString(MessageKey.YEARLY_LOW)), 0,
 					row);
 			grid.add(new Label(getDetailString(DetailEnum.YEARLY_LOW)), 1, row);
+
 			break;
-			
+
 		case MARGIN_INFO:
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.MARGIN_DEBT_BALANCE)), 0, row);
+			grid.add(
+					new Label(getDetailString(DetailEnum.MARGIN_DEBT_BALANCE)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(
+							resource.getString(MessageKey.MARGIN_DEBT_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK)),
+					0, row);
+			grid.add(
+					new Label(
+							getDetailString(DetailEnum.MARGIN_DEBT_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.MARGIN_SELLING_BALANCE)), 0,
+					row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.MARGIN_SELLING_BALANCE)), 1, row);
+
+			++row;
+			grid.add(
+					new Label(
+							resource.getString(MessageKey.MARGIN_SELLING_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK)),
+					0, row);
+			grid.add(
+					new Label(
+							getDetailString(DetailEnum.MARGIN_SELLING_BALANCE_RATIO_COMPARISON_WITH_PREVIOUS_WEEK)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.RATIO_OF_MARGIN_BALANCE)), 0,
+					row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.RATIO_OF_MARGIN_BALANCE)), 1,
+					row);
+
 			break;
-			
+
 		case PROFILE_INFO:
 			grid.add(new Label(resource.getString(MessageKey.STOCK_NAME)), 0,
 					row);
@@ -242,22 +304,24 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(labelFeature, 1, row);
 
 			++row;
+			Label labelConsolidatedOperations = new Label(
+					getProfileString(ProfileEnum.CONSOLIDATED_OPERATIONS));
+			labelConsolidatedOperations.wrapTextProperty().set(true);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.CONSOLIDATED_OPERATIONS)), 0,
 					row);
-			grid.add(new Label(
-					getProfileString(ProfileEnum.CONSOLIDATED_OPERATIONS)), 1,
-					row);
+			grid.add(labelConsolidatedOperations, 1, row);
 
 			++row;
+			Label labelHeadOffice = new Label(
+					getProfileString(ProfileEnum.LOCATION_OF_HEAD_OFFICE));
+			labelHeadOffice.wrapTextProperty().set(true);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.LOCATION_OF_HEAD_OFFICE)), 0,
 					row);
-			grid.add(new Label(
-					getProfileString(ProfileEnum.LOCATION_OF_HEAD_OFFICE)), 1,
-					row);
+			grid.add(labelHeadOffice, 1, row);
 
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.NEAREST_STATION)),
@@ -277,13 +341,14 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(getProfileString(ProfileEnum.SECTOR)), 1, row);
 
 			++row;
+			Label labelStockNameInEnglish = new Label(
+					getProfileString(ProfileEnum.STOCK_NAME_IN_ENGLISH));
+			labelStockNameInEnglish.wrapTextProperty().set(true);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.STOCK_NAME_IN_ENGLISH)), 0,
 					row);
-			grid.add(new Label(
-					getProfileString(ProfileEnum.STOCK_NAME_IN_ENGLISH)), 1,
-					row);
+			grid.add(labelStockNameInEnglish, 1, row);
 
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.REPRESENTATIVE)),

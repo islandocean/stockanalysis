@@ -121,6 +121,9 @@ public class AppStockTreeSample extends Application implements
 	private Accordion accordionReferenceInfo;
 	private CorpInfoPane corpReferenceInfoPane;
 
+	private Accordion accordionMarginInfo;
+	private CorpInfoPane corpMarginInfoPane;
+
 	private Accordion accordionProfileInfo;
 	private CorpInfoPane corpProfileInfoPane;
 
@@ -260,6 +263,12 @@ public class AppStockTreeSample extends Application implements
 				resource);
 		accordionReferenceInfo.getPanes().addAll(corpReferenceInfoPane);
 		accordionReferenceInfo.setExpandedPane(corpReferenceInfoPane);
+
+		accordionMarginInfo = new Accordion();
+		corpMarginInfoPane = new CorpInfoPane(CorpViewType.MARGIN_INFO,
+				resource);
+		accordionMarginInfo.getPanes().addAll(corpMarginInfoPane);
+		accordionMarginInfo.setExpandedPane(corpMarginInfoPane);
 
 		accordionProfileInfo = new Accordion();
 		corpProfileInfoPane = new CorpInfoPane(CorpViewType.PROFILE_INFO,
@@ -626,12 +635,21 @@ public class AppStockTreeSample extends Application implements
 				.get(stockCode);
 		DetailRecord detailRecord = (DetailRecord) stockCodeToDetailRecordMap
 				.get(stockCode);
+
 		corpPriceInfoPane.setDetailRecord(detailRecord);
-		corpProfileInfoPane.setProfileRecord(profileRecord);
 		corpReferenceInfoPane.setDetailRecord(detailRecord);
+		corpMarginInfoPane.setDetailRecord(detailRecord);
+		corpProfileInfoPane.setProfileRecord(profileRecord);
+
+		VBox vbox = new VBox();
+		vbox.getChildren().addAll(accordionPriceInfo, accordionReferenceInfo,
+				accordionMarginInfo);
+
+		HBox hbox = new HBox();
+		hbox.getChildren().addAll(vbox, accordionProfileInfo);
+
 		rightPane.getChildren().clear();
-		rightPane.getChildren().addAll(accordionPriceInfo,
-				accordionReferenceInfo, accordionProfileInfo);
+		rightPane.getChildren().addAll(hbox);
 	}
 
 	private void searchCorps(String text) {
