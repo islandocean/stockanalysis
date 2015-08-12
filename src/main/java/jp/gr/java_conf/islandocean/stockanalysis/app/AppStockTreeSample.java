@@ -17,6 +17,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -34,6 +35,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.CorpInfoPane;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.CorpViewType;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MessageKey;
@@ -82,7 +85,7 @@ public class AppStockTreeSample extends Application implements
 	private HBox topPane;
 	private VBox leftPane;
 	private SplitPane centerPane;
-	private HBox rightPane;
+	private VBox rightPane;
 	private SplitPane middlePane;
 	private HBox bottomPane;
 	private HBox treeControlPane;
@@ -111,6 +114,9 @@ public class AppStockTreeSample extends Application implements
 	private Button updateButton;
 	private Button getButton;
 	private Button clearButton;
+
+	private Accordion accordion;
+	private CorpInfoPane corpInfoPane;
 
 	public AppStockTreeSample() {
 	}
@@ -237,6 +243,12 @@ public class AppStockTreeSample extends Application implements
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(createTableChangeListener());
 
+		// Accordion
+		accordion = new Accordion();
+		corpInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
+		accordion.getPanes().addAll(corpInfoPane);
+		accordion.setExpandedPane(corpInfoPane);
+
 		//
 		// Layout
 		//
@@ -260,7 +272,7 @@ public class AppStockTreeSample extends Application implements
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
 		// right
-		rightPane = new HBox();
+		rightPane = new VBox();
 
 		// middle = left + center + right
 		middlePane = new SplitPane();
@@ -599,13 +611,8 @@ public class AppStockTreeSample extends Application implements
 		DetailRecord detailRecord = (DetailRecord) stockCodeToDetailRecordMap
 				.get(stockCode);
 
-		if (detailRecord != null) {
-			String detail = detailRecord.toTsvString().replace("\t",
-					System.lineSeparator());
-			Label labelDetail = new Label(detail);
-			labelDetail.setMinWidth(60d);
-			rightPane.getChildren().add(labelDetail);
-		}
+		corpInfoPane.setDetailRecord(detailRecord);
+		rightPane.getChildren().add(accordion);
 
 		if (profileRecord != null) {
 			String profile = profileRecord.toTsvString().replace("\t",
@@ -614,6 +621,14 @@ public class AppStockTreeSample extends Application implements
 			labelProfile.setMinWidth(200d);
 			rightPane.getChildren().addAll(new Label(" "), labelProfile);
 		}
+
+		// if (detailRecord != null) {
+		// String detail = detailRecord.toTsvString().replace("\t",
+		// System.lineSeparator());
+		// Label labelDetail = new Label(detail);
+		// labelDetail.setMinWidth(60d);
+		// rightPane.getChildren().add(labelDetail);
+		// }
 	}
 
 	private void searchCorps(String text) {
