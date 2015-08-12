@@ -1,6 +1,6 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
-public class Message {
+public class MessageKey {
 
 	public static final String STAGE_TITLE = "STAGE_TITLE";
 	public static final String ALL_MARKETS = "ALL_MARKETS";
@@ -13,6 +13,6 @@ public class Message {
 	public static final String SEARCH_BUTTON = "SEARCH_BUTTON";
 	public static final String SEARCH_PROMPT_TEXT = "SEARCH_PROMPT_TEXT";
 
-	private Message() {
+	private MessageKey() {
 	}
 }

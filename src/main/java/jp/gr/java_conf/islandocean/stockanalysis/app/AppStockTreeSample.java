@@ -36,7 +36,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.Message;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MessageKey;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ResourceBundleWithUtf8;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.RootItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.SectorItemValue;
@@ -141,7 +141,7 @@ public class AppStockTreeSample extends Application implements
 
 		// Create root item.
 		rootItem = new TreeItem<Object>(new RootItemValue(
-				resource.getString(Message.ALL_MARKETS)));
+				resource.getString(MessageKey.ALL_MARKETS)));
 		rootItem.setExpanded(true);
 
 		// ---------------------------------------
@@ -174,15 +174,17 @@ public class AppStockTreeSample extends Application implements
 		// Tree controls
 		treeControlPane = new HBox();
 		treeCollapseButton = new Button(
-				resource.getString(Message.COLLAPSE_BUTTON));
+				resource.getString(MessageKey.COLLAPSE_BUTTON));
 		treeCollapseButton.setOnAction((ActionEvent e) -> {
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(false);
 			});
 		});
 
-		treeExpandButton = new Button(resource.getString(Message.EXPAND_BUTTON));
+		treeExpandButton = new Button(
+				resource.getString(MessageKey.EXPAND_BUTTON));
 		treeExpandButton.setOnAction((ActionEvent e) -> {
+			rootItem.setExpanded(true);
 			rootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(true);
 			});
@@ -198,9 +200,9 @@ public class AppStockTreeSample extends Application implements
 		tableControlPane = new HBox();
 		searchTextField = new TextField();
 		searchTextField.setPromptText(resource
-				.getString(Message.SEARCH_PROMPT_TEXT));
+				.getString(MessageKey.SEARCH_PROMPT_TEXT));
 		searchTextField.setMinWidth(230d);
-		searchButton = new Button(resource.getString(Message.SEARCH_BUTTON));
+		searchButton = new Button(resource.getString(MessageKey.SEARCH_BUTTON));
 		searchButton.setOnAction((ActionEvent e) -> {
 			String text = searchTextField.getText();
 			if (text != null && text.length() >= 1) {
@@ -216,12 +218,12 @@ public class AppStockTreeSample extends Application implements
 		// Table View
 		tableView = new TableView();
 		stockCodeColumn = new TableColumn(
-				resource.getString(Message.STOCK_CODE));
+				resource.getString(MessageKey.STOCK_CODE));
 		stockNameColumn = new TableColumn(
-				resource.getString(Message.STOCK_NAME));
+				resource.getString(MessageKey.STOCK_NAME));
 		stockNameColumn.setMinWidth(200);
-		marketColumn = new TableColumn(resource.getString(Message.MARKET));
-		sectorColumn = new TableColumn(resource.getString(Message.SECTOR));
+		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
+		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
 		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
 				"stockCode"));
 		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
@@ -297,7 +299,7 @@ public class AppStockTreeSample extends Application implements
 		rootPane.getChildren().addAll(topPane, middlePane, bottomPane);
 
 		// stage
-		stage.setTitle(resource.getString(Message.STAGE_TITLE));
+		stage.setTitle(resource.getString(MessageKey.STAGE_TITLE));
 		stage.setScene(new Scene(rootPane, 1200, 870));
 		stage.show();
 	}
