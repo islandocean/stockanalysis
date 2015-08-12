@@ -5,6 +5,7 @@ import java.util.ResourceBundle;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
@@ -51,6 +52,26 @@ public class CorpInfoPane extends TitledPane {
 		grid = new GridPane();
 		grid.setVgap(4);
 		grid.setPadding(new Insets(5, 5, 5, 5));
+
+		int col1MinWidth = 70;
+		int col2MinWidth = 330;
+		switch (corpViewType) {
+		case PRICE_INFO:
+			break;
+		case REFERENCE_INFO:
+			break;
+		case MARGIN_INFO:
+			break;
+		case PROFILE_INFO:
+			col1MinWidth = 100;
+			col2MinWidth = 300;
+			break;
+		}
+		ColumnConstraints col1 = new ColumnConstraints();
+		col1.setMinWidth(col1MinWidth);
+		ColumnConstraints col2 = new ColumnConstraints();
+		col2.setMinWidth(col2MinWidth);
+		grid.getColumnConstraints().addAll(col1, col2);
 
 		int row = 0;
 		switch (corpViewType) {
@@ -147,20 +168,17 @@ public class CorpInfoPane extends TitledPane {
 		case MARGIN_INFO:
 			break;
 		case PROFILE_INFO:
-			grid.add(new Label(resource.getString(MessageKey.STOCK_CODE)), 0,
-					row);
-			grid.add(new Label(getProfileString(ProfileEnum.STOCK_CODE)), 1,
-					row);
-
-			++row;
 			grid.add(new Label(resource.getString(MessageKey.STOCK_NAME)), 0,
 					row);
 			grid.add(new Label(getProfileString(ProfileEnum.STOCK_NAME)), 1,
 					row);
 
 			++row;
+			Label labelFeature = new Label(
+					getProfileString(ProfileEnum.FEATURE));
+			labelFeature.wrapTextProperty().set(true);
 			grid.add(new Label(resource.getString(MessageKey.FEATURE)), 0, row);
-			grid.add(new Label(getProfileString(ProfileEnum.FEATURE)), 1, row);
+			grid.add(labelFeature, 1, row);
 
 			++row;
 			grid.add(
