@@ -3,6 +3,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -85,7 +86,8 @@ public class AppStockTreeSample extends Application implements
 	private HBox topPane;
 	private VBox leftPane;
 	private SplitPane centerPane;
-	private VBox rightPane;
+	private VBox rightPane1;
+	private VBox rightPane2;
 	private SplitPane middlePane;
 	private HBox bottomPane;
 	private HBox treeControlPane;
@@ -305,13 +307,15 @@ public class AppStockTreeSample extends Application implements
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
 		// right
-		rightPane = new VBox();
+		rightPane1 = new VBox();
+		rightPane2 = new VBox();
 
 		// middle = left + center + right
 		middlePane = new SplitPane();
 		middlePane.setOrientation(Orientation.HORIZONTAL);
-		middlePane.getItems().addAll(leftPane, centerPane, rightPane);
-		middlePane.setDividerPositions(0.17f, 0.55f, 1.0f);
+		middlePane.getItems().addAll(leftPane, centerPane, rightPane1,
+				rightPane2);
+		middlePane.setDividerPositions(0.17f, 0.55f, 0.75f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
 		// Bottom
@@ -352,7 +356,7 @@ public class AppStockTreeSample extends Application implements
 	private void initializeResource() {
 		// Locale defaultLocale = Locale.getDefault();
 		// Locale.setDefault(Locale.JAPAN);
-		// Locale.setDefault(Locale.ENGLISH);
+		Locale.setDefault(Locale.ENGLISH);
 
 		resource = ResourceBundle.getBundle("resources",
 				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
@@ -648,18 +652,13 @@ public class AppStockTreeSample extends Application implements
 		marginInfoPane.setDetailRecord(detailRecord);
 		profileInfoPane.setProfileRecord(profileRecord);
 
-		VBox leftVbox = new VBox();
-		leftVbox.getChildren().addAll(priceInfoAccordion,
+		rightPane1.getChildren().clear();
+		rightPane1.getChildren().addAll(priceInfoAccordion,
 				referenceInfoAccordion, fundReferenceInfoAccordion);
-		VBox rightVbox = new VBox();
-		rightVbox.getChildren().addAll(profileInfoAccordion,
+
+		rightPane2.getChildren().clear();
+		rightPane2.getChildren().addAll(profileInfoAccordion,
 				marginInfoAccordion);
-
-		HBox hbox = new HBox();
-		hbox.getChildren().addAll(leftVbox, rightVbox);
-
-		rightPane.getChildren().clear();
-		rightPane.getChildren().addAll(hbox);
 	}
 
 	private void searchCorps(String text) {
