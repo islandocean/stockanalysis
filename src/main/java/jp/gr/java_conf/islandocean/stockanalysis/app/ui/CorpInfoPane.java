@@ -36,6 +36,9 @@ public class CorpInfoPane extends TitledPane {
 		case REFERENCE_INFO:
 			title = resource.getString(MessageKey.REFERENCE_INFO);
 			break;
+		case FUND_REFERENCE_INFO:
+			title = resource.getString(MessageKey.FUND_REFERENCE_INFO);
+			break;
 		case MARGIN_INFO:
 			title = resource.getString(MessageKey.MARGIN_INFO);
 			break;
@@ -59,6 +62,8 @@ public class CorpInfoPane extends TitledPane {
 		case PRICE_INFO:
 			break;
 		case REFERENCE_INFO:
+			break;
+		case FUND_REFERENCE_INFO:
 			break;
 		case MARGIN_INFO:
 			break;
@@ -240,6 +245,76 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(resource.getString(MessageKey.YEARLY_LOW)), 0,
 					row);
 			grid.add(new Label(getDetailString(DetailEnum.YEARLY_LOW)), 1, row);
+
+			break;
+
+		case FUND_REFERENCE_INFO:
+			grid.add(new Label(resource.getString(MessageKey.NET_ASSETS)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.NET_ASSETS)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.UNIT_OF_TRADING)),
+					0, row);
+			grid.add(new Label(getDetailString(DetailEnum.UNIT_OF_TRADING)), 1,
+					row);
+
+			++row;
+			grid.add(
+					new Label(resource.getString(MessageKey.MANAGEMENT_COMPANY)),
+					0, row);
+			grid.add(new Label(getDetailString(DetailEnum.MANAGEMENT_COMPANY)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(
+							resource.getString(MessageKey.TYPE_OF_ASSETS_TO_BE_INVESTED)),
+					0, row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.TYPE_OF_ASSETS_TO_BE_INVESTED)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.REGION_TO_BE_INVESTED)), 0,
+					row);
+			grid.add(new Label(
+					getDetailString(DetailEnum.REGION_TO_BE_INVESTED)), 1, row);
+
+			++row;
+			grid.add(
+					new Label(resource.getString(MessageKey.UNDERLYING_INDEX)),
+					0, row);
+			grid.add(new Label(getDetailString(DetailEnum.UNDERLYING_INDEX)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(resource
+							.getString(MessageKey.SETTLEMENT_FREQUENCY)), 0,
+					row);
+			grid.add(
+					new Label(getDetailString(DetailEnum.SETTLEMENT_FREQUENCY)),
+					1, row);
+
+			++row;
+			grid.add(
+					new Label(resource.getString(MessageKey.SETTLEMENT_MONTH)),
+					0, row);
+			grid.add(new Label(getDetailString(DetailEnum.SETTLEMENT_MONTH)),
+					1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.LISTED_DATE)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.LISTED_DATE)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.TRUST_FEE)), 0,
+					row);
+			grid.add(new Label(getDetailString(DetailEnum.TRUST_FEE)), 1, row);
 
 			break;
 

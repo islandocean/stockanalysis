@@ -7,6 +7,9 @@ public enum CorpViewType {
 	// 参考指標
 	REFERENCE_INFO,
 
+	// 参考指標(ファンド)
+	FUND_REFERENCE_INFO,
+
 	// 信用取引情報
 	MARGIN_INFO,
 

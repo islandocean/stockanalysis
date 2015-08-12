@@ -115,17 +115,20 @@ public class AppStockTreeSample extends Application implements
 	private Button getButton;
 	private Button clearButton;
 
-	private Accordion accordionPriceInfo;
-	private CorpInfoPane corpPriceInfoPane;
+	private Accordion priceInfoAccordion;
+	private CorpInfoPane priceInfoPane;
 
-	private Accordion accordionReferenceInfo;
-	private CorpInfoPane corpReferenceInfoPane;
+	private Accordion referenceInfoAccordion;
+	private CorpInfoPane referenceInfoPane;
 
-	private Accordion accordionMarginInfo;
-	private CorpInfoPane corpMarginInfoPane;
+	private Accordion fundReferenceInfoAccordion;
+	private CorpInfoPane fundReferenceInfoPane;
 
-	private Accordion accordionProfileInfo;
-	private CorpInfoPane corpProfileInfoPane;
+	private Accordion marginInfoAccordion;
+	private CorpInfoPane marginInfoPane;
+
+	private Accordion profileInfoAccordion;
+	private CorpInfoPane profileInfoPane;
 
 	public AppStockTreeSample() {
 	}
@@ -253,28 +256,31 @@ public class AppStockTreeSample extends Application implements
 				.addListener(createTableChangeListener());
 
 		// Accordion
-		accordionPriceInfo = new Accordion();
-		corpPriceInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
-		accordionPriceInfo.getPanes().addAll(corpPriceInfoPane);
-		accordionPriceInfo.setExpandedPane(corpPriceInfoPane);
+		priceInfoAccordion = new Accordion();
+		priceInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
+		priceInfoAccordion.getPanes().addAll(priceInfoPane);
+		priceInfoAccordion.setExpandedPane(priceInfoPane);
 
-		accordionReferenceInfo = new Accordion();
-		corpReferenceInfoPane = new CorpInfoPane(CorpViewType.REFERENCE_INFO,
+		referenceInfoAccordion = new Accordion();
+		referenceInfoPane = new CorpInfoPane(CorpViewType.REFERENCE_INFO,
 				resource);
-		accordionReferenceInfo.getPanes().addAll(corpReferenceInfoPane);
-		accordionReferenceInfo.setExpandedPane(corpReferenceInfoPane);
+		referenceInfoAccordion.getPanes().addAll(referenceInfoPane);
+		referenceInfoAccordion.setExpandedPane(referenceInfoPane);
 
-		accordionMarginInfo = new Accordion();
-		corpMarginInfoPane = new CorpInfoPane(CorpViewType.MARGIN_INFO,
-				resource);
-		accordionMarginInfo.getPanes().addAll(corpMarginInfoPane);
-		accordionMarginInfo.setExpandedPane(corpMarginInfoPane);
+		fundReferenceInfoAccordion = new Accordion();
+		fundReferenceInfoPane = new CorpInfoPane(
+				CorpViewType.FUND_REFERENCE_INFO, resource);
+		fundReferenceInfoAccordion.getPanes().addAll(fundReferenceInfoPane);
 
-		accordionProfileInfo = new Accordion();
-		corpProfileInfoPane = new CorpInfoPane(CorpViewType.PROFILE_INFO,
-				resource);
-		accordionProfileInfo.getPanes().addAll(corpProfileInfoPane);
-		accordionProfileInfo.setExpandedPane(corpProfileInfoPane);
+		marginInfoAccordion = new Accordion();
+		marginInfoPane = new CorpInfoPane(CorpViewType.MARGIN_INFO, resource);
+		marginInfoAccordion.getPanes().addAll(marginInfoPane);
+		marginInfoAccordion.setExpandedPane(marginInfoPane);
+
+		profileInfoAccordion = new Accordion();
+		profileInfoPane = new CorpInfoPane(CorpViewType.PROFILE_INFO, resource);
+		profileInfoAccordion.getPanes().addAll(profileInfoPane);
+		profileInfoAccordion.setExpandedPane(profileInfoPane);
 
 		//
 		// Layout
@@ -636,17 +642,21 @@ public class AppStockTreeSample extends Application implements
 		DetailRecord detailRecord = (DetailRecord) stockCodeToDetailRecordMap
 				.get(stockCode);
 
-		corpPriceInfoPane.setDetailRecord(detailRecord);
-		corpReferenceInfoPane.setDetailRecord(detailRecord);
-		corpMarginInfoPane.setDetailRecord(detailRecord);
-		corpProfileInfoPane.setProfileRecord(profileRecord);
+		priceInfoPane.setDetailRecord(detailRecord);
+		referenceInfoPane.setDetailRecord(detailRecord);
+		fundReferenceInfoPane.setDetailRecord(detailRecord);
+		marginInfoPane.setDetailRecord(detailRecord);
+		profileInfoPane.setProfileRecord(profileRecord);
 
-		VBox vbox = new VBox();
-		vbox.getChildren().addAll(accordionPriceInfo, accordionReferenceInfo,
-				accordionMarginInfo);
+		VBox leftVbox = new VBox();
+		leftVbox.getChildren().addAll(priceInfoAccordion,
+				referenceInfoAccordion, fundReferenceInfoAccordion);
+		VBox rightVbox = new VBox();
+		rightVbox.getChildren().addAll(profileInfoAccordion,
+				marginInfoAccordion);
 
 		HBox hbox = new HBox();
-		hbox.getChildren().addAll(vbox, accordionProfileInfo);
+		hbox.getChildren().addAll(leftVbox, rightVbox);
 
 		rightPane.getChildren().clear();
 		rightPane.getChildren().addAll(hbox);

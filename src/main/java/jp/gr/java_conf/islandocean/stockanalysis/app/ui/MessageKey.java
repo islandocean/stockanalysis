@@ -13,6 +13,7 @@ public class MessageKey {
 	public static final String SEARCH_PROMPT_TEXT = "SEARCH_PROMPT_TEXT";
 	public static final String PRICE_INFO = "PRICE_INFO";
 	public static final String REFERENCE_INFO = "REFERENCE_INFO";
+	public static final String FUND_REFERENCE_INFO = "FUND_REFERENCE_INFO";
 	public static final String MARGIN_INFO = "MARGIN_INFO";
 	public static final String PROFILE_INFO = "PROFILE_INFO";
 	public static final String REALTIME_PRICE = "REALTIME_PRICE";
