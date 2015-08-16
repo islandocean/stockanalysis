@@ -151,10 +151,34 @@ public class AppStockTreeSample extends Application implements
 
 	@Override
 	public void start(Stage stage) {
-		//
+
 		// Initialize resource bundle
-		//
 		initializeResource();
+
+		// Initialize corp data
+		scanInit();
+
+		// Build UI
+		buildUi(stage);
+	}
+
+	private void initializeResource() {
+		// Locale defaultLocale = Locale.getDefault();
+		Locale locale = Config.getAppLocale();
+		if (locale != null) {
+			Locale.setDefault(locale);
+		}
+		// Locale.setDefault(Locale.JAPAN);
+		// Locale.setDefault(Locale.ENGLISH);
+
+		resource = ResourceBundle.getBundle("resources",
+				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
+
+		// Locale.setDefault(defaultLocale);
+	}
+
+	private void buildUi(Stage stage) {
+		tableStockDataList.clear();
 
 		//
 		// Tree items
@@ -165,9 +189,9 @@ public class AppStockTreeSample extends Application implements
 				resource.getString(MessageKey.ALL_MARKETS)));
 		rootItem.setExpanded(true);
 
-		// ---------------------------------------
-		// Get stock all data, and add tree items.
-		// ---------------------------------------
+		//
+		// Add tree items.
+		//
 		scanMain();
 
 		// Sort tree items.
@@ -179,7 +203,7 @@ public class AppStockTreeSample extends Application implements
 				});
 
 		// Set tree captions
-		setTreeCaptions();
+		setTreeCaptions(rootItem);
 
 		//
 		// GUI Parts
@@ -353,46 +377,37 @@ public class AppStockTreeSample extends Application implements
 		stage.show();
 	}
 
-	private void initializeResource() {
-		// Locale defaultLocale = Locale.getDefault();
-		Locale locale = Config.getAppLocale();
-		if (locale != null) {
-			Locale.setDefault(locale);
-		}
-		// Locale.setDefault(Locale.JAPAN);
-		// Locale.setDefault(Locale.ENGLISH);
+	private void scanInit() {
+		boolean useStockPrice = true;
+		boolean useDetailInfo = true;
+		boolean useProfileInfo = true;
 
-		resource = ResourceBundle.getBundle("resources",
-				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
-
-		// Locale.setDefault(defaultLocale);
-	}
-
-	public void scanMain() {
+		// Initialize
 		try {
-			boolean useStockPrice = true;
-			boolean useDetailInfo = true;
-			boolean useProfileInfo = true;
-
-			// Initialize
 			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
 					selectCalendarRange(), useDetailInfo, useProfileInfo);
+		} catch (IOException | InvalidDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
+		// Save to reuse
+		this.stockManager = allData.getStockManager();
+		this.stockManager.generateCorpDataListInCodeMap();
+		this.corpDataListInCodeMap = stockManager.getCorpDataListInCodeMap();
+		this.financeManager = allData.getFinanceManager();
+		this.lastData = allData.getLastData();
+		this.stockCodes = allData.getStockCodes();
+		this.stockCodeToDetailRecordMap = financeManager
+				.getStockCodeToDetailRecordMap();
+		this.stockCodeToProfileRecordMap = financeManager
+				.getStockCodeToProfileRecordMap();
+	}
+
+	private void scanMain() {
+		try {
 			// Scan corps
 			doScanCorps(allData);
-
-			// Save to reuse
-			this.stockManager = allData.getStockManager();
-			this.stockManager.generateCorpDataListInCodeMap();
-			this.corpDataListInCodeMap = stockManager
-					.getCorpDataListInCodeMap();
-			this.financeManager = allData.getFinanceManager();
-			this.lastData = allData.getLastData();
-			this.stockCodes = allData.getStockCodes();
-			this.stockCodeToDetailRecordMap = financeManager
-					.getStockCodeToDetailRecordMap();
-			this.stockCodeToProfileRecordMap = financeManager
-					.getStockCodeToProfileRecordMap();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -546,7 +561,7 @@ public class AppStockTreeSample extends Application implements
 		}
 		Object value = item.getValue();
 		if (item == rootItem) {
-			reloadTableByAll();
+			reloadTableByAllCorpsUnderTree(rootItem);
 		} else if (value instanceof MarketItemValue) {
 			tableStockDataList.clear();
 			item.getChildren().forEach(sectorItem -> {
@@ -570,9 +585,9 @@ public class AppStockTreeSample extends Application implements
 		}
 	}
 
-	private void reloadTableByAll() {
+	private void reloadTableByAllCorpsUnderTree(TreeItem<Object> root) {
 		tableStockDataList.clear();
-		rootItem.getChildren().forEach(marketItem -> {
+		root.getChildren().forEach(marketItem -> {
 			marketItem.getChildren().forEach(sectorItem -> {
 				sectorItem.getChildren().forEach(stockItem -> {
 					if (!(stockItem.getValue() instanceof StockRecord)) {
@@ -585,10 +600,10 @@ public class AppStockTreeSample extends Application implements
 		});
 	}
 
-	private void setTreeCaptions() {
-		ItemValue rootItemValue = (ItemValue) (rootItem.getValue());
+	private void setTreeCaptions(TreeItem<Object> root) {
+		ItemValue rootItemValue = (ItemValue) (root.getValue());
 		rootItemValue.setNumChildren(0);
-		rootItem.getChildren().forEach(marketItem -> {
+		root.getChildren().forEach(marketItem -> {
 			ItemValue marketItemValue = (ItemValue) (marketItem.getValue());
 			marketItemValue.setNumChildren(0);
 			marketItem.getChildren().forEach(item -> {
