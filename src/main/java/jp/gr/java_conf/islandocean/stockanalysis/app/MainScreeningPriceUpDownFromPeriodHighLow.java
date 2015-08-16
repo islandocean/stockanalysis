@@ -21,6 +21,8 @@ public class MainScreeningPriceUpDownFromPeriodHighLow implements
 
 	private static final String DELIM = "\t";
 
+	private CorpsAllData allData;
+
 	public MainScreeningPriceUpDownFromPeriodHighLow() {
 	}
 
@@ -43,22 +45,28 @@ public class MainScreeningPriceUpDownFromPeriodHighLow implements
 
 	public static void main(String[] args) {
 		MainScreeningPriceUpDownFromPeriodHighLow app = new MainScreeningPriceUpDownFromPeriodHighLow();
+		app.scanInit();
 		app.scanMain();
 	}
 
-	public void scanMain() {
+	private void scanInit() {
+		boolean useStockPrice = true;
+		boolean useDetailInfo = false;
+		boolean useProfileInfo = false;
 		try {
-			boolean useStockPrice = true;
-			boolean useDetailInfo = false;
-			boolean useProfileInfo = false;
-			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
-					selectDataStore(), selectCalendarRange(), useDetailInfo,
-					useProfileInfo);
-			doScanCorps(allData);
-		} catch (IOException e) {
+			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
+					selectCalendarRange(), useDetailInfo, useProfileInfo);
+		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidDataException e) {
+			System.exit(1);
+		}
+	}
+
+	private void scanMain() {
+		try {
+			doScanCorps(allData);
+		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -17,6 +17,8 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 
 public class MainScreeningPerAndSalary implements CorpsScannerTemplate {
 
+	private CorpsAllData allData;
+
 	public MainScreeningPerAndSalary() {
 	}
 
@@ -30,22 +32,28 @@ public class MainScreeningPerAndSalary implements CorpsScannerTemplate {
 
 	public static void main(String[] args) {
 		MainScreeningPerAndSalary app = new MainScreeningPerAndSalary();
+		app.scanInit();
 		app.scanMain();
 	}
 
-	public void scanMain() {
+	private void scanInit() {
+		boolean useStockPrice = false;
+		boolean useDetailInfo = true;
+		boolean useProfileInfo = true;
 		try {
-			boolean useStockPrice = false;
-			boolean useDetailInfo = true;
-			boolean useProfileInfo = true;
-			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
-					selectDataStore(), selectCalendarRange(), useDetailInfo,
-					useProfileInfo);
-			doScanCorps(allData);
-		} catch (IOException e) {
+			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
+					selectCalendarRange(), useDetailInfo, useProfileInfo);
+		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (InvalidDataException e) {
+			System.exit(1);
+		}
+	}
+
+	private void scanMain() {
+		try {
+			doScanCorps(allData);
+		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

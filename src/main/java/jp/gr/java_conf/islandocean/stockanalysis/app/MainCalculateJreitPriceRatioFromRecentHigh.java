@@ -22,6 +22,8 @@ public class MainCalculateJreitPriceRatioFromRecentHigh implements
 
 	private static final String DELIM = "\t";
 
+	private CorpsAllData allData;
+
 	public MainCalculateJreitPriceRatioFromRecentHigh() {
 	}
 
@@ -44,17 +46,28 @@ public class MainCalculateJreitPriceRatioFromRecentHigh implements
 
 	public static void main(String[] args) {
 		MainCalculateJreitPriceRatioFromRecentHigh app = new MainCalculateJreitPriceRatioFromRecentHigh();
+		app.scanInit();
 		app.scanMain();
 	}
 
-	public void scanMain() {
+	private void scanInit() {
+		boolean useStockPrice = true;
+		boolean useDetailInfo = false;
+		boolean useProfileInfo = false;
+
+		// Initialize
 		try {
-			boolean useStockPrice = true;
-			boolean useDetailInfo = false;
-			boolean useProfileInfo = false;
-			CorpsAllData allData = initializeCorpsAllData(useStockPrice,
-					selectDataStore(), selectCalendarRange(), useDetailInfo,
-					useProfileInfo);
+			allData = initializeCorpsAllData(useStockPrice, selectDataStore(),
+					selectCalendarRange(), useDetailInfo, useProfileInfo);
+		} catch (IOException | InvalidDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	private void scanMain() {
+		try {
 			doScanCorps(allData);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -389,6 +389,7 @@ public class AppStockTreeSample extends Application implements
 		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.exit(1);
 		}
 
 		// Save to reuse
@@ -405,13 +406,10 @@ public class AppStockTreeSample extends Application implements
 	}
 
 	private void scanMain() {
+		// Scan corps
 		try {
-			// Scan corps
 			doScanCorps(allData);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidDataException e) {
+		} catch (IOException | InvalidDataException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
