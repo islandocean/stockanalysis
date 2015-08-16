@@ -515,7 +515,7 @@ public class AppStockTreeSample extends Application implements
 		menuBar.getMenus().addAll(fileMenu, viewMenu);
 	}
 
-	public EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
+	private EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
 		return new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
@@ -543,7 +543,7 @@ public class AppStockTreeSample extends Application implements
 		};
 	}
 
-	public ChangeListener<TreeItem<Object>> createTreeChangeListener() {
+	private ChangeListener<TreeItem<Object>> createTreeChangeListener() {
 		return new ChangeListener<TreeItem<Object>>() {
 			@Override
 			public void changed(
@@ -627,7 +627,7 @@ public class AppStockTreeSample extends Application implements
 		itemValue.setCaption(caption);
 	}
 
-	public ChangeListener createTableChangeListener() {
+	private ChangeListener createTableChangeListener() {
 		return new ChangeListener() {
 			@Override
 			public void changed(ObservableValue observable, Object oldValue,
