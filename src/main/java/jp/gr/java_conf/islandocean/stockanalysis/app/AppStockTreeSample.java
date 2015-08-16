@@ -51,6 +51,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.price.Config;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -323,8 +324,7 @@ public class AppStockTreeSample extends Application implements
 		consoleTextArea = new TextArea();
 		consoleTextArea.setMinSize(200d, 50d);
 		consoleTextArea.setMaxSize(200d, 50d);
-		consoleTextArea
-				.setPromptText("Enter stock codes separated by comma or line separator.");
+		consoleTextArea.setPromptText("");
 		updateButton = new Button("Update Table");
 		updateButton.setOnAction((ActionEvent e) -> {
 			updateTable();
@@ -355,8 +355,12 @@ public class AppStockTreeSample extends Application implements
 
 	private void initializeResource() {
 		// Locale defaultLocale = Locale.getDefault();
+		Locale locale = Config.getAppLocale();
+		if (locale != null) {
+			Locale.setDefault(locale);
+		}
 		// Locale.setDefault(Locale.JAPAN);
-		Locale.setDefault(Locale.ENGLISH);
+		// Locale.setDefault(Locale.ENGLISH);
 
 		resource = ResourceBundle.getBundle("resources",
 				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
