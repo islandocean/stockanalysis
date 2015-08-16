@@ -1,5 +1,7 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
+import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import javafx.geometry.Insets;
@@ -11,8 +13,11 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
+import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class CorpInfoPane extends TitledPane {
+
+	private static NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
 	private GridPane grid;
 	private CorpViewType corpViewType;
@@ -507,10 +512,7 @@ public class CorpInfoPane extends TitledPane {
 			return "";
 		}
 		Object obj = this.detailRecord.get(e);
-		if (obj == null) {
-			return "";
-		}
-		return obj.toString();
+		return formatObj(obj);
 	}
 
 	private String getProfileString(ProfileEnum e) {
@@ -518,8 +520,31 @@ public class CorpInfoPane extends TitledPane {
 			return "";
 		}
 		Object obj = this.profileRecord.get(e);
+		return formatObj(obj);
+	}
+
+	private String formatObj(Object obj) {
 		if (obj == null) {
 			return "";
+		}
+		if (obj instanceof Calendar) {
+			Calendar cal = (Calendar) obj;
+			return CalendarUtil.format_yyyyMMdd(cal);
+		}
+		if (obj instanceof Double) {
+			double d = ((Double) obj).doubleValue();
+			String s = numberFormat.format(d);
+			return s;
+		}
+		if (obj instanceof Long) {
+			long l = ((Long) obj).longValue();
+			String s = numberFormat.format(l);
+			return s;
+		}
+		if (obj instanceof Integer) {
+			int i = ((Integer) obj).intValue();
+			String s = numberFormat.format(i);
+			return s;
 		}
 		return obj.toString();
 	}
