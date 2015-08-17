@@ -17,6 +17,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
@@ -24,6 +25,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableView.TableViewSelectionModel;
@@ -85,7 +88,7 @@ public class AppStockTreeSample extends Application implements
 	//
 	private VBox rootPane;
 	private HBox topPane;
-	private VBox leftPane;
+	private TabPane leftPane;
 	private SplitPane centerPane;
 	private VBox rightPane1;
 	private VBox rightPane2;
@@ -97,6 +100,16 @@ public class AppStockTreeSample extends Application implements
 	private MenuBar menuBar;
 	private Menu fileMenu;
 	private Menu viewMenu;
+
+	private Tab allStocksTab;
+	private Tab registeredStocksTab;
+	private Tab searchResultsTab;
+	private Tab screeningResultsTab;
+
+	private VBox allStocksTabContent;
+	private VBox registeredStocksTabContent;
+	private VBox searchResultsTabContent;
+	private VBox screeningResultsTabContent;
 
 	private Button treeCollapseButton;
 	private Button treeExpandButton;
@@ -218,13 +231,6 @@ public class AppStockTreeSample extends Application implements
 
 		// Tree controls
 		treeControlPane = new HBox();
-		treeCollapseButton = new Button(
-				resource.getString(MessageKey.COLLAPSE_BUTTON));
-		treeCollapseButton.setOnAction((ActionEvent e) -> {
-			rootItem.getChildren().forEach(market -> {
-				((TreeItem) market).setExpanded(false);
-			});
-		});
 
 		treeExpandButton = new Button(
 				resource.getString(MessageKey.EXPAND_BUTTON));
@@ -235,11 +241,50 @@ public class AppStockTreeSample extends Application implements
 			});
 		});
 
-		treeControlPane.getChildren().addAll(treeCollapseButton,
-				treeExpandButton);
+		treeCollapseButton = new Button(
+				resource.getString(MessageKey.COLLAPSE_BUTTON));
+		treeCollapseButton.setOnAction((ActionEvent e) -> {
+			rootItem.getChildren().forEach(market -> {
+				((TreeItem) market).setExpanded(false);
+			});
+		});
+
+		treeControlPane.getChildren().addAll(treeExpandButton,
+				treeCollapseButton);
 		treeControlPane.setSpacing(10);
 		treeControlPane.setAlignment(Pos.CENTER_LEFT);
 		treeControlPane.setPadding(new Insets(10, 10, 10, 10));
+
+		// Tab content
+		allStocksTab = new Tab();
+		registeredStocksTab = new Tab();
+		searchResultsTab = new Tab();
+		screeningResultsTab = new Tab();
+
+		allStocksTabContent = new VBox();
+		registeredStocksTabContent = new VBox();
+		searchResultsTabContent = new VBox();
+		screeningResultsTabContent = new VBox();
+
+		allStocksTab.setContent(allStocksTabContent);
+		registeredStocksTab.setContent(registeredStocksTabContent);
+		searchResultsTab.setContent(searchResultsTabContent);
+		screeningResultsTab.setContent(screeningResultsTabContent);
+
+		allStocksTab.setText(resource.getString(MessageKey.ALL_STOCKS_TABTEXT));
+		registeredStocksTab.setText(resource
+				.getString(MessageKey.REGISTERED_STOCKS_TABTEXT));
+		searchResultsTab.setText(resource
+				.getString(MessageKey.SEARCH_RESULTS_TABTEXT));
+		screeningResultsTab.setText(resource
+				.getString(MessageKey.SCREENING_RESULTS_TABTEXT));
+
+		allStocksTab.setClosable(false);
+		registeredStocksTab.setClosable(false);
+		searchResultsTab.setClosable(false);
+		screeningResultsTab.setClosable(false);
+
+		allStocksTabContent.getChildren().addAll(treeControlPane, treeView);
 
 		// Table controls
 		tableControlPane = new HBox();
@@ -322,8 +367,11 @@ public class AppStockTreeSample extends Application implements
 		topPane.getChildren().addAll(menuBar);
 
 		// left
-		leftPane = new VBox();
-		leftPane.getChildren().addAll(treeControlPane, treeView);
+		leftPane = new TabPane();
+		leftPane.getTabs().addAll(allStocksTab, registeredStocksTab,
+				searchResultsTab, screeningResultsTab);
+		leftPane.getSelectionModel().select(0);
+		leftPane.setSide(Side.LEFT);
 
 		// center
 		centerPane = new SplitPane();
