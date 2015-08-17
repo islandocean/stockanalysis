@@ -1,6 +1,7 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -21,9 +22,12 @@ import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -228,6 +232,8 @@ public class AppStockTreeSample extends Application implements
 				.setOnMouseClicked(createTreeMouseEventHandler(allStocksTreeView));
 		allStocksTreeView.getSelectionModel().selectedItemProperty()
 				.addListener(createTreeChangeListener());
+		allStocksTreeView.setContextMenu(new ContextMenu(
+				createTreeContextMenuContents()));
 
 		// Tree controls
 		treeControlPane = new HBox();
@@ -327,6 +333,9 @@ public class AppStockTreeSample extends Application implements
 		tableView.setItems(tableStockDataList);
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(createTableChangeListener());
+		tableView.setContextMenu(new ContextMenu(
+				createTableContextMenuContents()));
+		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 		// Accordion
 		priceInfoAccordion = new Accordion();
@@ -561,6 +570,42 @@ public class AppStockTreeSample extends Application implements
 		viewMenu = new Menu("View");
 		viewMenu.setDisable(true); //
 		menuBar.getMenus().addAll(fileMenu, viewMenu);
+	}
+
+	private MenuItem[] createTreeContextMenuContents() {
+		List<MenuItem> menuItems = new ArrayList<>();
+		MenuItem menuRegister = new MenuItem("_Test");
+		menuRegister.setOnAction((ActionEvent e) -> {
+			ObservableList selectedItems = allStocksTreeView
+					.getSelectionModel().getSelectedItems();
+			selectedItems.forEach(item -> {
+				Object obj = ((TreeItem) item).getValue();
+				if (obj instanceof ItemValue) {
+					ItemValue data = (ItemValue) obj;
+					String name = data.getName();
+					System.out.println("name=" + name);
+				} else if (obj instanceof StockRecord) {
+					StockRecord record = (StockRecord) obj;
+					System.out.println("stockCode=" + record.getStockCode());
+				}
+			});
+		});
+		menuItems.add(menuRegister);
+		return menuItems.toArray(new MenuItem[menuItems.size()]);
+	}
+
+	private MenuItem[] createTableContextMenuContents() {
+		List<MenuItem> menuItems = new ArrayList<>();
+		MenuItem menuRegister = new MenuItem("_Register");
+		menuRegister.setOnAction((ActionEvent e) -> {
+			tableView.getSelectionModel().getSelectedItems().forEach(item -> {
+				TableStockData data = (TableStockData) item;
+				String stockCode = data.getStockCode();
+				System.out.println("stockCode=" + stockCode);
+			});
+		});
+		menuItems.add(menuRegister);
+		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
 
 	private EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
