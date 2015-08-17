@@ -111,11 +111,10 @@ public class AppStockTreeSample extends Application implements
 	private VBox searchResultsTabContent;
 	private VBox screeningResultsTabContent;
 
-	private Button treeCollapseButton;
-	private Button treeExpandButton;
-
-	private TreeView<Object> treeView;
-	private TreeItem<Object> rootItem;
+	private Button allStocksTreeCollapseButton;
+	private Button allStocksTreeExpandButton;
+	private TreeView<Object> allStocksTreeView;
+	private TreeItem<Object> allStocksRootItem;
 
 	private TextField searchTextField;
 	private Button searchButton;
@@ -198,9 +197,9 @@ public class AppStockTreeSample extends Application implements
 		//
 
 		// Create root item.
-		rootItem = new TreeItem<Object>(new RootItemValue(
+		allStocksRootItem = new TreeItem<Object>(new RootItemValue(
 				resource.getString(MessageKey.ALL_MARKETS)));
-		rootItem.setExpanded(true);
+		allStocksRootItem.setExpanded(true);
 
 		//
 		// Add tree items.
@@ -208,49 +207,50 @@ public class AppStockTreeSample extends Application implements
 		scanMain();
 
 		// Sort tree items.
-		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
-		rootItem.getChildren().forEach(
+		allStocksRootItem.getChildren().sort(MarketUtil.marketTreeComparator());
+		allStocksRootItem.getChildren().forEach(
 				marketTreeItem -> {
 					marketTreeItem.getChildren().sort(
 							SectorUtil.sectorTreeComparator());
 				});
 
 		// Set tree captions
-		setTreeCaptions(rootItem);
+		setTreeCaptions(allStocksRootItem);
 
 		//
 		// GUI Parts
 		//
 
 		// Tree view
-		treeView = new TreeView<Object>(rootItem);
-		treeView.setMinHeight(700d);
-		treeView.setOnMouseClicked(createTreeMouseEventHandler(treeView));
-		treeView.getSelectionModel().selectedItemProperty()
+		allStocksTreeView = new TreeView<Object>(allStocksRootItem);
+		allStocksTreeView.setMinHeight(700d);
+		allStocksTreeView
+				.setOnMouseClicked(createTreeMouseEventHandler(allStocksTreeView));
+		allStocksTreeView.getSelectionModel().selectedItemProperty()
 				.addListener(createTreeChangeListener());
 
 		// Tree controls
 		treeControlPane = new HBox();
 
-		treeExpandButton = new Button(
+		allStocksTreeExpandButton = new Button(
 				resource.getString(MessageKey.EXPAND_BUTTON));
-		treeExpandButton.setOnAction((ActionEvent e) -> {
-			rootItem.setExpanded(true);
-			rootItem.getChildren().forEach(market -> {
+		allStocksTreeExpandButton.setOnAction((ActionEvent e) -> {
+			allStocksRootItem.setExpanded(true);
+			allStocksRootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(true);
 			});
 		});
 
-		treeCollapseButton = new Button(
+		allStocksTreeCollapseButton = new Button(
 				resource.getString(MessageKey.COLLAPSE_BUTTON));
-		treeCollapseButton.setOnAction((ActionEvent e) -> {
-			rootItem.getChildren().forEach(market -> {
+		allStocksTreeCollapseButton.setOnAction((ActionEvent e) -> {
+			allStocksRootItem.getChildren().forEach(market -> {
 				((TreeItem) market).setExpanded(false);
 			});
 		});
 
-		treeControlPane.getChildren().addAll(treeExpandButton,
-				treeCollapseButton);
+		treeControlPane.getChildren().addAll(allStocksTreeExpandButton,
+				allStocksTreeCollapseButton);
 		treeControlPane.setSpacing(10);
 		treeControlPane.setAlignment(Pos.CENTER_LEFT);
 		treeControlPane.setPadding(new Insets(10, 10, 10, 10));
@@ -284,7 +284,8 @@ public class AppStockTreeSample extends Application implements
 		searchResultsTab.setClosable(false);
 		screeningResultsTab.setClosable(false);
 
-		allStocksTabContent.getChildren().addAll(treeControlPane, treeView);
+		allStocksTabContent.getChildren().addAll(treeControlPane,
+				allStocksTreeView);
 
 		// Table controls
 		tableControlPane = new HBox();
@@ -499,7 +500,8 @@ public class AppStockTreeSample extends Application implements
 			// market
 			TreeItem<Object> currentMarketItem = null;
 			boolean foundMarket = false;
-			for (TreeItem<Object> oldMarketItem : rootItem.getChildren()) {
+			for (TreeItem<Object> oldMarketItem : allStocksRootItem
+					.getChildren()) {
 				if (((ItemValue) oldMarketItem.getValue()).getName().equals(
 						market)) {
 					currentMarketItem = oldMarketItem;
@@ -511,7 +513,7 @@ public class AppStockTreeSample extends Application implements
 				TreeItem<Object> newMarketItem = new TreeItem<Object>(
 						new MarketItemValue(market));
 				newMarketItem.setExpanded(false);
-				rootItem.getChildren().add(newMarketItem);
+				allStocksRootItem.getChildren().add(newMarketItem);
 				currentMarketItem = newMarketItem;
 			}
 
@@ -606,8 +608,8 @@ public class AppStockTreeSample extends Application implements
 			return;
 		}
 		Object value = item.getValue();
-		if (item == rootItem) {
-			reloadTableByAllCorpsUnderTree(rootItem);
+		if (item == allStocksRootItem) {
+			reloadTableByAllCorpsUnderTree(allStocksRootItem);
 		} else if (value instanceof MarketItemValue) {
 			tableStockDataList.clear();
 			item.getChildren().forEach(sectorItem -> {
