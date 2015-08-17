@@ -598,13 +598,35 @@ public class AppStockTreeSample extends Application implements
 		List<MenuItem> menuItems = new ArrayList<>();
 		MenuItem menuRegister = new MenuItem("_Register");
 		menuRegister.setOnAction((ActionEvent e) -> {
-			tableView.getSelectionModel().getSelectedItems().forEach(item -> {
+			ObservableList selectedItems = tableView.getSelectionModel()
+					.getSelectedItems();
+			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
 				String stockCode = data.getStockCode();
 				System.out.println("stockCode=" + stockCode);
 			});
 		});
 		menuItems.add(menuRegister);
+
+		MenuItem menuOpenYahooFinance = new MenuItem(
+				"_Open Yahoo Finance HTML Page");
+		menuOpenYahooFinance.setOnAction((ActionEvent e) -> {
+			ObservableList selectedItems = tableView.getSelectionModel()
+					.getSelectedItems();
+			selectedItems.forEach(item -> {
+				TableStockData data = (TableStockData) item;
+				String stockCode = data.getStockCode();
+				System.out.println("stockCode=" + stockCode);
+				if (stockCode != null) {
+					String spec = financeManager
+							.getHtmlChartPageSpec(financeManager
+									.toDetailSearchStockCode(stockCode));
+					startBrowser(spec);
+				}
+			});
+		});
+		menuItems.add(menuOpenYahooFinance);
+
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
 
@@ -829,5 +851,9 @@ public class AppStockTreeSample extends Application implements
 			sb.append(stockData.getStockCode());
 		}
 		consoleTextArea.setText(sb.toString());
+	}
+
+	private void startBrowser(String spec) {
+		getHostServices().showDocument(spec);
 	}
 }
