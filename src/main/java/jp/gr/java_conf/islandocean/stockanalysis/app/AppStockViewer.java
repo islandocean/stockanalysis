@@ -276,6 +276,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		searchResultsTabContent = new VBox();
 		screeningResultsTabContent = new VBox();
 
+		allStocksTabContent.setPadding(new Insets(0, 0, 0, 10));
+		registeredStocksTabContent.setPadding(new Insets(0, 0, 0, 10));
+		searchResultsTabContent.setPadding(new Insets(0, 0, 0, 10));
+		screeningResultsTabContent.setPadding(new Insets(0, 0, 0, 10));
+
 		allStocksTab.setContent(allStocksTabContent);
 		registeredStocksTab.setContent(registeredStocksTabContent);
 		searchResultsTab.setContent(searchResultsTabContent);
