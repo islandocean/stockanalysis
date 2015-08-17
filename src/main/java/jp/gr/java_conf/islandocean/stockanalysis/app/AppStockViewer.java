@@ -48,6 +48,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.app.ui.CorpViewType;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MessageKey;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.Pref;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ResourceBundleWithUtf8;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.RootItemValue;
 import jp.gr.java_conf.islandocean.stockanalysis.app.ui.SectorItemValue;
@@ -67,8 +68,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
-public class AppStockTreeSample extends Application implements
-		CorpsScannerTemplate {
+public class AppStockViewer extends Application implements CorpsScannerTemplate {
 
 	//
 	// Data
@@ -83,6 +83,7 @@ public class AppStockTreeSample extends Application implements
 	private Map stockCodeToProfileRecordMap;
 
 	private ResourceBundle resource;
+	private Pref pref;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -149,7 +150,7 @@ public class AppStockTreeSample extends Application implements
 	private Accordion profileInfoAccordion;
 	private CorpInfoPane profileInfoPane;
 
-	public AppStockTreeSample() {
+	public AppStockViewer() {
 	}
 
 	public DataStore selectDataStore() {
@@ -170,6 +171,9 @@ public class AppStockTreeSample extends Application implements
 
 		// Initialize resource bundle
 		initializeResource();
+
+		// Initialize pref
+		pref = new Pref(AppStockViewer.class);
 
 		// Initialize corp data
 		scanInit();
@@ -626,6 +630,18 @@ public class AppStockTreeSample extends Application implements
 			});
 		});
 		menuItems.add(menuOpenYahooFinance);
+
+		MenuItem menuPrefTest = new MenuItem("_Pref Test");
+		menuPrefTest.setOnAction((ActionEvent e) -> {
+			pref.setProperty("abc", "def");
+			try {
+				pref.save();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		});
+		menuItems.add(menuPrefTest);
 
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
