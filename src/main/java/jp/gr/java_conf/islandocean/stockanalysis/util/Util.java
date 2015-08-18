@@ -35,6 +35,22 @@ public final class Util {
 		return list;
 	}
 
+	public static String toDigitOnly(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; ++i) {
+			char c = org.charAt(i);
+			if (!Character.isDigit(c)) {
+				continue;
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * Returns substring before last '(' (opening round parentheses). If
 	 * "(連)abc(07/14)" is specified, returns "(連)abc". If there is no opening

@@ -3,6 +3,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +72,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.price.StockManager;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarRange;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class AppStockViewer extends Application implements CorpsScannerTemplate {
 
@@ -98,7 +100,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private Pref pref;
 	private static final int numRegister = 5;
 	private String[] registeredStocksPrefStrs;
-	private List<String>[] registeredStockLists;
 	private Set<String>[] registeredStockSets;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
@@ -205,7 +206,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		initializeResource();
 
 		// Initialize pref
-		readPref();
+		loadPref();
 
 		// Initialize corp data
 		scanInit();
@@ -229,7 +230,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Locale.setDefault(defaultLocale);
 	}
 
-	private void readPref() {
+	private void loadPref() {
 		pref = new Pref(AppStockViewer.class);
 
 		registeredStocksPrefStrs = new String[numRegister];
@@ -244,19 +245,25 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		registeredStocksPrefStrs[4] = (String) pref
 				.getProperty(PREFKEY_REGISTERED_STOCKS_5);
 
-		registeredStockLists = new List[numRegister];
 		registeredStockSets = new Set[numRegister];
 		for (int idxList = 0; idxList < numRegister; ++idxList) {
-			registeredStockLists[idxList] = new ArrayList<String>();
 			registeredStockSets[idxList] = new HashSet();
 			String s = registeredStocksPrefStrs[idxList];
 			if (s != null && s.length() > 0) {
 				String[] codes = s.split(",");
 				for (int idxCodes = 0; idxCodes < codes.length; ++idxCodes) {
-					registeredStockLists[idxList].add(codes[idxCodes]);
 					registeredStockSets[idxList].add(codes[idxCodes]);
 				}
 			}
+		}
+	}
+
+	private void savePref() {
+		try {
+			pref.save();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -316,7 +323,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		scanMain();
 
 		// Sort tree by market and sector, and set captions of tree item.
-		sortTreesAndSetCaptions();
+		sortAllTreesAndSetCaptions();
 
 		//
 		// GUI Parts
@@ -726,7 +733,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
 
-	private void sortTreesAndSetCaptions() {
+	private void sortAllTreesAndSetCaptions() {
 		// Sort tree items of all stocks.
 		allStocksRootItem.getChildren().sort(MarketUtil.marketTreeComparator());
 		allStocksRootItem.getChildren().forEach(
@@ -822,18 +829,89 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		itemValue.setCaption(caption);
 	}
 
+	private void updateRegisteredStocksTree(TreeItem<Object> rootItem,
+			Set registeredStockSet) {
+		rootItem.getChildren().clear();
+		for (StockRecord record : lastData) {
+			// market
+			String market = (String) record.get(StockEnum.MARKET);
+			if (market == null || market.length() == 0) {
+				market = "(none)";
+			}
+
+			// sector
+			String sector = (String) record.get(StockEnum.SECTOR);
+			if (sector == null || sector.length() == 0) {
+				sector = "(none)";
+			}
+
+			// stock name
+			String stockName = (String) record.get(StockEnum.STOCK_NAME);
+			if (stockName == null || stockName.length() == 0) {
+				stockName = "(none)";
+			}
+
+			// stock code
+			String stockCode = (String) record.get(StockEnum.STOCK_CODE);
+
+			if (registeredStockSet.contains(stockCode)) {
+				addItemToTree(rootItem, record, market, sector, stockName, true);
+			}
+
+		}
+
+		setTreeCaptions(rootItem);
+
+		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
+		rootItem.getChildren().forEach(
+				marketTreeItem -> {
+					marketTreeItem.getChildren().sort(
+							SectorUtil.sectorTreeComparator());
+				});
+	}
+
 	private MenuItem[] createTableContextMenuContents() {
 		List<MenuItem> menuItems = new ArrayList<>();
-		MenuItem menuRegister = new MenuItem("_Register");
-		menuRegister.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = tableView
-					.getSelectionModel().getSelectedItems();
-			selectedItems.forEach(item -> {
-				TableStockData data = (TableStockData) item;
-				String stockCode = data.getStockCode();
-				System.out.println("stockCode=" + stockCode);
-			});
-		});
+
+		Menu menuRegister = new Menu(
+				resource.getString(MessageKey.REGISTER_CONTEXT_MENU));
+		for (int idx = 0; idx < numRegister; ++idx) {
+			String subMenuTitleHead = resource
+					.getString(MessageKey.REGISTERED_STOCKS_CONTEXT_MENU);
+			MenuItem menuRegisterStocks = new MenuItem(subMenuTitleHead
+					+ (idx + 1));
+			menuRegisterStocks
+					.setOnAction((ActionEvent e) -> {
+						MenuItem menu = (MenuItem) e.getSource();
+						String text = menu.getText();
+						String onlyDigitText = Util.toDigitOnly(text);
+						int idxRegisteredStocks = Integer
+								.parseInt(onlyDigitText) - 1;
+						Set registeredStockSet = registeredStockSets[idxRegisteredStocks];
+
+						ObservableList<TableStockData> selectedItems = tableView
+								.getSelectionModel().getSelectedItems();
+						selectedItems.forEach(item -> {
+							TableStockData data = (TableStockData) item;
+							String stockCode = data.getStockCode();
+							registeredStockSet.add(stockCode);
+							System.out.println("stockCode=" + stockCode);
+						});
+
+						TreeItem rootItem = registeredStocksRootItems[idxRegisteredStocks];
+
+						// Update registered stocks tree
+						updateRegisteredStocksTree(rootItem, registeredStockSet);
+
+						// Update pref
+						updatePrefForRegisteredStocks(idxRegisteredStocks,
+								registeredStockSet);
+
+						// Save pref.
+						savePref();
+					});
+			menuRegister.getItems().add(menuRegisterStocks);
+		}
 		menuItems.add(menuRegister);
 
 		MenuItem menuOpenYahooFinance = new MenuItem(
@@ -1024,6 +1102,37 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			sb.append(stockData.getStockCode());
 		}
 		consoleTextArea.setText(sb.toString());
+	}
+
+	private void updatePrefForRegisteredStocks(int idxRegisteredStocks,
+			Set<String> registeredStockSet) {
+		String key = null;
+		switch (idxRegisteredStocks) {
+		case 0:
+			key = PREFKEY_REGISTERED_STOCKS_1;
+			break;
+		case 1:
+			key = PREFKEY_REGISTERED_STOCKS_2;
+			break;
+		case 2:
+			key = PREFKEY_REGISTERED_STOCKS_3;
+			break;
+		case 3:
+			key = PREFKEY_REGISTERED_STOCKS_4;
+			break;
+		case 4:
+			key = PREFKEY_REGISTERED_STOCKS_5;
+			break;
+		}
+		StringBuilder sb = new StringBuilder();
+		registeredStockSet.forEach(stockCode -> {
+			if (sb.length() != 0) {
+				sb.append(',');
+			}
+			sb.append(stockCode);
+		});
+		String value = sb.toString();
+		pref.setProperty(key, value);
 	}
 
 	private void startBrowser(String spec) {
