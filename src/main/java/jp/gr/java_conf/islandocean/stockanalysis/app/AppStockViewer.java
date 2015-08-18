@@ -3,7 +3,6 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -860,14 +859,14 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		}
 
-		setTreeCaptions(rootItem);
-
 		rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
 		rootItem.getChildren().forEach(
 				marketTreeItem -> {
 					marketTreeItem.getChildren().sort(
 							SectorUtil.sectorTreeComparator());
 				});
+
+		setTreeCaptions(rootItem);
 	}
 
 	private MenuItem[] createTableContextMenuContents() {

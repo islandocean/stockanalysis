@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import javafx.scene.control.TreeItem;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
 
 public class MarketUtil {
 
@@ -67,8 +68,8 @@ public class MarketUtil {
 		return new Comparator<TreeItem>() {
 			@Override
 			public int compare(TreeItem t0, TreeItem t1) {
-				String s0 = (String) t0.getValue().toString();
-				String s1 = (String) t1.getValue().toString();
+				String s0 = ((MarketItemValue) t0.getValue()).getName();
+				String s1 = ((MarketItemValue) t1.getValue()).getName();
 				int idx0 = idxOfMarket(s0);
 				int idx1 = idxOfMarket(s1);
 				if (idx0 >= 0) {

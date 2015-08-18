@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import javafx.scene.control.TreeItem;
+import jp.gr.java_conf.islandocean.stockanalysis.app.ui.SectorItemValue;
 
 public class SectorUtil {
 
@@ -121,8 +122,8 @@ public class SectorUtil {
 		return new Comparator<TreeItem>() {
 			@Override
 			public int compare(TreeItem t0, TreeItem t1) {
-				String s0 = (String) t0.getValue().toString();
-				String s1 = (String) t1.getValue().toString();
+				String s0 = ((SectorItemValue) t0.getValue()).getName();
+				String s1 = ((SectorItemValue) t1.getValue()).getName();
 				int idx0 = idxOfSector(s0);
 				int idx1 = idxOfSector(s1);
 				if (idx0 >= 0) {
