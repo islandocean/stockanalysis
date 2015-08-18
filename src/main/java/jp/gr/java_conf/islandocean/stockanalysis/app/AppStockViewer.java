@@ -2,11 +2,13 @@ package jp.gr.java_conf.islandocean.stockanalysis.app;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -72,6 +74,12 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class AppStockViewer extends Application implements CorpsScannerTemplate {
 
+	//
+	private static final String PREFKEY_REGISTERED_STOCKS_1 = "REGISTERED_STOCKS_1";
+	private static final String PREFKEY_REGISTERED_STOCKS_2 = "REGISTERED_STOCKS_2";
+	private static final String PREFKEY_REGISTERED_STOCKS_3 = "REGISTERED_STOCKS_3";
+	private static final String PREFKEY_REGISTERED_STOCKS_4 = "REGISTERED_STOCKS_4";
+	private static final String PREFKEY_REGISTERED_STOCKS_5 = "REGISTERED_STOCKS_5";
 	private static final double TREEVIEW_MIN_HEIGHT = 700d;
 
 	//
@@ -88,7 +96,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ResourceBundle resource;
 	private Pref pref;
+	private static final int numRegister = 5;
 	private String[] registeredStocksPrefStrs;
+	private List<String>[] registeredStockLists;
+	private Set<String>[] registeredStockSets;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -134,7 +145,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private HBox registeredStocksControlPane;
 	private ToggleGroup toggleGroup;
 	int selectedToggleIdx;
-	private static final int numToggleButtons = 5;
 	private ToggleButton[] toggleButtons;
 	private TreeView<Object>[] registeredStocksTreeViews;
 	private TreeItem<Object>[] registeredStocksRootItems;
@@ -145,7 +155,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	// Table
 	private HBox tableControlPane;
-	private TableView tableView;
+	private TableView<TableStockData> tableView;
 	private TableColumn stockCodeColumn;
 	private TableColumn stockNameColumn;
 	private TableColumn marketColumn;
@@ -196,6 +206,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Initialize pref
 		pref = new Pref(AppStockViewer.class);
+		readPref();
 
 		// Initialize corp data
 		scanInit();
@@ -219,6 +230,35 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Locale.setDefault(defaultLocale);
 	}
 
+	private void readPref() {
+		registeredStocksPrefStrs = new String[numRegister];
+		registeredStocksPrefStrs[0] = (String) pref
+				.getProperty(PREFKEY_REGISTERED_STOCKS_1);
+		registeredStocksPrefStrs[1] = (String) pref
+				.getProperty(PREFKEY_REGISTERED_STOCKS_2);
+		registeredStocksPrefStrs[2] = (String) pref
+				.getProperty(PREFKEY_REGISTERED_STOCKS_3);
+		registeredStocksPrefStrs[3] = (String) pref
+				.getProperty(PREFKEY_REGISTERED_STOCKS_4);
+		registeredStocksPrefStrs[4] = (String) pref
+				.getProperty(PREFKEY_REGISTERED_STOCKS_5);
+
+		registeredStockLists = new List[numRegister];
+		registeredStockSets = new Set[numRegister];
+		for (int idxList = 0; idxList < numRegister; ++idxList) {
+			registeredStockLists[idxList] = new ArrayList<String>();
+			registeredStockSets[idxList] = new HashSet();
+			String s = registeredStocksPrefStrs[idxList];
+			if (s != null && s.length() > 0) {
+				String[] codes = s.split(",");
+				for (int idxCodes = 0; idxCodes < codes.length; ++idxCodes) {
+					registeredStockLists[idxList].add(codes[idxCodes]);
+					registeredStockSets[idxList].add(codes[idxCodes]);
+				}
+			}
+		}
+	}
+
 	private void buildUi(Stage stage) {
 		tableStockDataList.clear();
 
@@ -232,10 +272,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		allStocksRootItem.setExpanded(true);
 
 		// Create registered stocks root item.
-		registeredStocksRootItems = new TreeItem[numToggleButtons];
-		for (int i = 0; i < numToggleButtons; ++i) {
+		registeredStocksRootItems = new TreeItem[numRegister];
+		for (int i = 0; i < numRegister; ++i) {
 			registeredStocksRootItems[i] = new TreeItem<Object>(
-					new RootItemValue("Registered Stock " + (i + 1)));
+					new RootItemValue(resource
+							.getString(MessageKey.REGISTERED_STOCKS) + (i + 1)));
+			registeredStocksRootItems[i].setExpanded(true);
 		}
 
 		//
@@ -243,7 +285,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		//
 		scanMain();
 
-		// Sort tree items.
+		// Sort tree items of all stocks.
 		allStocksRootItem.getChildren().sort(MarketUtil.marketTreeComparator());
 		allStocksRootItem.getChildren().forEach(
 				marketTreeItem -> {
@@ -253,6 +295,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Set tree captions
 		setTreeCaptions(allStocksRootItem);
+
+		for (int idxList = 0; idxList < numRegister; ++idxList) {
+			TreeItem<Object> rootItem = registeredStocksRootItems[idxList];
+
+			// Sort tree items of registered stocks.
+			rootItem.getChildren().sort(MarketUtil.marketTreeComparator());
+			rootItem.getChildren().forEach(
+					marketTreeItem -> {
+						marketTreeItem.getChildren().sort(
+								SectorUtil.sectorTreeComparator());
+					});
+
+			// Set tree captions of registered stocks.
+			setTreeCaptions(rootItem);
+		}
 
 		//
 		// GUI Parts
@@ -297,9 +354,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Registered stocks tree controls
 		registeredStocksControlPane = new HBox();
 		toggleGroup = new ToggleGroup();
-		toggleButtons = new ToggleButton[numToggleButtons];
-		registeredStocksTreeViews = new TreeView[numToggleButtons];
-		for (int i = 0; i < numToggleButtons; ++i) {
+		toggleButtons = new ToggleButton[numRegister];
+		registeredStocksTreeViews = new TreeView[numRegister];
+		for (int i = 0; i < numRegister; ++i) {
 			toggleButtons[i] = new ToggleButton();
 			toggleButtons[i].setText(Integer.toString(i + 1));
 			toggleButtons[i].setToggleGroup(toggleGroup);
@@ -314,11 +371,15 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			registeredStocksControlPane.getChildren().add(toggleButtons[i]);
 			registeredStocksTreeViews[i] = new TreeView<Object>(
 					registeredStocksRootItems[i]);
+			registeredStocksTreeViews[i].getSelectionModel()
+					.selectedItemProperty()
+					.addListener(createTreeChangeListener());
+			registeredStocksTreeViews[i].setContextMenu(new ContextMenu(
+					createTreeContextMenuContents()));
 			registeredStocksTreeViews[i].setMinHeight(TREEVIEW_MIN_HEIGHT);
 		}
 
-		// TODO: set selected button from preference
-		selectedToggleIdx = 0; // /////////////////////////////
+		selectedToggleIdx = 0;
 		toggleGroup.selectToggle(toggleButtons[selectedToggleIdx]);
 
 		registeredStocksControlPane.setSpacing(2);
@@ -388,7 +449,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableControlPane.setMaxHeight(50d);
 
 		// Table View
-		tableView = new TableView();
+		tableView = new TableView<TableStockData>();
 		stockCodeColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_CODE));
 		stockNameColumn = new TableColumn(
@@ -581,14 +642,27 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				stockName = "(none)";
 			}
 
-			addItemToTree(allStocksRootItem, record, market, sector, stockName);
+			// All stocks tree
+			addItemToTree(allStocksRootItem, record, market, sector, stockName,
+					false);
+
+			// Registered stocks tree
+			for (int idxList = 0; idxList < numRegister; ++idxList) {
+				TreeItem<Object> rootItem = registeredStocksRootItems[idxList];
+				Set<String> set = registeredStockSets[idxList];
+				if (set.contains(stockCode)) {
+					addItemToTree(rootItem, record, market, sector, stockName,
+							true);
+				}
+			}
+
 			break;
 		}
 		return hit;
 	}
 
 	private void addItemToTree(TreeItem<Object> rootItem, StockRecord record,
-			String market, String sector, String stockName) {
+			String market, String sector, String stockName, boolean expandAll) {
 
 		// market
 		TreeItem<Object> currentMarketItem = null;
@@ -603,7 +677,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		if (!foundMarket) {
 			TreeItem<Object> newMarketItem = new TreeItem<Object>(
 					new MarketItemValue(market));
-			newMarketItem.setExpanded(false);
+			newMarketItem.setExpanded(expandAll ? true : false);
 			rootItem.getChildren().add(newMarketItem);
 			currentMarketItem = newMarketItem;
 		}
@@ -621,7 +695,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		if (!foundSector) {
 			TreeItem<Object> newSectorItem = new TreeItem<Object>(
 					new SectorItemValue(sector));
-			newSectorItem.setExpanded(false);
+			newSectorItem.setExpanded(expandAll ? true : false);
 			currentMarketItem.getChildren().add(newSectorItem);
 			currentSectorItem = newSectorItem;
 		}
@@ -674,8 +748,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		List<MenuItem> menuItems = new ArrayList<>();
 		MenuItem menuRegister = new MenuItem("_Register");
 		menuRegister.setOnAction((ActionEvent e) -> {
-			ObservableList selectedItems = tableView.getSelectionModel()
-					.getSelectedItems();
+			ObservableList<TableStockData> selectedItems = tableView
+					.getSelectionModel().getSelectedItems();
 			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
 				String stockCode = data.getStockCode();
@@ -687,8 +761,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		MenuItem menuOpenYahooFinance = new MenuItem(
 				"_Open Yahoo Finance HTML Page");
 		menuOpenYahooFinance.setOnAction((ActionEvent e) -> {
-			ObservableList selectedItems = tableView.getSelectionModel()
-					.getSelectedItems();
+			ObservableList<TableStockData> selectedItems = tableView
+					.getSelectionModel().getSelectedItems();
 			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
 				String stockCode = data.getStockCode();
@@ -718,7 +792,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
 
-	private EventHandler<MouseEvent> createTreeMouseEventHandler(TreeView tree) {
+	private EventHandler<MouseEvent> createTreeMouseEventHandler(
+			TreeView<Object> tree) {
 		return new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
@@ -763,8 +838,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			return;
 		}
 		Object value = item.getValue();
-		if (item == allStocksRootItem) {
-			reloadTableByAllCorpsUnderTree(allStocksRootItem);
+		if (value instanceof RootItemValue) {
+			reloadTableByAllCorpsUnderTree(item);
 		} else if (value instanceof MarketItemValue) {
 			tableStockDataList.clear();
 			item.getChildren().forEach(sectorItem -> {
@@ -837,7 +912,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					Object newValue) {
 
 				if (tableView.getSelectionModel().getSelectedItem() != null) {
-					TableViewSelectionModel selectionModel = tableView
+					TableViewSelectionModel<TableStockData> selectionModel = tableView
 							.getSelectionModel();
 					// ObservableList selectedCells = selectionModel
 					// .getSelectedCells();
