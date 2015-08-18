@@ -88,6 +88,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ResourceBundle resource;
 	private Pref pref;
+	private String[] registeredStocksPrefStrs;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -580,53 +581,54 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				stockName = "(none)";
 			}
 
-			// market
-			TreeItem<Object> currentMarketItem = null;
-			boolean foundMarket = false;
-			for (TreeItem<Object> oldMarketItem : allStocksRootItem
-					.getChildren()) {
-				if (((ItemValue) oldMarketItem.getValue()).getName().equals(
-						market)) {
-					currentMarketItem = oldMarketItem;
-					foundMarket = true;
-					break;
-				}
-			}
-			if (!foundMarket) {
-				TreeItem<Object> newMarketItem = new TreeItem<Object>(
-						new MarketItemValue(market));
-				newMarketItem.setExpanded(false);
-				allStocksRootItem.getChildren().add(newMarketItem);
-				currentMarketItem = newMarketItem;
-			}
-
-			// sector
-			TreeItem<Object> currentSectorItem = null;
-			boolean foundSector = false;
-			for (TreeItem<Object> oldSectorItem : currentMarketItem
-					.getChildren()) {
-				if (((ItemValue) oldSectorItem.getValue()).getName().equals(
-						sector)) {
-					currentSectorItem = oldSectorItem;
-					foundSector = true;
-					break;
-				}
-			}
-			if (!foundSector) {
-				TreeItem<Object> newSectorItem = new TreeItem<Object>(
-						new SectorItemValue(sector));
-				newSectorItem.setExpanded(false);
-				currentMarketItem.getChildren().add(newSectorItem);
-				currentSectorItem = newSectorItem;
-			}
-
-			// stock name
-			TreeItem<Object> stockNameItem = new TreeItem<Object>(record);
-			currentSectorItem.getChildren().add(stockNameItem);
-
+			addItemToTree(allStocksRootItem, record, market, sector, stockName);
 			break;
 		}
 		return hit;
+	}
+
+	private void addItemToTree(TreeItem<Object> rootItem, StockRecord record,
+			String market, String sector, String stockName) {
+
+		// market
+		TreeItem<Object> currentMarketItem = null;
+		boolean foundMarket = false;
+		for (TreeItem<Object> oldMarketItem : rootItem.getChildren()) {
+			if (((ItemValue) oldMarketItem.getValue()).getName().equals(market)) {
+				currentMarketItem = oldMarketItem;
+				foundMarket = true;
+				break;
+			}
+		}
+		if (!foundMarket) {
+			TreeItem<Object> newMarketItem = new TreeItem<Object>(
+					new MarketItemValue(market));
+			newMarketItem.setExpanded(false);
+			rootItem.getChildren().add(newMarketItem);
+			currentMarketItem = newMarketItem;
+		}
+
+		// sector
+		TreeItem<Object> currentSectorItem = null;
+		boolean foundSector = false;
+		for (TreeItem<Object> oldSectorItem : currentMarketItem.getChildren()) {
+			if (((ItemValue) oldSectorItem.getValue()).getName().equals(sector)) {
+				currentSectorItem = oldSectorItem;
+				foundSector = true;
+				break;
+			}
+		}
+		if (!foundSector) {
+			TreeItem<Object> newSectorItem = new TreeItem<Object>(
+					new SectorItemValue(sector));
+			newSectorItem.setExpanded(false);
+			currentMarketItem.getChildren().add(newSectorItem);
+			currentSectorItem = newSectorItem;
+		}
+
+		// stock name
+		TreeItem<Object> stockNameItem = new TreeItem<Object>(record);
+		currentSectorItem.getChildren().add(stockNameItem);
 	}
 
 	@Override
