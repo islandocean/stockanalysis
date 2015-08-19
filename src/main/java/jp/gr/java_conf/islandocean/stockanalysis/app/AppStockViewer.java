@@ -369,6 +369,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		for (int i = 0; i < numRegister; ++i) {
 			registeredStocksTreeViews[i] = new TreeView<Object>(
 					registeredStocksRootItems[i]);
+			registeredStocksTreeViews[i]
+					.setOnMouseClicked(createTreeMouseEventHandler(registeredStocksTreeViews[i]));
 			registeredStocksTreeViews[i].getSelectionModel()
 					.selectedItemProperty()
 					.addListener(createTreeChangeListener());
@@ -848,14 +850,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				if (mouseEvent.getClickCount() == 1) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
-					if (item != null) {
-						Object value = item.getValue();
-						if (value instanceof MarketItemValue) {
-						} else if (value instanceof SectorItemValue) {
-						} else if (value instanceof StockRecord) {
-						} else {
-						}
-					}
+					reloadTableData(item);
 				} else if (mouseEvent.getClickCount() == 2) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
