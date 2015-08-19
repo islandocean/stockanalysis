@@ -335,8 +335,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				.setOnMouseClicked(createTreeMouseEventHandler(allStocksTreeView));
 		allStocksTreeView.getSelectionModel().selectedItemProperty()
 				.addListener(createTreeChangeListener());
-		allStocksTreeView.setContextMenu(new ContextMenu(
-				createTreeContextMenuContents()));
+		// allStocksTreeView.setContextMenu(new ContextMenu(
+		// createAllStocksTreeContextMenuContents(allStocksTreeView)));
 
 		// All Stocks tree controls
 		allStocksControlPane = new HBox();
@@ -373,8 +373,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					.selectedItemProperty()
 					.addListener(createTreeChangeListener());
 			registeredStocksTreeViews[i].setContextMenu(new ContextMenu(
-					createTreeContextMenuContents()));
+					createRegisteredStocksTreeContextMenuContents(i)));
 			registeredStocksTreeViews[i].setMinHeight(TREEVIEW_MIN_HEIGHT);
+			registeredStocksTreeViews[i].getSelectionModel().setSelectionMode(
+					SelectionMode.MULTIPLE);
 		}
 
 		// Registered stocks tree controls
@@ -710,26 +712,104 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		currentSectorItem.getChildren().add(stockNameItem);
 	}
 
-	private MenuItem[] createTreeContextMenuContents() {
+	private MenuItem[] createRegisteredStocksTreeContextMenuContents(
+			int idxRegisteredStocks) {
 		List<MenuItem> menuItems = new ArrayList<>();
-		MenuItem menuRegister = new MenuItem("_Test");
-		menuRegister.setOnAction((ActionEvent e) -> {
-			ObservableList selectedItems = allStocksTreeView
-					.getSelectionModel().getSelectedItems();
-			selectedItems.forEach(item -> {
-				Object obj = ((TreeItem) item).getValue();
-				if (obj instanceof ItemValue) {
-					ItemValue data = (ItemValue) obj;
-					String name = data.getName();
-					System.out.println("name=" + name);
-				} else if (obj instanceof StockRecord) {
-					StockRecord record = (StockRecord) obj;
-					System.out.println("stockCode=" + record.getStockCode());
-				}
-			});
-		});
-		menuItems.add(menuRegister);
+
+		MenuItem menuUnregister = new MenuItem(
+				resource.getString(MessageKey.UNREGISTER_CONTEXT_MENU));
+		menuUnregister.setUserData(Integer.valueOf(idxRegisteredStocks));
+		menuUnregister
+				.setOnAction(createUnregisterStocksFromTreeEventHandler());
+
+		menuItems.add(menuUnregister);
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
+	}
+
+	private EventHandler<ActionEvent> createUnregisterStocksFromTreeEventHandler() {
+		return new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				MenuItem selectedMenu = (MenuItem) (e.getSource());
+				int idxRegisteredStocks = (Integer) (selectedMenu.getUserData());
+				TreeView tView = registeredStocksTreeViews[idxRegisteredStocks];
+				ObservableList selectedItems = tView.getSelectionModel()
+						.getSelectedItems();
+				for (int i = 0; i < numRegister; ++i) {
+					if (tView == registeredStocksTreeViews[i]) {
+						idxRegisteredStocks = i;
+						break;
+					}
+				}
+				Set registeredStockSet = registeredStockSets[idxRegisteredStocks];
+
+				selectedItems.forEach(item -> {
+					Object obj = ((TreeItem) item).getValue();
+					if (obj instanceof RootItemValue) {
+						TreeItem rootItem = (TreeItem) item;
+						removeRootStocksFromSetForUnregister(rootItem,
+								registeredStockSet);
+					} else if (obj instanceof MarketItemValue) {
+						TreeItem marketItem = (TreeItem) item;
+						removeMarketStocksFromSetForUnregister(marketItem,
+								registeredStockSet);
+					} else if (obj instanceof SectorItemValue) {
+						TreeItem sectorItem = (TreeItem) item;
+						removeSectorStocksFromSetForUnregister(sectorItem,
+								registeredStockSet);
+					} else if (obj instanceof StockRecord) {
+						StockRecord record = (StockRecord) obj;
+						removeStockFromSetForUnregister((TreeItem) item,
+								registeredStockSet);
+					}
+				});
+
+				TreeItem rootItem = registeredStocksRootItems[idxRegisteredStocks];
+
+				// Update registered stocks tree
+				updateRegisteredStocksTree(rootItem, registeredStockSet);
+
+				// Update pref
+				updatePrefForRegisteredStocks(idxRegisteredStocks,
+						registeredStockSet);
+
+				// Save pref.
+				savePref();
+			}
+		};
+	}
+
+	private void removeRootStocksFromSetForUnregister(TreeItem rootItem,
+			Set registerSet) {
+		rootItem.getChildren().forEach(
+				marketItem -> {
+					removeMarketStocksFromSetForUnregister(
+							(TreeItem) marketItem, registerSet);
+				});
+	}
+
+	private void removeMarketStocksFromSetForUnregister(TreeItem marketItem,
+			Set registerSet) {
+		marketItem.getChildren().forEach(
+				sectorItem -> {
+					removeSectorStocksFromSetForUnregister(
+							(TreeItem) sectorItem, registerSet);
+				});
+	}
+
+	private void removeSectorStocksFromSetForUnregister(TreeItem sectorItem,
+			Set registerSet) {
+		sectorItem.getChildren().forEach(stockItem -> {
+			removeStockFromSetForUnregister((TreeItem) stockItem, registerSet);
+		});
+	}
+
+	private void removeStockFromSetForUnregister(TreeItem stockItem,
+			Set registerSet) {
+		StockRecord record = (StockRecord) (stockItem.getValue());
+		String stockCode = record.getStockCode();
+		registerSet.remove(stockCode);
+		System.out.println("record=" + record);
 	}
 
 	private void sortAllTreesAndSetCaptions() {

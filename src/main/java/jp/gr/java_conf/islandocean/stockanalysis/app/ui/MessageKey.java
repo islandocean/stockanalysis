@@ -10,6 +10,7 @@ public class MessageKey {
 	public static final String REGISTERED_STOCKS_TREEITEM = "REGISTERED_STOCKS_TREEITEM";
 	public static final String REGISTER_CONTEXT_MENU = "REGISTER_CONTEXT_MENU";
 	public static final String REGISTERED_STOCKS_CONTEXT_MENU = "REGISTERED_STOCKS_CONTEXT_MENU";
+	public static final String UNREGISTER_CONTEXT_MENU = "UNREGISTER_CONTEXT_MENU";
 	public static final String STOCK_CODE = "STOCK_CODE";
 	public static final String STOCK_NAME = "STOCK_NAME";
 	public static final String MARKET = "MARKET";
