@@ -80,6 +80,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final String PREFKEY_REGISTERED_STOCKS_3 = "REGISTERED_STOCKS_3";
 	private static final String PREFKEY_REGISTERED_STOCKS_4 = "REGISTERED_STOCKS_4";
 	private static final String PREFKEY_REGISTERED_STOCKS_5 = "REGISTERED_STOCKS_5";
+	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
 
 	private static final double DEFAULT_SCENE_WIDTH = 1200d;
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
@@ -401,10 +402,24 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				registeredStocksContent.getChildren().addAll(
 						registeredStocksControlPane,
 						registeredStocksTreeViews[selectedToggleIdx]);
+
+				pref.setProperty(PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX,
+						String.valueOf(selectedToggleIdx));
+				try {
+					pref.save();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			});
 			registeredStocksControlPane.getChildren().add(toggleButtons[i]);
 		}
+		String selectedStr = (String) pref
+				.getProperty(PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX);
 		selectedToggleIdx = 0;
+		if (selectedStr != null) {
+			selectedToggleIdx = Integer.parseInt(selectedStr);
+		}
 		toggleGroup.selectToggle(toggleButtons[selectedToggleIdx]);
 
 		registeredStocksControlPane.setSpacing(2);
