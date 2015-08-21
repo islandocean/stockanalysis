@@ -1,5 +1,6 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
+import java.text.Normalizer;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.ResourceBundle;
@@ -17,7 +18,10 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
 
 public class CorpInfoPane extends TitledPane {
 
-	private static NumberFormat numberFormat = NumberFormat.getNumberInstance();
+	private static final NumberFormat numberFormat = NumberFormat
+			.getNumberInstance();
+	private static final double HEIGHT_MIDDLE = 64;
+	private static final double HEIGHT_LARGE = 88;
 
 	private GridPane grid;
 	private CorpViewType corpViewType;
@@ -58,8 +62,8 @@ public class CorpInfoPane extends TitledPane {
 
 	private void updateView() {
 		grid = new GridPane();
-		grid.setVgap(4);
-		grid.setPadding(new Insets(5, 5, 5, 5));
+		grid.setVgap(1);
+		grid.setPadding(new Insets(2, 2, 2, 2));
 
 		int col1MinWidth = 100;
 		int col2MinWidth = 100;
@@ -74,7 +78,7 @@ public class CorpInfoPane extends TitledPane {
 			break;
 		case PROFILE_INFO:
 			col1MinWidth = 100;
-			col2MinWidth = 100;
+			col2MinWidth = 150;
 			break;
 		}
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -380,6 +384,7 @@ public class CorpInfoPane extends TitledPane {
 			Label labelFeature = new Label(
 					getProfileString(ProfileEnum.FEATURE));
 			labelFeature.wrapTextProperty().set(true);
+			labelFeature.setMinHeight(HEIGHT_LARGE);
 			grid.add(new Label(resource.getString(MessageKey.FEATURE)), 0, row);
 			grid.add(labelFeature, 1, row);
 
@@ -387,6 +392,7 @@ public class CorpInfoPane extends TitledPane {
 			Label labelConsolidatedOperations = new Label(
 					getProfileString(ProfileEnum.CONSOLIDATED_OPERATIONS));
 			labelConsolidatedOperations.wrapTextProperty().set(true);
+			labelConsolidatedOperations.setMinHeight(HEIGHT_LARGE);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.CONSOLIDATED_OPERATIONS)), 0,
@@ -397,6 +403,7 @@ public class CorpInfoPane extends TitledPane {
 			Label labelHeadOffice = new Label(
 					getProfileString(ProfileEnum.LOCATION_OF_HEAD_OFFICE));
 			labelHeadOffice.wrapTextProperty().set(true);
+			labelHeadOffice.setMinHeight(HEIGHT_MIDDLE);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.LOCATION_OF_HEAD_OFFICE)), 0,
@@ -421,9 +428,12 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(getProfileString(ProfileEnum.SECTOR)), 1, row);
 
 			++row;
-			Label labelStockNameInEnglish = new Label(
-					getProfileString(ProfileEnum.STOCK_NAME_IN_ENGLISH));
+			String stockNameInEnglish = Normalizer.normalize(
+					getProfileString(ProfileEnum.STOCK_NAME_IN_ENGLISH),
+					Normalizer.Form.NFKC);
+			Label labelStockNameInEnglish = new Label(stockNameInEnglish);
 			labelStockNameInEnglish.wrapTextProperty().set(true);
+			labelStockNameInEnglish.setMinHeight(HEIGHT_MIDDLE);
 			grid.add(
 					new Label(resource
 							.getString(MessageKey.STOCK_NAME_IN_ENGLISH)), 0,
