@@ -7,9 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javafx.util.Pair;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +28,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -476,7 +479,15 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		screeningButton = new Button(
 				resource.getString(MessageKey.SCREENING_BUTTON));
 		screeningButton.setOnAction((ActionEvent e) -> {
-			// TODO:
+			//
+			// TODO: Under construction.
+			//
+				Dialog<Pair<String, String>> dialog = new ScreeningDialog();
+				Optional<Pair<String, String>> result = dialog.showAndWait();
+				result.ifPresent(usernamePassword -> {
+					System.out.println("Username=" + usernamePassword.getKey()
+							+ ", Password=" + usernamePassword.getValue());
+				});
 			});
 		tableControlPane.getChildren().addAll(searchTextField, searchButton,
 				new Label(" "), screeningButton);
