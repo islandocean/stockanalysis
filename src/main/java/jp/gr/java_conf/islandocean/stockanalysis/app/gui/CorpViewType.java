@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
+package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 public enum CorpViewType {
 	// 株価情報

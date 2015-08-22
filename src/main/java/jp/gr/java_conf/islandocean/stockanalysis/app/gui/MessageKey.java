@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
+package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 public class MessageKey {
 	public static final String STAGE_TITLE = "STAGE_TITLE";

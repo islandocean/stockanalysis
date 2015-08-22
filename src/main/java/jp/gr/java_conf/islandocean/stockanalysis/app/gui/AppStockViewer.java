@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.app;
+package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,16 +47,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.CorpInfoPane;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.CorpViewType;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MessageKey;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.Pref;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.ResourceBundleWithUtf8;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.RootItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.SectorItemValue;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.TableStockData;
+import jp.gr.java_conf.islandocean.stockanalysis.app.CorpsAllData;
+import jp.gr.java_conf.islandocean.stockanalysis.app.CorpsScannerTemplate;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
@@ -692,8 +684,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		menuBar = new MenuBar();
 
 		fileMenu = new Menu(resource.getString(MessageKey.FILE_MENU));
-		MenuItem ExitMenu = new MenuItem(
-				resource.getString(MessageKey.EXIT_MENU));
+		ExitMenu = new MenuItem(resource.getString(MessageKey.EXIT_MENU));
 		fileMenu.getItems().add(ExitMenu);
 		ExitMenu.setOnAction(value -> {
 			System.exit(0);
@@ -944,13 +935,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 							.getSelectedItem();
 					reloadTableData(item);
 				} else if (mouseEvent.getClickCount() == 2) {
-					TreeItem item = (TreeItem) tree.getSelectionModel()
-							.getSelectedItem();
-					if (item != null) {
-						Object value = item.getValue();
-						if (value instanceof StockRecord) {
-						}
-					}
 				}
 			}
 		};
@@ -1106,42 +1090,39 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		}
 		Object value = item.getValue();
 		if (value instanceof RootItemValue) {
-			reloadTableByAllCorpsUnderTree(item);
+			tableStockDataList.clear();
+			reloadTableByRoot(item);
 		} else if (value instanceof MarketItemValue) {
 			tableStockDataList.clear();
-			item.getChildren().forEach(sectorItem -> {
-				sectorItem.getChildren().forEach(stockItem -> {
-					if (!(stockItem.getValue() instanceof StockRecord)) {
-						return; // continue
-					}
-					StockRecord record = (StockRecord) stockItem.getValue();
-					tableStockDataList.add(new TableStockData(record));
-				});
-			});
+			reloadTableByMarket(item);
 		} else if (value instanceof SectorItemValue) {
 			tableStockDataList.clear();
-			item.getChildren().forEach(stockItem -> {
-				StockRecord record = (StockRecord) stockItem.getValue();
-				tableStockDataList.add(new TableStockData(record));
-			});
+			reloadTableBySector(item);
 		} else if (value instanceof StockRecord) {
 			String stockCode = ((StockRecord) value).getStockCode();
 			reloadRightPane(stockCode);
 		}
 	}
 
-	private void reloadTableByAllCorpsUnderTree(TreeItem<Object> root) {
-		tableStockDataList.clear();
+	private void reloadTableByRoot(TreeItem<Object> root) {
 		root.getChildren().forEach(marketItem -> {
-			marketItem.getChildren().forEach(sectorItem -> {
-				sectorItem.getChildren().forEach(stockItem -> {
-					if (!(stockItem.getValue() instanceof StockRecord)) {
-						return; // continue
-					}
-					StockRecord record = (StockRecord) stockItem.getValue();
-					tableStockDataList.add(new TableStockData(record));
-				});
-			});
+			reloadTableByMarket(marketItem);
+		});
+	}
+
+	private void reloadTableByMarket(TreeItem<Object> marketItem) {
+		marketItem.getChildren().forEach(sectorItem -> {
+			reloadTableBySector(sectorItem);
+		});
+	}
+
+	private void reloadTableBySector(TreeItem<Object> sectorItem) {
+		sectorItem.getChildren().forEach(stockItem -> {
+			if (!(stockItem.getValue() instanceof StockRecord)) {
+				return; // continue
+			}
+			StockRecord record = (StockRecord) stockItem.getValue();
+			tableStockDataList.add(new TableStockData(record));
 		});
 	}
 

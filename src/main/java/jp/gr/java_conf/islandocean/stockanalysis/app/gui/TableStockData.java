@@ -1,4 +1,4 @@
-package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
+package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 import javafx.beans.property.SimpleStringProperty;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;

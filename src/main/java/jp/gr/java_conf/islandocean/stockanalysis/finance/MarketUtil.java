@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import javafx.scene.control.TreeItem;
-import jp.gr.java_conf.islandocean.stockanalysis.app.ui.MarketItemValue;
+import jp.gr.java_conf.islandocean.stockanalysis.app.gui.MarketItemValue;
 
 public class MarketUtil {
 
