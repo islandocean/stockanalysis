@@ -127,7 +127,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	// Menu
 	private MenuBar menuBar;
 	private Menu fileMenu;
+	private MenuItem ExitMenu;
 	private Menu viewMenu;
+	private Menu toolMenu;
+	private MenuItem optionMenu;
+	private Menu helpMenu;
+	private MenuItem aboutMenu;
 
 	// All Stocks
 	private VBox allStocksContent;
@@ -650,11 +655,28 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private void createMenu() {
 		menuBar = new MenuBar();
+
 		fileMenu = new Menu("File");
-		fileMenu.setDisable(true); //
+		MenuItem ExitMenu = new MenuItem("Exit");
+		ExitMenu.setOnAction(e -> {
+			System.exit(0);
+		});
+		fileMenu.getItems().add(ExitMenu);
+
 		viewMenu = new Menu("View");
 		viewMenu.setDisable(true); //
-		menuBar.getMenus().addAll(fileMenu, viewMenu);
+
+		toolMenu = new Menu("Tool");
+		optionMenu = new MenuItem("Option");
+		optionMenu.setDisable(true); //
+		toolMenu.getItems().add(optionMenu);
+
+		helpMenu = new Menu("Help");
+		aboutMenu = new MenuItem("About");
+		aboutMenu.setDisable(true); //
+		helpMenu.getItems().add(aboutMenu);
+
+		menuBar.getMenus().addAll(fileMenu, viewMenu, toolMenu, helpMenu);
 	}
 
 	private void addItemToTree(TreeItem<Object> rootItem, StockRecord record,
