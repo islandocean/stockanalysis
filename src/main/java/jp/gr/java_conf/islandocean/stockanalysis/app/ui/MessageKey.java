@@ -2,6 +2,18 @@ package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
 public class MessageKey {
 	public static final String STAGE_TITLE = "STAGE_TITLE";
+	public static final String FILE_MENU = "FILE_MENU";
+	public static final String EXIT_MENU = "EXIT_MENU";
+	public static final String VIEW_MENU = "VIEW_MENU";
+	public static final String LANGUAGE_MENU = "LANGUAGE_MENU";
+	public static final String JAPANESE_MENU = "JAPANESE_MENU";
+	public static final String ENGLISH_MENU = "ENGLISH_MENU";
+	public static final String TOOL_MENU = "TOOL_MENU";
+	public static final String OPTION_MENU = "OPTION_MENU";
+	public static final String HELP_MENU = "HELP_MENU";
+	public static final String ABOUT_MENU = "ABOUT_MENU";
+	public static final String ABOUT_DIALOG_HEADER_TEXT = "ABOUT_DIALOG_HEADER_TEXT";
+	public static final String ABOUT_DIALOG_CONTENT_TEXT = "ABOUT_DIALOG_CONTENT_TEXT";
 	public static final String ALL_STOCKS_TITLE_LABEL = "ALL_STOCKS_TITLE_LABEL";
 	public static final String REGISTERED_STOCKS_TITLE_LABEL = "REGISTERED_STOCKS_TITLE_LABEL";
 	public static final String ALL_MARKETS_TREEITEM = "ALL_MARKETS_TREEITEM";

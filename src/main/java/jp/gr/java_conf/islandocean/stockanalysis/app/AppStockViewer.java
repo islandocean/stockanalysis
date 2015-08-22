@@ -685,17 +685,19 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void createMenu() {
 		menuBar = new MenuBar();
 
-		fileMenu = new Menu("File");
-		MenuItem ExitMenu = new MenuItem("Exit");
+		fileMenu = new Menu(resource.getString(MessageKey.FILE_MENU));
+		MenuItem ExitMenu = new MenuItem(
+				resource.getString(MessageKey.EXIT_MENU));
 		fileMenu.getItems().add(ExitMenu);
 		ExitMenu.setOnAction(value -> {
 			System.exit(0);
 		});
 
-		viewMenu = new Menu("View");
-		languageMenu = new Menu("Language");
-		japaneseMenu = new MenuItem("Japanese");
-		englishMenu = new MenuItem("English");
+		viewMenu = new Menu(resource.getString(MessageKey.VIEW_MENU));
+		languageMenu = new Menu(resource.getString(MessageKey.LANGUAGE_MENU));
+		japaneseMenu = new MenuItem(
+				resource.getString(MessageKey.JAPANESE_MENU));
+		englishMenu = new MenuItem(resource.getString(MessageKey.ENGLISH_MENU));
 		languageMenu.getItems().addAll(japaneseMenu, englishMenu);
 		viewMenu.getItems().add(languageMenu);
 		japaneseMenu.setOnAction(value -> {
@@ -715,19 +717,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			buildUi(this.primaryStage);
 		});
 
-		toolMenu = new Menu("Tool");
-		optionMenu = new MenuItem("Option");
+		toolMenu = new Menu(resource.getString(MessageKey.TOOL_MENU));
+		optionMenu = new MenuItem(resource.getString(MessageKey.OPTION_MENU));
 		toolMenu.getItems().add(optionMenu);
 		optionMenu.setDisable(true); //
 
-		helpMenu = new Menu("Help");
-		aboutMenu = new MenuItem("About");
+		helpMenu = new Menu(resource.getString(MessageKey.HELP_MENU));
+		aboutMenu = new MenuItem(resource.getString(MessageKey.ABOUT_MENU));
 		helpMenu.getItems().add(aboutMenu);
 		aboutMenu.setOnAction(value -> {
 			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("About Dialog");
-			alert.setHeaderText("Stock Viewer Ver.0.01");
-			alert.setContentText("Experimental.");
+			alert.setTitle(resource.getString(MessageKey.ABOUT_MENU));
+			alert.setHeaderText(resource
+					.getString(MessageKey.ABOUT_DIALOG_HEADER_TEXT));
+			alert.setContentText(resource
+					.getString(MessageKey.ABOUT_DIALOG_CONTENT_TEXT));
 			alert.showAndWait();
 		});
 
