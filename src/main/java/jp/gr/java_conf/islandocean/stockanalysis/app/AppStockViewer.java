@@ -75,11 +75,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 public class AppStockViewer extends Application implements CorpsScannerTemplate {
 
 	//
-	private static final String PREFKEY_REGISTERED_STOCKS_1 = "REGISTERED_STOCKS_1";
-	private static final String PREFKEY_REGISTERED_STOCKS_2 = "REGISTERED_STOCKS_2";
-	private static final String PREFKEY_REGISTERED_STOCKS_3 = "REGISTERED_STOCKS_3";
-	private static final String PREFKEY_REGISTERED_STOCKS_4 = "REGISTERED_STOCKS_4";
-	private static final String PREFKEY_REGISTERED_STOCKS_5 = "REGISTERED_STOCKS_5";
+	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
 
 	private static final double DEFAULT_SCENE_WIDTH = 1200d;
@@ -232,17 +228,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pref = new Pref(AppStockViewer.class);
 
 		registeredStocksPrefStrs = new String[numRegister];
-		registeredStocksPrefStrs[0] = (String) pref
-				.getProperty(PREFKEY_REGISTERED_STOCKS_1);
-		registeredStocksPrefStrs[1] = (String) pref
-				.getProperty(PREFKEY_REGISTERED_STOCKS_2);
-		registeredStocksPrefStrs[2] = (String) pref
-				.getProperty(PREFKEY_REGISTERED_STOCKS_3);
-		registeredStocksPrefStrs[3] = (String) pref
-				.getProperty(PREFKEY_REGISTERED_STOCKS_4);
-		registeredStocksPrefStrs[4] = (String) pref
-				.getProperty(PREFKEY_REGISTERED_STOCKS_5);
 
+		for (int i = 0; i < numRegister; ++i) {
+			registeredStocksPrefStrs[i] = (String) pref
+					.getProperty(PREFKEY_REGISTERED_STOCKS_ + i);
+		}
 		registeredStockSets = new LinkedHashSet[numRegister];
 		for (int idxList = 0; idxList < numRegister; ++idxList) {
 			registeredStockSets[idxList] = new LinkedHashSet();
@@ -1185,23 +1175,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void updatePrefForRegisteredStocks(int idxRegisteredStocks,
 			Set<String> registeredStockSet) {
 		String key = null;
-		switch (idxRegisteredStocks) {
-		case 0:
-			key = PREFKEY_REGISTERED_STOCKS_1;
-			break;
-		case 1:
-			key = PREFKEY_REGISTERED_STOCKS_2;
-			break;
-		case 2:
-			key = PREFKEY_REGISTERED_STOCKS_3;
-			break;
-		case 3:
-			key = PREFKEY_REGISTERED_STOCKS_4;
-			break;
-		case 4:
-			key = PREFKEY_REGISTERED_STOCKS_5;
-			break;
-		}
+
+		key = PREFKEY_REGISTERED_STOCKS_ + idxRegisteredStocks;
 		StringBuilder sb = new StringBuilder();
 		registeredStockSet.forEach(stockCode -> {
 			if (sb.length() != 0) {
