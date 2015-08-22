@@ -106,6 +106,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final int NUM_REGISTERED_STOCKS = 10;
 	private String[] registeredStocksPrefStrs;
 	private LinkedHashSet<String>[] registeredStockSets;
+	private String rightPaneStockCode;
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
@@ -275,10 +276,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void savePref() {
-		if (appLocale != null) {
-			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
-		}
-
 		try {
 			pref.save();
 		} catch (IOException e) {
@@ -316,7 +313,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void buildUi(Stage stage) {
-		tableStockDataList.clear();
 
 		//
 		// Tree items
@@ -562,6 +558,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// right
 		rightPane1 = new VBox();
 		rightPane2 = new VBox();
+		if (this.rightPaneStockCode != null) {
+			reloadRightPane(this.rightPaneStockCode);
+		}
 
 		// middle = left + center + right
 		middlePane = new SplitPane();
@@ -694,6 +693,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		viewMenu.getItems().add(languageMenu);
 		japaneseMenu.setOnAction(value -> {
 			appLocale = Locale.JAPAN;
+			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
 			savePref();
 			Locale.setDefault(appLocale);
 			initializeResource();
@@ -701,6 +701,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		});
 		englishMenu.setOnAction(value -> {
 			appLocale = Locale.ENGLISH;
+			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
 			savePref();
 			Locale.setDefault(appLocale);
 			initializeResource();
@@ -1173,6 +1174,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void reloadRightPane(String stockCode) {
+		this.rightPaneStockCode = stockCode;
+
 		ProfileRecord profileRecord = null;
 		DetailRecord detailRecord = null;
 		if (stockCode != null) {
