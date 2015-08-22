@@ -102,7 +102,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ResourceBundle resource;
 	private Pref pref;
-	private static final int numRegister = 10;
+	private static final int NUM_REGISTERED_STOCKS = 10;
 	private String[] registeredStocksPrefStrs;
 	private LinkedHashSet<String>[] registeredStockSets;
 
@@ -231,14 +231,14 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void loadPref() {
 		pref = new Pref(AppStockViewer.class);
 
-		registeredStocksPrefStrs = new String[numRegister];
+		registeredStocksPrefStrs = new String[NUM_REGISTERED_STOCKS];
 
-		for (int i = 0; i < numRegister; ++i) {
+		for (int i = 0; i < NUM_REGISTERED_STOCKS; ++i) {
 			registeredStocksPrefStrs[i] = (String) pref
 					.getProperty(PREFKEY_REGISTERED_STOCKS_ + i);
 		}
-		registeredStockSets = new LinkedHashSet[numRegister];
-		for (int idxList = 0; idxList < numRegister; ++idxList) {
+		registeredStockSets = new LinkedHashSet[NUM_REGISTERED_STOCKS];
+		for (int idxList = 0; idxList < NUM_REGISTERED_STOCKS; ++idxList) {
 			registeredStockSets[idxList] = new LinkedHashSet();
 			String s = registeredStocksPrefStrs[idxList];
 			if (s != null && s.length() > 0) {
@@ -300,8 +300,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		allStocksRootItem.setExpanded(true);
 
 		// Create registered stocks root item.
-		registeredStocksRootItems = new TreeItem[numRegister];
-		for (int i = 0; i < numRegister; ++i) {
+		registeredStocksRootItems = new TreeItem[NUM_REGISTERED_STOCKS];
+		for (int i = 0; i < NUM_REGISTERED_STOCKS; ++i) {
 			registeredStocksRootItems[i] = new TreeItem<Object>(
 					new RootItemValue(resource
 							.getString(MessageKey.REGISTERED_STOCKS_TREEITEM)
@@ -367,8 +367,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				allStocksControlPane, allStocksTreeView);
 
 		// Registered stocks tree view
-		registeredStocksTreeViews = new TreeView[numRegister];
-		for (int i = 0; i < numRegister; ++i) {
+		registeredStocksTreeViews = new TreeView[NUM_REGISTERED_STOCKS];
+		for (int i = 0; i < NUM_REGISTERED_STOCKS; ++i) {
 			registeredStocksTreeViews[i] = new TreeView<Object>(
 					registeredStocksRootItems[i]);
 			registeredStocksTreeViews[i]
@@ -387,8 +387,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Registered stocks tree controls
 		registeredStocksControlPane = new GridPane();
 		toggleGroup = new ToggleGroup();
-		toggleButtons = new ToggleButton[numRegister];
-		for (int i = 0; i < numRegister; ++i) {
+		toggleButtons = new ToggleButton[NUM_REGISTERED_STOCKS];
+		for (int i = 0; i < NUM_REGISTERED_STOCKS; ++i) {
 			toggleButtons[i] = new ToggleButton();
 			toggleButtons[i].setText(Integer.toString(i + 1));
 			toggleButtons[i].setToggleGroup(toggleGroup);
@@ -626,7 +626,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					false);
 
 			// Registered stocks tree
-			for (int idxList = 0; idxList < numRegister; ++idxList) {
+			for (int idxList = 0; idxList < NUM_REGISTERED_STOCKS; ++idxList) {
 				TreeItem<Object> rootItem = registeredStocksRootItems[idxList];
 				Set<String> set = registeredStockSets[idxList];
 				if (set.contains(stockCode)) {
@@ -743,7 +743,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				TreeView tView = registeredStocksTreeViews[idxRegisteredStocks];
 				ObservableList selectedItems = tView.getSelectionModel()
 						.getSelectedItems();
-				for (int i = 0; i < numRegister; ++i) {
+				for (int i = 0; i < NUM_REGISTERED_STOCKS; ++i) {
 					if (tView == registeredStocksTreeViews[i]) {
 						idxRegisteredStocks = i;
 						break;
@@ -831,7 +831,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Set tree captions
 		setTreeCaptions(allStocksRootItem);
 
-		for (int idxList = 0; idxList < numRegister; ++idxList) {
+		for (int idxList = 0; idxList < NUM_REGISTERED_STOCKS; ++idxList) {
 			TreeItem<Object> rootItem = registeredStocksRootItems[idxList];
 
 			// Sort tree items of registered stocks.
@@ -953,7 +953,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		Menu menuRegister = new Menu(
 				resource.getString(MessageKey.REGISTER_CONTEXT_MENU));
-		for (int idx = 0; idx < numRegister; ++idx) {
+		for (int idx = 0; idx < NUM_REGISTERED_STOCKS; ++idx) {
 			String subMenuTitleHead = resource
 					.getString(MessageKey.REGISTERED_STOCKS_CONTEXT_MENU);
 			MenuItem menuRegisterStocks = new MenuItem(subMenuTitleHead
