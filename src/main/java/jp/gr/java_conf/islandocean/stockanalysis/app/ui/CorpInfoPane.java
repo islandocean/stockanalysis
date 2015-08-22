@@ -20,6 +20,7 @@ public class CorpInfoPane extends TitledPane {
 
 	private static final NumberFormat numberFormat = NumberFormat
 			.getNumberInstance();
+	private static final double HEIGHT_DUAL = 40;
 	private static final double HEIGHT_MIDDLE = 64;
 	private static final double HEIGHT_LARGE = 88;
 
@@ -77,8 +78,8 @@ public class CorpInfoPane extends TitledPane {
 		case MARGIN_INFO:
 			break;
 		case PROFILE_INFO:
-			col1MinWidth = 100;
-			col2MinWidth = 150;
+			col1MinWidth = 120;
+			col2MinWidth = 130;
 			break;
 		}
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -381,34 +382,36 @@ public class CorpInfoPane extends TitledPane {
 					row);
 
 			++row;
-			Label labelFeature = new Label(
+			Label featureValue = new Label(
 					getProfileString(ProfileEnum.FEATURE));
-			labelFeature.wrapTextProperty().set(true);
-			labelFeature.setMinHeight(HEIGHT_LARGE);
+			featureValue.wrapTextProperty().set(true);
+			featureValue.setMinHeight(HEIGHT_LARGE);
 			grid.add(new Label(resource.getString(MessageKey.FEATURE)), 0, row);
-			grid.add(labelFeature, 1, row);
+			grid.add(featureValue, 1, row);
 
 			++row;
-			Label labelConsolidatedOperations = new Label(
+			Label consolidatedOperationsCaption = new Label(
+					resource.getString(MessageKey.CONSOLIDATED_OPERATIONS));
+			consolidatedOperationsCaption.wrapTextProperty().set(true);
+			consolidatedOperationsCaption.setMinHeight(HEIGHT_LARGE);
+			Label consolidatedOperationsValue = new Label(
 					getProfileString(ProfileEnum.CONSOLIDATED_OPERATIONS));
-			labelConsolidatedOperations.wrapTextProperty().set(true);
-			labelConsolidatedOperations.setMinHeight(HEIGHT_LARGE);
-			grid.add(
-					new Label(resource
-							.getString(MessageKey.CONSOLIDATED_OPERATIONS)), 0,
-					row);
-			grid.add(labelConsolidatedOperations, 1, row);
+			consolidatedOperationsValue.wrapTextProperty().set(true);
+			consolidatedOperationsValue.setMinHeight(HEIGHT_LARGE);
+			grid.add(consolidatedOperationsCaption, 0, row);
+			grid.add(consolidatedOperationsValue, 1, row);
 
 			++row;
-			Label labelHeadOffice = new Label(
+			Label headOfficeCaption = new Label(
+					resource.getString(MessageKey.LOCATION_OF_HEAD_OFFICE));
+			headOfficeCaption.wrapTextProperty().set(true);
+			headOfficeCaption.setMinHeight(HEIGHT_MIDDLE);
+			Label headOfficeValue = new Label(
 					getProfileString(ProfileEnum.LOCATION_OF_HEAD_OFFICE));
-			labelHeadOffice.wrapTextProperty().set(true);
-			labelHeadOffice.setMinHeight(HEIGHT_MIDDLE);
-			grid.add(
-					new Label(resource
-							.getString(MessageKey.LOCATION_OF_HEAD_OFFICE)), 0,
-					row);
-			grid.add(labelHeadOffice, 1, row);
+			headOfficeValue.wrapTextProperty().set(true);
+			headOfficeValue.setMinHeight(HEIGHT_MIDDLE);
+			grid.add(headOfficeCaption, 0, row);
+			grid.add(headOfficeValue, 1, row);
 
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.NEAREST_STATION)),
@@ -431,14 +434,15 @@ public class CorpInfoPane extends TitledPane {
 			String stockNameInEnglish = Normalizer.normalize(
 					getProfileString(ProfileEnum.STOCK_NAME_IN_ENGLISH),
 					Normalizer.Form.NFKC);
-			Label labelStockNameInEnglish = new Label(stockNameInEnglish);
-			labelStockNameInEnglish.wrapTextProperty().set(true);
-			labelStockNameInEnglish.setMinHeight(HEIGHT_MIDDLE);
-			grid.add(
-					new Label(resource
-							.getString(MessageKey.STOCK_NAME_IN_ENGLISH)), 0,
-					row);
-			grid.add(labelStockNameInEnglish, 1, row);
+			Label stockNameInEnglishCaption = new Label(
+					resource.getString(MessageKey.STOCK_NAME_IN_ENGLISH));
+			stockNameInEnglishCaption.wrapTextProperty().set(true);
+			stockNameInEnglishCaption.setMinHeight(HEIGHT_MIDDLE);
+			Label stockNameInEnglishValue = new Label(stockNameInEnglish);
+			stockNameInEnglishValue.wrapTextProperty().set(true);
+			stockNameInEnglishValue.setMinHeight(HEIGHT_MIDDLE);
+			grid.add(stockNameInEnglishCaption, 0, row);
+			grid.add(stockNameInEnglishValue, 1, row);
 
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.REPRESENTATIVE)),
@@ -477,20 +481,23 @@ public class CorpInfoPane extends TitledPane {
 					1, row);
 
 			++row;
-			grid.add(
-					new Label(
-							resource.getString(MessageKey.NON_CONSOLIDATED_NUMBER_OF_EMPLOYEES)),
-					0, row);
+			Label nonConsolidatedNumberOfEmployeesCaption = new Label(
+					resource.getString(MessageKey.NON_CONSOLIDATED_NUMBER_OF_EMPLOYEES));
+			nonConsolidatedNumberOfEmployeesCaption.wrapTextProperty()
+					.set(true);
+			nonConsolidatedNumberOfEmployeesCaption.setMinHeight(HEIGHT_DUAL);
+			grid.add(nonConsolidatedNumberOfEmployeesCaption, 0, row);
 			grid.add(
 					new Label(
 							getProfileString(ProfileEnum.NON_CONSOLIDATED_NUMBER_OF_EMPLOYEES)),
 					1, row);
 
 			++row;
-			grid.add(
-					new Label(
-							resource.getString(MessageKey.CONSOLIDATED_NUMBER_OF_EMPLOYEES)),
-					0, row);
+			Label consolidatedNumberOfEmployeesCaption = new Label(
+					resource.getString(MessageKey.CONSOLIDATED_NUMBER_OF_EMPLOYEES));
+			consolidatedNumberOfEmployeesCaption.wrapTextProperty().set(true);
+			consolidatedNumberOfEmployeesCaption.setMinHeight(HEIGHT_DUAL);
+			grid.add(consolidatedNumberOfEmployeesCaption, 0, row);
 			grid.add(
 					new Label(
 							getProfileString(ProfileEnum.CONSOLIDATED_NUMBER_OF_EMPLOYEES)),

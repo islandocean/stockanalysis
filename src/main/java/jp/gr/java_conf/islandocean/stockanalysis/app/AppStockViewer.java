@@ -236,23 +236,23 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void loadPref() {
 		pref = new Pref(AppStockViewer.class);
 
+		appLocale = null;
 		String localeStr = (String) pref.getProperty(PREFKEY_LOCALE);
-		if (localeStr == null) {
-			localeStr = "ja_JP";
-		}
-		String[] ar = localeStr.split("_");
-		switch (ar.length) {
-		case 1:
-			appLocale = new Locale(ar[0]);
-			break;
-		case 2:
-			appLocale = new Locale(ar[0], ar[1]);
-			break;
-		case 3:
-			appLocale = new Locale(ar[0], ar[1], ar[2]);
-			break;
-		default:
-			break;
+		if (localeStr != null) {
+			String[] ar = localeStr.split("_");
+			switch (ar.length) {
+			case 1:
+				appLocale = new Locale(ar[0]);
+				break;
+			case 2:
+				appLocale = new Locale(ar[0], ar[1]);
+				break;
+			case 3:
+				appLocale = new Locale(ar[0], ar[1], ar[2]);
+				break;
+			default:
+				break;
+			}
 		}
 		if (appLocale == null) {
 			appLocale = Locale.JAPAN;
@@ -276,6 +276,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				}
 			}
 		}
+	}
+
+	private boolean isEnglish() {
+		return Locale.ENGLISH.equals(appLocale);
 	}
 
 	private void savePref() {
