@@ -479,16 +479,26 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		screeningButton = new Button(
 				resource.getString(MessageKey.SCREENING_BUTTON));
 		screeningButton.setOnAction((ActionEvent e) -> {
-			//
-			// TODO: Under construction.
-			//
-				Dialog<Pair<String, String>> dialog = new ScreeningDialog();
-				Optional<Pair<String, String>> result = dialog.showAndWait();
-				result.ifPresent(usernamePassword -> {
-					System.out.println("Username=" + usernamePassword.getKey()
-							+ ", Password=" + usernamePassword.getValue());
-				});
+			ScreeningParameter screeningParameter = new ScreeningParameter();
+			screeningParameter.setMinPer(5.1);
+			screeningParameter.setMaxPer(11.1);
+			screeningParameter.setMinPbr(0.7);
+			screeningParameter.setMaxPbr(1.1);
+			screeningParameter.setMinAnnualInterestRate(3.5);
+			screeningParameter.setMaxAnnualInterestRate(6.0);
+			Dialog<ScreeningParameter> dialog = new ScreeningDialog(resource,
+					screeningParameter);
+			Optional<ScreeningParameter> result = dialog.showAndWait();
+			result.ifPresent(ret -> {
+				System.out.println("minPer=" + ret.getMinPer() + ", maxPer="
+						+ ret.getMaxPer() + ", minPbr=" + ret.getMinPbr()
+						+ ", maxPbr=" + ret.getMaxPbr()
+						+ ", minAnnualInterestRate="
+						+ ret.getMinAnnualInterestRate()
+						+ ", maxAnnualInterestRate="
+						+ ret.getMaxAnnualInterestRate());
 			});
+		});
 		tableControlPane.getChildren().addAll(searchTextField, searchButton,
 				new Label(" "), screeningButton);
 		tableControlPane.setSpacing(10);
