@@ -658,7 +658,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		fileMenu = new Menu("File");
 		MenuItem ExitMenu = new MenuItem("Exit");
-		ExitMenu.setOnAction(e -> {
+		ExitMenu.setOnAction(value -> {
 			System.exit(0);
 		});
 		fileMenu.getItems().add(ExitMenu);
@@ -673,7 +673,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		helpMenu = new Menu("Help");
 		aboutMenu = new MenuItem("About");
-		aboutMenu.setDisable(true); //
+		aboutMenu.setOnAction(value -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("About Dialog");
+			alert.setHeaderText("Stock Viewer Ver.0.01");
+			alert.setContentText("Experimental.");
+			alert.showAndWait();
+		});
 		helpMenu.getItems().add(aboutMenu);
 
 		menuBar.getMenus().addAll(fileMenu, viewMenu, toolMenu, helpMenu);
