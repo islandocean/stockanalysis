@@ -63,7 +63,6 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
-import jp.gr.java_conf.islandocean.stockanalysis.price.Config;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -76,6 +75,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 public class AppStockViewer extends Application implements CorpsScannerTemplate {
 
 	//
+	private static final String PREFKEY_LOCALE = "LOCALE";
 	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
 
@@ -102,6 +102,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ResourceBundle resource;
 	private Pref pref;
+	private Locale appLocale;
 	private static final int NUM_REGISTERED_STOCKS = 10;
 	private String[] registeredStocksPrefStrs;
 	private LinkedHashSet<String>[] registeredStockSets;
@@ -112,6 +113,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	//
 	// Controls
 	//
+
+	Stage primaryStage;
 
 	// Pane
 	private VBox rootPane;
@@ -129,6 +132,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private Menu fileMenu;
 	private MenuItem ExitMenu;
 	private Menu viewMenu;
+	private Menu languageMenu;
+	private MenuItem japaneseMenu;
+	private MenuItem englishMenu;
 	private Menu toolMenu;
 	private MenuItem optionMenu;
 	private Menu helpMenu;
@@ -205,11 +211,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	@Override
 	public void start(Stage stage) {
 
-		// Initialize resource bundle
-		initializeResource();
+		this.primaryStage = stage;
 
 		// Initialize pref
 		loadPref();
+
+		// Initialize resource bundle
+		initializeResource();
 
 		// Initialize corp data
 		scanInit();
@@ -219,22 +227,33 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void initializeResource() {
-		// Locale defaultLocale = Locale.getDefault();
-		Locale locale = Config.getAppLocale();
-		if (locale != null) {
-			Locale.setDefault(locale);
-		}
-		// Locale.setDefault(Locale.JAPAN);
-		// Locale.setDefault(Locale.ENGLISH);
-
 		resource = ResourceBundle.getBundle("resources",
 				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
-
-		// Locale.setDefault(defaultLocale);
 	}
 
 	private void loadPref() {
 		pref = new Pref(AppStockViewer.class);
+
+		String localeStr = (String) pref.getProperty(PREFKEY_LOCALE);
+		if (localeStr != null) {
+			String[] ar = localeStr.split("_");
+			switch (ar.length) {
+			case 1:
+				appLocale = new Locale(ar[0]);
+				break;
+			case 2:
+				appLocale = new Locale(ar[0], ar[1]);
+				break;
+			case 3:
+				appLocale = new Locale(ar[0], ar[1], ar[2]);
+				break;
+			default:
+				break;
+			}
+			if (appLocale != null) {
+				Locale.setDefault(appLocale);
+			}
+		}
 
 		registeredStocksPrefStrs = new String[NUM_REGISTERED_STOCKS];
 
@@ -256,6 +275,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void savePref() {
+		if (appLocale != null) {
+			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
+		}
+
 		try {
 			pref.save();
 		} catch (IOException e) {
@@ -658,21 +681,40 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		fileMenu = new Menu("File");
 		MenuItem ExitMenu = new MenuItem("Exit");
+		fileMenu.getItems().add(ExitMenu);
 		ExitMenu.setOnAction(value -> {
 			System.exit(0);
 		});
-		fileMenu.getItems().add(ExitMenu);
 
 		viewMenu = new Menu("View");
-		viewMenu.setDisable(true); //
+		languageMenu = new Menu("Language");
+		japaneseMenu = new MenuItem("Japanese");
+		englishMenu = new MenuItem("English");
+		languageMenu.getItems().addAll(japaneseMenu, englishMenu);
+		viewMenu.getItems().add(languageMenu);
+		japaneseMenu.setOnAction(value -> {
+			appLocale = Locale.JAPAN;
+			savePref();
+			Locale.setDefault(appLocale);
+			initializeResource();
+			buildUi(this.primaryStage);
+		});
+		englishMenu.setOnAction(value -> {
+			appLocale = Locale.ENGLISH;
+			savePref();
+			Locale.setDefault(appLocale);
+			initializeResource();
+			buildUi(this.primaryStage);
+		});
 
 		toolMenu = new Menu("Tool");
 		optionMenu = new MenuItem("Option");
-		optionMenu.setDisable(true); //
 		toolMenu.getItems().add(optionMenu);
+		optionMenu.setDisable(true); //
 
 		helpMenu = new Menu("Help");
 		aboutMenu = new MenuItem("About");
+		helpMenu.getItems().add(aboutMenu);
 		aboutMenu.setOnAction(value -> {
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("About Dialog");
@@ -680,7 +722,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			alert.setContentText("Experimental.");
 			alert.showAndWait();
 		});
-		helpMenu.getItems().add(aboutMenu);
 
 		menuBar.getMenus().addAll(fileMenu, viewMenu, toolMenu, helpMenu);
 	}

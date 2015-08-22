@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Locale;
 import java.util.Properties;
 
 abstract public class AbstractConfig {
@@ -14,14 +13,10 @@ abstract public class AbstractConfig {
 	private static final String KEY_ROOT_FOLDER = "rootFolder";
 	private static final String ENVNAME_USERPROFILE = "%USERPROFILE%";
 	private static final String ENVNAME_HOME = "$HOME";
-	private static final String APP_LANGUAGE = "app.language";
-	private static final String APP_COUNTRY = "app.country";
-	private static final String APP_VARIANT = "app.variant";
 
 	private static final Properties properties = loadProperties();
 	private static final String rootFolder = normalizeFolder(getProperty(KEY_ROOT_FOLDER));
 	private static final String absoluteRootFolder = createFolder(rootFolder);
-	private static final Locale appLocale = createAppLocale();
 
 	protected AbstractConfig() {
 		super();
@@ -106,35 +101,9 @@ abstract public class AbstractConfig {
 		return absoluteRootFolder;
 	}
 
-	private static Locale createAppLocale() {
-		String language = properties.getProperty(APP_LANGUAGE);
-		String country = properties.getProperty(APP_COUNTRY);
-		String variant = properties.getProperty(APP_VARIANT);
-
-		Locale locale = null;
-		if (language != null) {
-			if (country != null) {
-				if (variant != null) {
-					locale = new Locale(language, country, variant);
-				} else {
-					locale = new Locale(language, country);
-				}
-			} else {
-				locale = new Locale(language);
-			}
-		}
-		return locale;
-	}
-
-	public static Locale getAppLocale() {
-		return appLocale;
-	}
-
 	public static void main(String[] args) {
 		System.out.println("rootFolder=" + rootFolder);
 		System.out
 				.println("getAbsoluteRootFolder()=" + getAbsoluteRootFolder());
-
-		System.out.println("appLocale=" + appLocale);
 	}
 }
