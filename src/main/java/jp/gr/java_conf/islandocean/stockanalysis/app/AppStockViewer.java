@@ -81,7 +81,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private static final double DEFAULT_SCENE_WIDTH = 1200d;
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
-	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 674d;
+	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 680d;
 	private static final double REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT = 654d;
 	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 180d;
 	private static final double TABLE_CONTROL_PANE_MAX_HEIGHT = 50d;
@@ -237,25 +237,27 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pref = new Pref(AppStockViewer.class);
 
 		String localeStr = (String) pref.getProperty(PREFKEY_LOCALE);
-		if (localeStr != null) {
-			String[] ar = localeStr.split("_");
-			switch (ar.length) {
-			case 1:
-				appLocale = new Locale(ar[0]);
-				break;
-			case 2:
-				appLocale = new Locale(ar[0], ar[1]);
-				break;
-			case 3:
-				appLocale = new Locale(ar[0], ar[1], ar[2]);
-				break;
-			default:
-				break;
-			}
-			if (appLocale != null) {
-				Locale.setDefault(appLocale);
-			}
+		if (localeStr == null) {
+			localeStr = "ja_JP";
 		}
+		String[] ar = localeStr.split("_");
+		switch (ar.length) {
+		case 1:
+			appLocale = new Locale(ar[0]);
+			break;
+		case 2:
+			appLocale = new Locale(ar[0], ar[1]);
+			break;
+		case 3:
+			appLocale = new Locale(ar[0], ar[1], ar[2]);
+			break;
+		default:
+			break;
+		}
+		if (appLocale == null) {
+			appLocale = Locale.JAPAN;
+		}
+		Locale.setDefault(appLocale);
 
 		registeredStocksPrefStrs = new String[NUM_REGISTERED_STOCKS];
 
@@ -1074,14 +1076,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		menuItems.add(menuRegister);
 
 		MenuItem menuOpenYahooFinance = new MenuItem(
-				"_Open Yahoo Finance HTML Page");
+				resource.getString(MessageKey.OPEN_YAHOO_FINANCE_HTML_PAGE));
 		menuOpenYahooFinance.setOnAction((ActionEvent e) -> {
 			ObservableList<TableStockData> selectedItems = tableView
 					.getSelectionModel().getSelectedItems();
 			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
 				String stockCode = data.getStockCode();
-				System.out.println("stockCode=" + stockCode);
 				if (stockCode != null) {
 					String spec = financeManager
 							.getHtmlChartPageSpec(financeManager
@@ -1091,18 +1092,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			});
 		});
 		menuItems.add(menuOpenYahooFinance);
-
-		MenuItem menuPrefTest = new MenuItem("_Pref Test");
-		menuPrefTest.setOnAction((ActionEvent e) -> {
-			pref.setProperty("abc", "def");
-			try {
-				pref.save();
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		});
-		menuItems.add(menuPrefTest);
 
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
