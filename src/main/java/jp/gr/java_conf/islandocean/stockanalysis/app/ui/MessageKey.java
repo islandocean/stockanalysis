@@ -17,6 +17,7 @@ public class MessageKey {
 	public static final String EXPAND_BUTTON = "EXPAND_BUTTON";
 	public static final String SEARCH_BUTTON = "SEARCH_BUTTON";
 	public static final String SEARCH_PROMPT_TEXT = "SEARCH_PROMPT_TEXT";
+	public static final String SCREENING_BUTTON = "SCREENING_BUTTON";
 	public static final String PRICE_INFO = "PRICE_INFO";
 	public static final String REFERENCE_INFO = "REFERENCE_INFO";
 	public static final String FUND_REFERENCE_INFO = "FUND_REFERENCE_INFO";

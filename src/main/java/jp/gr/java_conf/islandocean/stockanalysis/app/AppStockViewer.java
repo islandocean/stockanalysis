@@ -83,7 +83,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
 	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 674d;
 	private static final double REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT = 654d;
-	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 230d;
+	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 180d;
 	private static final double TABLE_CONTROL_PANE_MAX_HEIGHT = 50d;
 	private static final double TABLE_STOCK_CODE_COLUMN_MAX_WIDTH = 56d;
 	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 200d;
@@ -163,6 +163,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	// Search
 	private TextField searchTextField;
 	private Button searchButton;
+	private Button screeningButton;
 
 	// Table
 	private HBox tableControlPane;
@@ -474,7 +475,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				searchCorps(text);
 			}
 		});
-		tableControlPane.getChildren().addAll(searchTextField, searchButton);
+		screeningButton = new Button(
+				resource.getString(MessageKey.SCREENING_BUTTON));
+		screeningButton.setOnAction((ActionEvent e) -> {
+			// TODO:
+			});
+		tableControlPane.getChildren().addAll(searchTextField, searchButton,
+				new Label(" "), screeningButton);
 		tableControlPane.setSpacing(10);
 		tableControlPane.setAlignment(Pos.CENTER_LEFT);
 		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
@@ -567,7 +574,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		middlePane.setOrientation(Orientation.HORIZONTAL);
 		middlePane.getItems().addAll(leftPane1, leftPane2, centerPane,
 				rightPane1, rightPane2);
-		middlePane.setDividerPositions(0.15f, 0.30f, 0.60f, 0.80f, 1.0f);
+		middlePane.setDividerPositions(0.15f, 0.30f, 0.63f, 0.80f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
 		// Bottom
