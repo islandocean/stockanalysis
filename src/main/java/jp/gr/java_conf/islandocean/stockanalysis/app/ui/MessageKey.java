@@ -2,10 +2,8 @@ package jp.gr.java_conf.islandocean.stockanalysis.app.ui;
 
 public class MessageKey {
 	public static final String STAGE_TITLE = "STAGE_TITLE";
-	public static final String ALL_STOCKS_TABTEXT = "ALL_STOCKS_TABTEXT";
-	public static final String REGISTERED_STOCKS_TABTEXT = "REGISTERED_STOCKS_TABTEXT";
-	public static final String SEARCH_RESULTS_TABTEXT = "SEARCH_RESULTS_TABTEXT";
-	public static final String SCREENING_RESULTS_TABTEXT = "SCREENING_RESULTS_TABTEXT";
+	public static final String ALL_STOCKS_TITLE_LABEL = "ALL_STOCKS_TITLE_LABEL";
+	public static final String REGISTERED_STOCKS_TITLE_LABEL = "REGISTERED_STOCKS_TITLE_LABEL";
 	public static final String ALL_MARKETS_TREEITEM = "ALL_MARKETS_TREEITEM";
 	public static final String REGISTERED_STOCKS_TREEITEM = "REGISTERED_STOCKS_TREEITEM";
 	public static final String REGISTER_CONTEXT_MENU = "REGISTER_CONTEXT_MENU";

@@ -43,6 +43,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -80,11 +81,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private static final double DEFAULT_SCENE_WIDTH = 1200d;
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
-	private static final double TREEVIEW_MIN_HEIGHT = 700d;
+	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 674d;
+	private static final double REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT = 654d;
 	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 230d;
 	private static final double TABLE_CONTROL_PANE_MAX_HEIGHT = 50d;
+	private static final double TABLE_STOCK_CODE_COLUMN_MAX_WIDTH = 56d;
 	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 200d;
-	// private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 200d;
 
 	//
 	// Data
@@ -100,7 +102,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ResourceBundle resource;
 	private Pref pref;
-	private static final int numRegister = 5;
+	private static final int numRegister = 10;
 	private String[] registeredStocksPrefStrs;
 	private LinkedHashSet<String>[] registeredStockSets;
 
@@ -129,6 +131,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	// All Stocks
 	private VBox allStocksContent;
+	private Label allStocksTitleLabel;
 	private HBox allStocksControlPane;
 	private Button allStocksTreeCollapseButton;
 	private Button allStocksTreeExpandButton;
@@ -137,7 +140,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	// Registered Stocks
 	private VBox registeredStocksContent;
-	private HBox registeredStocksControlPane;
+	private Label registeredStocksTitleLabel;
+	private GridPane registeredStocksControlPane;
 	private ToggleGroup toggleGroup;
 	int selectedToggleIdx;
 	private ToggleButton[] toggleButtons;
@@ -319,7 +323,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// All stocks tree view
 		allStocksTreeView = new TreeView<Object>(allStocksRootItem);
-		allStocksTreeView.setMinHeight(TREEVIEW_MIN_HEIGHT);
+		allStocksTreeView.setMinHeight(ALL_STOCKS_TREEVIEW_MIN_HEIGHT);
 		allStocksTreeView
 				.setOnMouseClicked(createTreeMouseEventHandler(allStocksTreeView));
 		allStocksTreeView.getSelectionModel().selectedItemProperty()
@@ -355,10 +359,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// All stocks content
 		allStocksContent = new VBox();
-		allStocksContent.setPadding(new Insets(0, 0, 0, 10));
+		allStocksContent.setPadding(new Insets(10, 0, 0, 10));
 		allStocksContent.setMinWidth(0d);
-		allStocksContent.getChildren().addAll(allStocksControlPane,
-				allStocksTreeView);
+		allStocksTitleLabel = new Label(
+				resource.getString(MessageKey.ALL_STOCKS_TITLE_LABEL));
+		allStocksContent.getChildren().addAll(allStocksTitleLabel,
+				allStocksControlPane, allStocksTreeView);
 
 		// Registered stocks tree view
 		registeredStocksTreeViews = new TreeView[numRegister];
@@ -372,24 +378,27 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					.addListener(createTreeChangeListener());
 			registeredStocksTreeViews[i].setContextMenu(new ContextMenu(
 					createRegisteredStocksTreeContextMenuContents(i)));
-			registeredStocksTreeViews[i].setMinHeight(TREEVIEW_MIN_HEIGHT);
+			registeredStocksTreeViews[i]
+					.setMinHeight(REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT);
 			registeredStocksTreeViews[i].getSelectionModel().setSelectionMode(
 					SelectionMode.MULTIPLE);
 		}
 
 		// Registered stocks tree controls
-		registeredStocksControlPane = new HBox();
+		registeredStocksControlPane = new GridPane();
 		toggleGroup = new ToggleGroup();
 		toggleButtons = new ToggleButton[numRegister];
 		for (int i = 0; i < numRegister; ++i) {
 			toggleButtons[i] = new ToggleButton();
 			toggleButtons[i].setText(Integer.toString(i + 1));
 			toggleButtons[i].setToggleGroup(toggleGroup);
+			toggleButtons[i].setMinWidth(28d);
 			toggleButtons[i].setOnAction((ActionEvent e) -> {
 				String text = ((ToggleButton) e.getSource()).getText();
 				selectedToggleIdx = Integer.parseInt(text) - 1;
 				registeredStocksContent.getChildren().clear();
 				registeredStocksContent.getChildren().addAll(
+						registeredStocksTitleLabel,
 						registeredStocksControlPane,
 						registeredStocksTreeViews[selectedToggleIdx]);
 
@@ -402,7 +411,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					e1.printStackTrace();
 				}
 			});
-			registeredStocksControlPane.getChildren().add(toggleButtons[i]);
+			registeredStocksControlPane.add(toggleButtons[i], i % 5, i / 5);
 		}
 		String selectedStr = (String) pref
 				.getProperty(PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX);
@@ -412,16 +421,20 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		}
 		toggleGroup.selectToggle(toggleButtons[selectedToggleIdx]);
 
-		registeredStocksControlPane.setSpacing(2);
+		// registeredStocksControlPane.setSpacing(2);
+		registeredStocksControlPane.setVgap(4d);
+		registeredStocksControlPane.setHgap(2d);
 		registeredStocksControlPane.setAlignment(Pos.CENTER_LEFT);
 		registeredStocksControlPane.setPadding(new Insets(10, 0, 10, 0));
 
 		// Registered stocks content
 		registeredStocksContent = new VBox();
-		registeredStocksContent.setPadding(new Insets(0, 0, 0, 10));
+		registeredStocksContent.setPadding(new Insets(10, 0, 0, 10));
 		registeredStocksContent.setMinWidth(0d);
+		registeredStocksTitleLabel = new Label(
+				resource.getString(MessageKey.REGISTERED_STOCKS_TITLE_LABEL));
 		registeredStocksContent.getChildren().addAll(
-				registeredStocksControlPane,
+				registeredStocksTitleLabel, registeredStocksControlPane,
 				registeredStocksTreeViews[selectedToggleIdx]);
 
 		// Table controls
@@ -447,6 +460,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableView = new TableView<TableStockData>();
 		stockCodeColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_CODE));
+		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
 		stockNameColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_NAME));
 		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
@@ -535,11 +549,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		consoleTextArea.setMinSize(200d, 50d);
 		consoleTextArea.setMaxSize(200d, 50d);
 		consoleTextArea.setPromptText("");
-		updateButton = new Button("Update Table");
+		updateButton = new Button("Set to Table");
 		updateButton.setOnAction((ActionEvent e) -> {
 			updateTable();
 		});
-		getButton = new Button("Get Stock Codes from Table");
+		getButton = new Button("Get from Table");
 		getButton.setOnAction((ActionEvent e) -> {
 			getFromTable();
 		});
