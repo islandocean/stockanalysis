@@ -40,7 +40,7 @@ public class MainScreeningPriceUpDownFromPeriodHighLow implements
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecentDays(180);
+		return CalendarUtil.createCalendarRangeRecentDays(30);
 	}
 
 	public static void main(String[] args) {
@@ -125,7 +125,7 @@ public class MainScreeningPriceUpDownFromPeriodHighLow implements
 		}
 
 		if (lastHighRatio != null && lastHighRatio < 0.65d
-				&& lastLowRatio < 1.1d) {
+		/* && lastLowRatio < 1.1d */) {
 			hit = true;
 		}
 		if (hit) {

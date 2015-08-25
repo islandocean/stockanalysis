@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javafx.util.Pair;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -167,6 +166,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private TableColumn stockNameColumn;
 	private TableColumn marketColumn;
 	private TableColumn sectorColumn;
+	private TableColumn marketCapitalizationColumn;
+	private TableColumn annualInterestRateColumn;
+	private TableColumn perColumn;
+	private TableColumn pbrColumn;
+	private TableColumn epsColumn;
+	private TableColumn bpsColumn;
 
 	private TextArea consoleTextArea;
 	private Button updateButton;
@@ -508,6 +513,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Table View
 		tableView = new TableView<TableStockData>();
+
 		stockCodeColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_CODE));
 		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
@@ -516,14 +522,36 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
 		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
 		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
+		marketCapitalizationColumn = new TableColumn(
+				resource.getString(MessageKey.MARKET_CAPITALIZATION));
+		annualInterestRateColumn = new TableColumn(
+				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
+		perColumn = new TableColumn(resource.getString(MessageKey.PER));
+		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
+		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
+		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
+
 		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
 				"stockCode"));
 		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
 				"stockName"));
 		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
 		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
+		marketCapitalizationColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"marketCapitalization"));
+		annualInterestRateColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"annualInterestRate"));
+		perColumn.setCellValueFactory(new PropertyValueFactory<>("per"));
+		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
+		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
+		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
+
 		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
-				marketColumn, sectorColumn);
+				marketColumn, sectorColumn, marketCapitalizationColumn,
+				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
+				bpsColumn);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setItems(tableStockDataList);
 		tableView.getSelectionModel().selectedItemProperty()
@@ -1143,7 +1171,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				return; // continue
 			}
 			StockRecord record = (StockRecord) stockItem.getValue();
-			tableStockDataList.add(new TableStockData(record));
+			String stockCode = record.getStockCode();
+			DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
+					.get(stockCode);
+			tableStockDataList.add(new TableStockData(record, detail));
 		});
 	}
 
@@ -1221,7 +1252,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 							.contains(text))
 					|| (sector != null && sector.length() > 0 && sector
 							.contains(text))) {
-				tableStockDataList.add(new TableStockData(record));
+				DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
+						.get(stockCode);
+				tableStockDataList.add(new TableStockData(record, detail));
 			}
 		});
 	}
@@ -1247,7 +1280,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				continue;
 			}
 			for (StockRecord record : list) {
-				tableStockDataList.add(new TableStockData(record));
+				DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
+						.get(code);
+				tableStockDataList.add(new TableStockData(record, detail));
 				break;
 			}
 		}
