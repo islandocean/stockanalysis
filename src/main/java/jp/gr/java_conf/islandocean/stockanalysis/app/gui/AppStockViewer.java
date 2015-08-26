@@ -1136,9 +1136,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			ObservableList<TableStockData> selectedItems = tableView
 					.getSelectionModel().getSelectedItems();
 			if (selectedItems.size() != 0) {
-				beforeUpdateTableStockDataList();
+				beforeUpdateTableStockDataList(false);
 				tableStockDataList.removeAll(selectedItems);
 			}
+			tableView.getSelectionModel().clearSelection();
 		});
 		menuItems.add(menuDeleteFromList);
 
@@ -1175,7 +1176,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		HashSet dupCheckSet = new HashSet();
 		ObservableList<TreeItem> list = treeView.getSelectionModel()
 				.getSelectedItems();
-		beforeUpdateTableStockDataList();
+		beforeUpdateTableStockDataList(true);
 		list.forEach(selectedItem -> {
 			TreeItem checkParentItem = selectedItem;
 			boolean found = false;
@@ -1231,8 +1232,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		});
 	}
 
-	private void beforeUpdateTableStockDataList() {
-		// TODO:
+	private void beforeUpdateTableStockDataList(boolean regenerateData) {
+		if (regenerateData) {
+			tableStockDataList = FXCollections.observableArrayList();
+			tableView.setItems(tableStockDataList);
+		}
 	}
 
 	private ChangeListener createTableChangeListener() {
@@ -1295,7 +1299,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void searchCorps(String text) {
-		beforeUpdateTableStockDataList();
+		beforeUpdateTableStockDataList(true);
 		tableStockDataList.clear();
 		lastData.forEach(record -> {
 			String stockCode = record.getStockCode();
@@ -1318,7 +1322,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void updateTable() {
-		beforeUpdateTableStockDataList();
+		beforeUpdateTableStockDataList(true);
 		tableStockDataList.clear();
 		String text = consoleTextArea.getText();
 		text = text.trim();
