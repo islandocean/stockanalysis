@@ -2,6 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -984,16 +985,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				if (mouseEvent.getClickCount() == 1) {
 					TreeItem item = (TreeItem) tree.getSelectionModel()
 							.getSelectedItem();
-					Object value = item.getValue();
-					if (!(value instanceof StockRecord)) {
-						tableStockDataList.clear();
-					}
-					TreeView treeView = getTreeViewFromTreeItem(item);
-					ObservableList list = treeView.getSelectionModel()
-							.getSelectedItems();
-					list.forEach(it -> {
-						reloadTableData((TreeItem) it);
-					});
+					reloadTableByItemMulti(item);
 				} else if (mouseEvent.getClickCount() == 2) {
 				}
 			}
@@ -1007,16 +999,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					ObservableValue<? extends TreeItem<Object>> observable,
 					TreeItem<Object> oldValue, TreeItem<Object> newValue) {
 				TreeItem<Object> item = (TreeItem<Object>) newValue;
-				Object value = item.getValue();
-				if (!(value instanceof StockRecord)) {
-					tableStockDataList.clear();
-				}
-				TreeView treeView = getTreeViewFromTreeItem(item);
-				ObservableList list = treeView.getSelectionModel()
-						.getSelectedItems();
-				list.forEach(it -> {
-					reloadTableData((TreeItem) it);
-				});
+				reloadTableByItemMulti(item);
 			}
 		};
 	}
@@ -1168,10 +1151,35 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return menuItems.toArray(new MenuItem[menuItems.size()]);
 	}
 
-	private void reloadTableData(TreeItem<Object> item) {
+	private void reloadTableByItemMulti(TreeItem<Object> item) {
 		if (item == null) {
 			return;
 		}
+		Object value = item.getValue();
+		if (!(value instanceof StockRecord)) {
+			tableStockDataList.clear();
+		}
+		TreeView treeView = getTreeViewFromTreeItem(item);
+		HashSet dupCheckSet = new HashSet();
+		ObservableList<TreeItem> list = treeView.getSelectionModel()
+				.getSelectedItems();
+		list.forEach(selectedItem -> {
+			TreeItem checkParentItem = selectedItem;
+			boolean found = false;
+			while (checkParentItem.getParent() != null) {
+				checkParentItem = checkParentItem.getParent();
+				if (dupCheckSet.contains(checkParentItem)) {
+					found = true;
+				}
+			}
+			dupCheckSet.add(selectedItem);
+			if (!found) {
+				reloadTableByItem((TreeItem) selectedItem);
+			}
+		});
+	}
+
+	private void reloadTableByItem(TreeItem<Object> item) {
 		Object value = item.getValue();
 		if (value instanceof RootItemValue) {
 			reloadTableByRoot(item);
