@@ -1130,6 +1130,18 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		}
 		menuItems.add(menuRegister);
 
+		MenuItem menuDeleteFromList = new MenuItem(
+				resource.getString(MessageKey.DELETE_FROM_THIS_LIST_CONTEXT_MENU));
+		menuDeleteFromList.setOnAction((ActionEvent e) -> {
+			ObservableList<TableStockData> selectedItems = tableView
+					.getSelectionModel().getSelectedItems();
+			if (selectedItems.size() != 0) {
+				beforeUpdateTableStockDataList();
+				tableStockDataList.removeAll(selectedItems);
+			}
+		});
+		menuItems.add(menuDeleteFromList);
+
 		MenuItem menuOpenYahooFinance = new MenuItem(
 				resource.getString(MessageKey.OPEN_YAHOO_FINANCE_HTML_PAGE));
 		menuOpenYahooFinance.setOnAction((ActionEvent e) -> {
@@ -1163,6 +1175,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		HashSet dupCheckSet = new HashSet();
 		ObservableList<TreeItem> list = treeView.getSelectionModel()
 				.getSelectedItems();
+		beforeUpdateTableStockDataList();
 		list.forEach(selectedItem -> {
 			TreeItem checkParentItem = selectedItem;
 			boolean found = false;
@@ -1216,6 +1229,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					.get(stockCode);
 			tableStockDataList.add(new TableStockData(record, detail));
 		});
+	}
+
+	private void beforeUpdateTableStockDataList() {
+		// TODO:
 	}
 
 	private ChangeListener createTableChangeListener() {
@@ -1278,6 +1295,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void searchCorps(String text) {
+		beforeUpdateTableStockDataList();
 		tableStockDataList.clear();
 		lastData.forEach(record -> {
 			String stockCode = record.getStockCode();
@@ -1300,6 +1318,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void updateTable() {
+		beforeUpdateTableStockDataList();
 		tableStockDataList.clear();
 		String text = consoleTextArea.getText();
 		text = text.trim();
