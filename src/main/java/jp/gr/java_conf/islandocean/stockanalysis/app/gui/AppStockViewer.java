@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -74,14 +75,16 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
 
-	private static final double DEFAULT_SCENE_WIDTH = 1200d;
+	private static final double DEFAULT_SCENE_WIDTH = 1230d;
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
 	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 680d;
 	private static final double REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT = 654d;
-	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 180d;
+	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 140d;
 	private static final double TABLE_CONTROL_PANE_MAX_HEIGHT = 50d;
 	private static final double TABLE_STOCK_CODE_COLUMN_MAX_WIDTH = 56d;
-	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 200d;
+	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 180d;
+
+	private static final int HISTORY_SIZE = 10;
 
 	//
 	// Data
@@ -105,6 +108,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
+	private List<List<TableStockData>> tableHistory = new ArrayList();
+	private int currentHistoryIdx;
 
 	//
 	// Controls
@@ -159,6 +164,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private TextField searchTextField;
 	private Button searchButton;
 	private Button screeningButton;
+
+	// History
+	private Button backButton;
+	private Button forwardButton;
 
 	// Table
 	private HBox tableControlPane;
@@ -220,16 +229,19 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		loadPref();
 
 		// Initialize resource bundle
-		initializeResource();
+		initResource();
 
 		// Initialize corp data
 		scanInit();
+
+		// Initialize history
+		initHistory();
 
 		// Build UI
 		buildUi(stage); // Calls scanMain();
 	}
 
-	private void initializeResource() {
+	private void initResource() {
 		resource = ResourceBundle.getBundle("resources",
 				ResourceBundleWithUtf8.UTF8_ENCODING_CONTROL);
 	}
@@ -318,6 +330,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				.getStockCodeToDetailRecordMap();
 		this.stockCodeToProfileRecordMap = financeManager
 				.getStockCodeToProfileRecordMap();
+	}
+
+	private void initHistory() {
+		tableHistory = new ArrayList();
+		currentHistoryIdx = -1;
 	}
 
 	private void buildUi(Stage stage) {
@@ -507,8 +524,17 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 						+ ret.getMaxAnnualInterestRate());
 			});
 		});
-		tableControlPane.getChildren().addAll(searchTextField, searchButton,
-				new Label(" "), screeningButton);
+
+		backButton = new Button(resource.getString(MessageKey.BACK_BUTTON));
+		backButton.setOnAction(createBackButtonEventHandler());
+		forwardButton = new Button(
+				resource.getString(MessageKey.FORWARD_BUTTON));
+		forwardButton.setOnAction(createForwardButtonEventHandler());
+		updateHistoryButtonsStatus();
+
+		tableControlPane.getChildren().addAll(backButton, forwardButton,
+				new Label(" "), searchTextField, searchButton, new Label(" "),
+				screeningButton);
 		tableControlPane.setSpacing(10);
 		tableControlPane.setAlignment(Pos.CENTER_LEFT);
 		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
@@ -624,7 +650,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		middlePane.setOrientation(Orientation.HORIZONTAL);
 		middlePane.getItems().addAll(leftPane1, leftPane2, centerPane,
 				rightPane1, rightPane2);
-		middlePane.setDividerPositions(0.15f, 0.30f, 0.63f, 0.80f, 1.0f);
+		middlePane.setDividerPositions(0.14f, 0.28f, 0.64f, 0.82f, 1.0f);
 		middlePane.setMinSize(600d, 735d);
 
 		// Bottom
@@ -754,7 +780,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
 			savePref();
 			Locale.setDefault(appLocale);
-			initializeResource();
+			initResource();
 			buildUi(this.primaryStage);
 		});
 		englishMenu.setOnAction(value -> {
@@ -762,7 +788,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
 			savePref();
 			Locale.setDefault(appLocale);
-			initializeResource();
+			initResource();
 			buildUi(this.primaryStage);
 		});
 
@@ -983,9 +1009,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			@Override
 			public void handle(MouseEvent mouseEvent) {
 				if (mouseEvent.getClickCount() == 1) {
-					TreeItem item = (TreeItem) tree.getSelectionModel()
-							.getSelectedItem();
-					reloadTableByItemMulti(item);
+					// TreeItem item = (TreeItem) tree.getSelectionModel()
+					// .getSelectedItem();
+					// reloadTableByItemMulti(item);
 				} else if (mouseEvent.getClickCount() == 2) {
 				}
 			}
@@ -1138,6 +1164,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			if (selectedItems.size() != 0) {
 				beforeUpdateTableStockDataList(false);
 				tableStockDataList.removeAll(selectedItems);
+				afterUpdateTableStockDataList();
 			}
 			tableView.getSelectionModel().clearSelection();
 		});
@@ -1156,6 +1183,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				beforeUpdateTableStockDataList(false);
 				tableStockDataList.clear();
 				tableStockDataList.addAll(copy);
+				afterUpdateTableStockDataList();
 			}
 			tableView.getSelectionModel().clearSelection();
 		});
@@ -1209,6 +1237,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				reloadTableByItem((TreeItem) selectedItem);
 			}
 		});
+		afterUpdateTableStockDataList();
 	}
 
 	private void reloadTableByItem(TreeItem<Object> item) {
@@ -1254,6 +1283,81 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		if (regenerateData) {
 			tableStockDataList = FXCollections.observableArrayList();
 			tableView.setItems(tableStockDataList);
+		}
+	}
+
+	private void afterUpdateTableStockDataList() {
+		List<TableStockData> save = new LinkedList<TableStockData>();
+		save.addAll(tableStockDataList);
+		if (currentHistoryIdx < 0) {
+			tableHistory.add(save);
+			currentHistoryIdx = 0;
+		} else {
+			tableHistory.add(currentHistoryIdx + 1, save);
+			++currentHistoryIdx;
+			while (tableHistory.size() > currentHistoryIdx + 1) {
+				tableHistory.remove(currentHistoryIdx + 1);
+			}
+		}
+		if (currentHistoryIdx > HISTORY_SIZE - 1) {
+			tableHistory.remove(0);
+			--currentHistoryIdx;
+		}
+		updateHistoryButtonsStatus();
+	}
+
+	private EventHandler<ActionEvent> createBackButtonEventHandler() {
+		return new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (currentHistoryIdx > 0) {
+					--currentHistoryIdx;
+					List<TableStockData> list = tableHistory
+							.get(currentHistoryIdx);
+					tableStockDataList = FXCollections.observableArrayList();
+					tableStockDataList.addAll(list);
+					tableView.setItems(tableStockDataList);
+				}
+				updateHistoryButtonsStatus();
+			}
+		};
+	}
+
+	private EventHandler<ActionEvent> createForwardButtonEventHandler() {
+		return new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				if (currentHistoryIdx >= 0) {
+					if (tableHistory.size() > currentHistoryIdx + 1) {
+						++currentHistoryIdx;
+						List<TableStockData> list = tableHistory
+								.get(currentHistoryIdx);
+						tableStockDataList = FXCollections
+								.observableArrayList();
+						tableStockDataList.addAll(list);
+						tableView.setItems(tableStockDataList);
+					}
+					updateHistoryButtonsStatus();
+				}
+			}
+		};
+	}
+
+	private void updateHistoryButtonsStatus() {
+		if (currentHistoryIdx < 0) {
+			backButton.setDisable(true);
+			forwardButton.setDisable(true);
+		} else {
+			if (currentHistoryIdx == 0) {
+				backButton.setDisable(true);
+			} else {
+				backButton.setDisable(false);
+			}
+			if (currentHistoryIdx >= tableHistory.size() - 1) {
+				forwardButton.setDisable(true);
+			} else {
+				forwardButton.setDisable(false);
+			}
 		}
 	}
 
@@ -1337,6 +1441,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				tableStockDataList.add(new TableStockData(record, detail));
 			}
 		});
+		afterUpdateTableStockDataList();
 	}
 
 	private void updateTable() {
@@ -1367,6 +1472,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				break;
 			}
 		}
+		afterUpdateTableStockDataList();
 	}
 
 	private void getFromTable() {

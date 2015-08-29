@@ -30,6 +30,8 @@ public class MessageKey {
 	public static final String SECTOR = "SECTOR";
 	public static final String COLLAPSE_BUTTON = "COLLAPSE_BUTTON";
 	public static final String EXPAND_BUTTON = "EXPAND_BUTTON";
+	public static final String BACK_BUTTON = "BACK_BUTTON";
+	public static final String FORWARD_BUTTON = "FORWARD_BUTTON";
 	public static final String SEARCH_BUTTON = "SEARCH_BUTTON";
 	public static final String SEARCH_PROMPT_TEXT = "SEARCH_PROMPT_TEXT";
 	public static final String SCREENING_BUTTON = "SCREENING_BUTTON";
