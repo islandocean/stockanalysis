@@ -108,7 +108,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
-	private List<List<TableStockData>> tableHistory = new ArrayList();
+	private List<List<TableStockData>> tableHistory;
 	private int currentHistoryIdx;
 
 	//
