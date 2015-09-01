@@ -108,8 +108,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private LinkedHashSet<String>[] registeredStockSets;
 	private String rightPaneStockCode;
 
-	private ObservableList<TableStockData> tableStockDataList = FXCollections
-			.observableArrayList();
+	private ObservableList<TableStockData> tableStockDataList;
 	private List<History> historyList;
 	private int currentHistoryIdx;
 
@@ -698,7 +697,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				.addListener(createTableChangeListener());
 		tableView.setContextMenu(new ContextMenu(
 				createTableContextMenuContents()));
-		tableView.setItems(tableStockDataList);
 	}
 
 	private void scanMain() {
@@ -1509,6 +1507,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void getFromTable() {
+		if (tableStockDataList == null) {
+			return;
+		}
 		StringBuilder sb = new StringBuilder();
 		for (TableStockData stockData : tableStockDataList) {
 			if (sb.length() != 0) {
