@@ -108,7 +108,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private ObservableList<TableStockData> tableStockDataList = FXCollections
 			.observableArrayList();
-	private List<List<TableStockData>> tableHistory;
+	private List<History> historyList;
 	private int currentHistoryIdx;
 
 	//
@@ -333,7 +333,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void initHistory() {
-		tableHistory = new ArrayList();
+		historyList = new ArrayList();
 		currentHistoryIdx = -1;
 	}
 
@@ -1289,18 +1289,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void afterUpdateTableStockDataList() {
 		List<TableStockData> save = new LinkedList<TableStockData>();
 		save.addAll(tableStockDataList);
+		History history = new History();
+		history.setHistoryType(HistoryType.STOCK_LIST);
+		history.setContent(save);
 		if (currentHistoryIdx < 0) {
-			tableHistory.add(save);
+			historyList.add(history);
 			currentHistoryIdx = 0;
 		} else {
-			tableHistory.add(currentHistoryIdx + 1, save);
+			historyList.add(currentHistoryIdx + 1, history);
 			++currentHistoryIdx;
-			while (tableHistory.size() > currentHistoryIdx + 1) {
-				tableHistory.remove(currentHistoryIdx + 1);
+			while (historyList.size() > currentHistoryIdx + 1) {
+				historyList.remove(currentHistoryIdx + 1);
 			}
 		}
 		if (currentHistoryIdx > HISTORY_SIZE - 1) {
-			tableHistory.remove(0);
+			historyList.remove(0);
 			--currentHistoryIdx;
 		}
 		updateHistoryButtonsStatus();
@@ -1312,8 +1315,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			public void handle(ActionEvent e) {
 				if (currentHistoryIdx > 0) {
 					--currentHistoryIdx;
-					List<TableStockData> list = tableHistory
-							.get(currentHistoryIdx);
+					History history = historyList.get(currentHistoryIdx);
+					List<TableStockData> list = (List<TableStockData>) history
+							.getContent();
 					tableStockDataList = FXCollections.observableArrayList();
 					tableStockDataList.addAll(list);
 					tableView.setItems(tableStockDataList);
@@ -1328,10 +1332,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			@Override
 			public void handle(ActionEvent e) {
 				if (currentHistoryIdx >= 0) {
-					if (tableHistory.size() > currentHistoryIdx + 1) {
+					if (historyList.size() > currentHistoryIdx + 1) {
 						++currentHistoryIdx;
-						List<TableStockData> list = tableHistory
-								.get(currentHistoryIdx);
+						History history = historyList.get(currentHistoryIdx);
+						List<TableStockData> list = (List<TableStockData>) history
+								.getContent();
 						tableStockDataList = FXCollections
 								.observableArrayList();
 						tableStockDataList.addAll(list);
@@ -1353,7 +1358,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			} else {
 				backButton.setDisable(false);
 			}
-			if (currentHistoryIdx >= tableHistory.size() - 1) {
+			if (currentHistoryIdx >= historyList.size() - 1) {
 				forwardButton.setDisable(true);
 			} else {
 				forwardButton.setDisable(false);
