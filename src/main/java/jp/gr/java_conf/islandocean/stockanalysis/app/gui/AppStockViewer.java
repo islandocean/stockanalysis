@@ -548,7 +548,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Center content pane
 		centerContentPane = new VBox();
-		centerContentPane.getChildren().add(tableView);
 		centerContentPane.setMinHeight(TABLE_CONTENT_PANE_MIN_HEIGHT);
 
 		// Corp info accordion
@@ -1302,6 +1301,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void afterUpdateTableStockDataList() {
+		// Update history
 		List<TableStockData> save = new LinkedList<TableStockData>();
 		save.addAll(tableStockDataList);
 		History history = new History();
@@ -1322,6 +1322,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			--currentHistoryIdx;
 		}
 		updateHistoryButtonsStatus();
+
+		// Update view
+		centerContentPane.getChildren().clear();
+		centerContentPane.getChildren().add(tableView);
 	}
 
 	private EventHandler<ActionEvent> createBackButtonEventHandler() {
