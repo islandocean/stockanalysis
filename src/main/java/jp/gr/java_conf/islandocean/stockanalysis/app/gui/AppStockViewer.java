@@ -241,6 +241,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Build UI
 		buildUi(stage); // Calls scanMain();
+
+		// Empty table and one history.
+		beforeUpdateTableStockDataList(true);
+		afterUpdateTableStockDataList();
 	}
 
 	private void initResource() {
