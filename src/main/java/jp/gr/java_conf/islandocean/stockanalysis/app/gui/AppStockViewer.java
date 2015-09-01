@@ -81,6 +81,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final double REGISTERED_STOCKS_TREEVIEW_MIN_HEIGHT = 654d;
 	private static final double SEARCH_TEXT_FIELD_MIN_WIDTH = 140d;
 	private static final double TABLE_CONTROL_PANE_MAX_HEIGHT = 50d;
+	private static final double TABLE_CONTENT_PANE_MIN_HEIGHT = 700d;
+	private static final double TABLE_VIEW_MIN_HEIGHT = 700d;
 	private static final double TABLE_STOCK_CODE_COLUMN_MAX_WIDTH = 56d;
 	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 180d;
 
@@ -123,6 +125,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private VBox leftPane1;
 	private VBox leftPane2;
 	private SplitPane centerPane;
+	private VBox centerContentPane;
 	private VBox rightPane1;
 	private VBox rightPane2;
 	private SplitPane middlePane;
@@ -543,6 +546,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Table view
 		buildTableView();
 
+		// Center content pane
+		centerContentPane = new VBox();
+		centerContentPane.getChildren().add(tableView);
+		centerContentPane.setMinHeight(TABLE_CONTENT_PANE_MIN_HEIGHT);
+
 		// Corp info accordion
 		priceInfoAccordion = new Accordion();
 		priceInfoPane = new CorpInfoPane(CorpViewType.PRICE_INFO, resource);
@@ -589,7 +597,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// center
 		centerPane = new SplitPane();
 		centerPane.setOrientation(Orientation.VERTICAL);
-		centerPane.getItems().addAll(tableControlPane, tableView);
+		centerPane.getItems().addAll(tableControlPane, centerContentPane);
 		centerPane.setDividerPositions(0.33f, 0.66f, 1.0f);
 
 		// right
@@ -685,6 +693,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
 				bpsColumn);
 		tableView.setPlaceholder(new Label(""));
+		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(createTableChangeListener());
