@@ -540,54 +540,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableControlPane.setPadding(new Insets(10, 10, 10, 10));
 		tableControlPane.setMaxHeight(TABLE_CONTROL_PANE_MAX_HEIGHT);
 
-		// Table View
-		tableView = new TableView<TableStockData>();
-
-		stockCodeColumn = new TableColumn(
-				resource.getString(MessageKey.STOCK_CODE));
-		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
-		stockNameColumn = new TableColumn(
-				resource.getString(MessageKey.STOCK_NAME));
-		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
-		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
-		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
-		marketCapitalizationColumn = new TableColumn(
-				resource.getString(MessageKey.MARKET_CAPITALIZATION));
-		annualInterestRateColumn = new TableColumn(
-				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
-		perColumn = new TableColumn(resource.getString(MessageKey.PER));
-		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
-		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
-		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
-
-		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
-				"stockCode"));
-		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
-				"stockName"));
-		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
-		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
-		marketCapitalizationColumn
-				.setCellValueFactory(new PropertyValueFactory<>(
-						"marketCapitalization"));
-		annualInterestRateColumn
-				.setCellValueFactory(new PropertyValueFactory<>(
-						"annualInterestRate"));
-		perColumn.setCellValueFactory(new PropertyValueFactory<>("per"));
-		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
-		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
-		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
-
-		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
-				marketColumn, sectorColumn, marketCapitalizationColumn,
-				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
-				bpsColumn);
-		tableView.setPlaceholder(new Label(""));
-		tableView.setItems(tableStockDataList);
-		tableView.getSelectionModel().selectedItemProperty()
-				.addListener(createTableChangeListener());
-		tableView.setContextMenu(new ContextMenu(
-				createTableContextMenuContents()));
-		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		// Table view
+		buildTableView();
 
 		// Corp info accordion
 		priceInfoAccordion = new Accordion();
@@ -686,6 +640,58 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		stage.setScene(new Scene(rootPane, DEFAULT_SCENE_WIDTH,
 				DEFAULT_SCENE_HEIGHT));
 		stage.show();
+	}
+
+	private void buildTableView() {
+		// Table View
+		tableView = new TableView<TableStockData>();
+
+		stockCodeColumn = new TableColumn(
+				resource.getString(MessageKey.STOCK_CODE));
+		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
+		stockNameColumn = new TableColumn(
+				resource.getString(MessageKey.STOCK_NAME));
+		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
+		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
+		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
+		marketCapitalizationColumn = new TableColumn(
+				resource.getString(MessageKey.MARKET_CAPITALIZATION));
+		annualInterestRateColumn = new TableColumn(
+				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
+		perColumn = new TableColumn(resource.getString(MessageKey.PER));
+		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
+		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
+		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
+
+		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockCode"));
+		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockName"));
+		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
+		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
+		marketCapitalizationColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"marketCapitalization"));
+		annualInterestRateColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"annualInterestRate"));
+		perColumn.setCellValueFactory(new PropertyValueFactory<>("per"));
+		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
+		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
+		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
+
+		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
+				marketColumn, sectorColumn, marketCapitalizationColumn,
+				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
+				bpsColumn);
+		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		tableView.setPlaceholder(new Label(""));
+
+		tableView.getSelectionModel().selectedItemProperty()
+				.addListener(createTableChangeListener());
+		tableView.setContextMenu(new ContextMenu(
+				createTableContextMenuContents()));
+		tableView.setItems(tableStockDataList);
 	}
 
 	private void scanMain() {
