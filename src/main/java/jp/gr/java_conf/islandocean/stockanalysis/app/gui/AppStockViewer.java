@@ -684,9 +684,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				marketColumn, sectorColumn, marketCapitalizationColumn,
 				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
 				bpsColumn);
-		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tableView.setPlaceholder(new Label(""));
-
+		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(createTableChangeListener());
 		tableView.setContextMenu(new ContextMenu(
@@ -1221,14 +1220,15 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			return;
 		}
 		Object value = item.getValue();
-		if (!(value instanceof StockRecord)) {
-			tableStockDataList.clear();
+		if (value instanceof StockRecord) {
+			reloadTableByItem(item);
+			return;
 		}
 		TreeView treeView = getTreeViewFromTreeItem(item);
-		HashSet dupCheckSet = new HashSet();
 		ObservableList<TreeItem> list = treeView.getSelectionModel()
 				.getSelectedItems();
 		beforeUpdateTableStockDataList(true);
+		HashSet dupCheckSet = new HashSet();
 		list.forEach(selectedItem -> {
 			TreeItem checkParentItem = selectedItem;
 			boolean found = false;
