@@ -1316,11 +1316,16 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				if (currentHistoryIdx > 0) {
 					--currentHistoryIdx;
 					History history = historyList.get(currentHistoryIdx);
-					List<TableStockData> list = (List<TableStockData>) history
-							.getContent();
-					tableStockDataList = FXCollections.observableArrayList();
-					tableStockDataList.addAll(list);
-					tableView.setItems(tableStockDataList);
+					switch (history.getHistoryType()) {
+					case STOCK_LIST:
+						List<TableStockData> list = (List<TableStockData>) history
+								.getContent();
+						tableStockDataList = FXCollections
+								.observableArrayList();
+						tableStockDataList.addAll(list);
+						tableView.setItems(tableStockDataList);
+						break;
+					}
 				}
 				updateHistoryButtonsStatus();
 			}
@@ -1335,12 +1340,16 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					if (historyList.size() > currentHistoryIdx + 1) {
 						++currentHistoryIdx;
 						History history = historyList.get(currentHistoryIdx);
-						List<TableStockData> list = (List<TableStockData>) history
-								.getContent();
-						tableStockDataList = FXCollections
-								.observableArrayList();
-						tableStockDataList.addAll(list);
-						tableView.setItems(tableStockDataList);
+						switch (history.getHistoryType()) {
+						case STOCK_LIST:
+							List<TableStockData> list = (List<TableStockData>) history
+									.getContent();
+							tableStockDataList = FXCollections
+									.observableArrayList();
+							tableStockDataList.addAll(list);
+							tableView.setItems(tableStockDataList);
+							break;
+						}
 					}
 					updateHistoryButtonsStatus();
 				}
