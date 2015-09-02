@@ -700,7 +700,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableView.getSelectionModel().selectedItemProperty()
 				.addListener(new TableChangeListener(tableView));
 		tableView.setContextMenu(new ContextMenu(
-				createTableContextMenuContents()));
+				createTableContextMenuContents(tableView)));
 	}
 
 	private void scanMain() {
@@ -1127,7 +1127,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return null;
 	}
 
-	private MenuItem[] createTableContextMenuContents() {
+	private MenuItem[] createTableContextMenuContents(TableView view) {
 		List<MenuItem> menuItems = new ArrayList<>();
 
 		Menu menuRegister = new Menu(
@@ -1146,7 +1146,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 								.parseInt(onlyDigitText) - 1;
 						Set registeredStockSet = registeredStockSets[idxRegisteredStocks];
 
-						ObservableList<TableStockData> selectedItems = tableView
+						ObservableList<TableStockData> selectedItems = view
 								.getSelectionModel().getSelectedItems();
 						selectedItems.forEach(item -> {
 							TableStockData data = (TableStockData) item;
@@ -1174,21 +1174,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		MenuItem menuDeleteSelectedRows = new MenuItem(
 				resource.getString(MessageKey.DELETE_SELECTED_ROWS_CONTEXT_MENU));
 		menuDeleteSelectedRows.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = tableView
+			ObservableList<TableStockData> selectedItems = view
 					.getSelectionModel().getSelectedItems();
 			if (selectedItems.size() != 0) {
 				beforeUpdateTableStockDataList(false);
 				tableStockDataList.removeAll(selectedItems);
 				afterUpdateTableStockDataList();
 			}
-			tableView.getSelectionModel().clearSelection();
+			view.getSelectionModel().clearSelection();
 		});
 		menuItems.add(menuDeleteSelectedRows);
 
 		MenuItem menuDeleteUnselectedRows = new MenuItem(
 				resource.getString(MessageKey.DELETE_UNSELECTED_ROWS_CONTEXT_MENU));
 		menuDeleteUnselectedRows.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = tableView
+			ObservableList<TableStockData> selectedItems = view
 					.getSelectionModel().getSelectedItems();
 			ArrayList copy = new ArrayList();
 			selectedItems.forEach(item -> {
@@ -1200,14 +1200,14 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				tableStockDataList.addAll(copy);
 				afterUpdateTableStockDataList();
 			}
-			tableView.getSelectionModel().clearSelection();
+			view.getSelectionModel().clearSelection();
 		});
 		menuItems.add(menuDeleteUnselectedRows);
 
 		MenuItem menuOpenYahooFinance = new MenuItem(
 				resource.getString(MessageKey.OPEN_YAHOO_FINANCE_HTML_PAGE));
 		menuOpenYahooFinance.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = tableView
+			ObservableList<TableStockData> selectedItems = view
 					.getSelectionModel().getSelectedItems();
 			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
