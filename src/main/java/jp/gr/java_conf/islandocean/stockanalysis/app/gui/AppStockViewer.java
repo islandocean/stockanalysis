@@ -698,7 +698,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		tableView.getSelectionModel().selectedItemProperty()
-				.addListener(createTableChangeListener());
+				.addListener(new TableChangeListener(tableView));
 		tableView.setContextMenu(new ContextMenu(
 				createTableContextMenuContents()));
 	}
@@ -1396,36 +1396,41 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		}
 	}
 
-	private ChangeListener createTableChangeListener() {
-		return new ChangeListener() {
-			@Override
-			public void changed(ObservableValue observable, Object oldValue,
-					Object newValue) {
+	private class TableChangeListener implements ChangeListener {
+		private TableView view;
 
-				if (tableView.getSelectionModel().getSelectedItem() != null) {
-					TableViewSelectionModel<TableStockData> selectionModel = tableView
-							.getSelectionModel();
-					// ObservableList selectedCells = selectionModel
-					// .getSelectedCells();
-					// TablePosition tablePosition = (TablePosition)
-					// selectedCells
-					// .get(0);
-					// Object val = tablePosition.getTableColumn().getCellData(
-					// newValue);
-					// System.out.println("Selected Value" + val);
+		public TableChangeListener(TableView view) {
+			super();
+			this.view = view;
+		}
 
-					int index = selectionModel.getSelectedIndex();
-					if (index >= 0) {
-						TableStockData tableStockData = tableStockDataList
-								.get(index);
-						if (tableStockData != null) {
-							String stockCode = tableStockData.getStockCode();
-							reloadRightPane(stockCode);
-						}
-					}
+		@Override
+		public void changed(ObservableValue observable, Object oldValue,
+				Object newValue) {
+			TableViewSelectionModel<TableStockData> selectionModel = view
+					.getSelectionModel();
+			if (selectionModel.getSelectedItem() != null) {
+				// ObservableList selectedCells = selectionModel
+				// .getSelectedCells();
+				// TablePosition tablePosition = (TablePosition)
+				// selectedCells
+				// .get(0);
+				// Object val = tablePosition.getTableColumn().getCellData(
+				// newValue);
+				// System.out.println("Selected Value" + val);
+
+				int index = selectionModel.getSelectedIndex();
+				if (index < 0) {
+					return;
 				}
+				TableStockData tableStockData = tableStockDataList.get(index);
+				if (tableStockData == null) {
+					return;
+				}
+				String stockCode = tableStockData.getStockCode();
+				reloadRightPane(stockCode);
 			}
-		};
+		}
 	}
 
 	private void reloadRightPane(String stockCode) {
