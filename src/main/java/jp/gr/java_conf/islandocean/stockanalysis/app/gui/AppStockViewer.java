@@ -114,7 +114,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	// Controls
 	//
 
-	Stage primaryStage;
+	private Stage primaryStage;
 
 	// Pane
 	private VBox rootPane;
