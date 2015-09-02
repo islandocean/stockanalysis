@@ -788,22 +788,32 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		englishMenu = new MenuItem(resource.getString(MessageKey.ENGLISH_MENU));
 		languageMenu.getItems().addAll(japaneseMenu, englishMenu);
 		viewMenu.getItems().add(languageMenu);
-		japaneseMenu.setOnAction(value -> {
-			appLocale = Locale.JAPAN;
-			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
-			savePref();
-			Locale.setDefault(appLocale);
-			initResource();
-			buildUi(this.primaryStage);
-		});
-		englishMenu.setOnAction(value -> {
-			appLocale = Locale.ENGLISH;
-			pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
-			savePref();
-			Locale.setDefault(appLocale);
-			initResource();
-			buildUi(this.primaryStage);
-		});
+		japaneseMenu
+				.setOnAction(value -> {
+					appLocale = Locale.JAPAN;
+					pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
+					savePref();
+					Locale.setDefault(appLocale);
+					initResource();
+					initHistory();
+					buildUi(this.primaryStage);
+					ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
+					afterUpdateTableStockDataList(tableStockDataList,
+							this.tableView);
+				});
+		englishMenu
+				.setOnAction(value -> {
+					appLocale = Locale.ENGLISH;
+					pref.setProperty(PREFKEY_LOCALE, appLocale.toString());
+					savePref();
+					Locale.setDefault(appLocale);
+					initResource();
+					initHistory();
+					buildUi(this.primaryStage);
+					ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
+					afterUpdateTableStockDataList(tableStockDataList,
+							this.tableView);
+				});
 
 		toolMenu = new Menu(resource.getString(MessageKey.TOOL_MENU));
 		optionMenu = new MenuItem(resource.getString(MessageKey.OPTION_MENU));
