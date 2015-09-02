@@ -530,10 +530,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		});
 
 		backButton = new Button(resource.getString(MessageKey.BACK_BUTTON));
-		backButton.setOnAction(createBackButtonEventHandler());
+		backButton.setOnAction(createHistoryBackEventHandler());
 		forwardButton = new Button(
 				resource.getString(MessageKey.FORWARD_BUTTON));
-		forwardButton.setOnAction(createForwardButtonEventHandler());
+		forwardButton.setOnAction(createHistoryForwardEventHandler());
 		updateHistoryButtonsStatus();
 
 		tableControlPane.getChildren().addAll(backButton, forwardButton,
@@ -1311,7 +1311,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		if (regenerateData) {
 			return FXCollections.observableArrayList();
 		}
-		return (ObservableList) getCopyOfCurrentHistoryContent();
+		return (ObservableList) getHistoryContent();
 	}
 
 	private void afterUpdateTableStockDataList(
@@ -1328,6 +1328,36 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		history.setView(view);
 		history.setContent(save);
 
+		// Add history
+		addHistory(history);
+
+		// Update view
+		updateCenterContentPane();
+		updateHistoryButtonsStatus();
+	}
+
+	private void afterUpdateTableScreeningDataList(
+			ObservableList tableScreeningDataList, TableView view) {
+		// Prepare
+		ObservableList<TableStockData> save = FXCollections
+				.observableArrayList();
+		save.addAll(tableScreeningDataList);
+
+		// Create history
+		History history = new History();
+		history.setHistoryType(HistoryType.SCREENING_RESULT);
+		history.setView(view);
+		history.setContent(save);
+
+		// Add history
+		addHistory(history);
+
+		// Update view
+		updateCenterContentPane();
+		updateHistoryButtonsStatus();
+	}
+
+	private void addHistory(History history) {
 		// Update history
 		if (currentHistoryIdx < 0) {
 			historyList.add(history);
@@ -1343,12 +1373,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			historyList.remove(0);
 			--currentHistoryIdx;
 		}
-
-		updateCenterContentPane();
-		updateHistoryButtonsStatus();
 	}
 
-	private ObservableList getCopyOfCurrentHistoryContent() {
+	private ObservableList getHistoryContent() {
 		if (currentHistoryIdx < 0) {
 			return null;
 		}
@@ -1359,7 +1386,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return list;
 	}
 
-	private EventHandler<ActionEvent> createBackButtonEventHandler() {
+	private EventHandler<ActionEvent> createHistoryBackEventHandler() {
 		return new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -1370,7 +1397,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		};
 	}
 
-	private EventHandler<ActionEvent> createForwardButtonEventHandler() {
+	private EventHandler<ActionEvent> createHistoryForwardEventHandler() {
 		return new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
@@ -1535,7 +1562,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void getFromTable() {
-		ObservableList<TableStockData> tableStockDataList = getCopyOfCurrentHistoryContent();
+		ObservableList<TableStockData> tableStockDataList = getHistoryContent();
 		if (tableStockDataList == null) {
 			return;
 		}
