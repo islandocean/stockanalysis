@@ -1191,10 +1191,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			ObservableList<TableStockData> selectedItems = view
 					.getSelectionModel().getSelectedItems();
 			ArrayList copy = new ArrayList();
-			selectedItems.forEach(item -> {
-				copy.add(item);
-			});
-			if (selectedItems.size() != 0) {
+			copy.addAll(selectedItems);
+			if (copy.size() != 0) {
 				beforeUpdateTableStockDataList(false);
 				tableStockDataList.clear();
 				tableStockDataList.addAll(copy);
@@ -1212,12 +1210,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			selectedItems.forEach(item -> {
 				TableStockData data = (TableStockData) item;
 				String stockCode = data.getStockCode();
-				if (stockCode != null) {
-					String spec = financeManager
-							.getHtmlChartPageSpec(financeManager
-									.toDetailSearchStockCode(stockCode));
-					startBrowser(spec);
+				if (stockCode == null) {
+					return;
 				}
+				startBrowser(financeManager.getHtmlChartPageSpec(financeManager
+						.toDetailSearchStockCode(stockCode)));
 			});
 		});
 		menuItems.add(menuOpenYahooFinance);
