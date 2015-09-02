@@ -23,6 +23,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -1300,12 +1301,18 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void afterUpdateTableStockDataList() {
-		// Update history
+		// Prepare
 		List<TableStockData> save = new LinkedList<TableStockData>();
 		save.addAll(tableStockDataList);
+		TableView view = tableView;
+
+		// Create history
 		History history = new History();
 		history.setHistoryType(HistoryType.STOCK_LIST);
+		history.setView(view);
 		history.setContent(save);
+
+		// Update history
 		if (currentHistoryIdx < 0) {
 			historyList.add(history);
 			currentHistoryIdx = 0;
@@ -1323,8 +1330,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		updateHistoryButtonsStatus();
 
 		// Update view
-		centerContentPane.getChildren().clear();
-		centerContentPane.getChildren().add(tableView);
+		updateCenterContentPane(view);
 	}
 
 	private EventHandler<ActionEvent> createBackButtonEventHandler() {
@@ -1334,6 +1340,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				if (currentHistoryIdx > 0) {
 					--currentHistoryIdx;
 					History history = historyList.get(currentHistoryIdx);
+					TableView view = (TableView) history.getView();
 					switch (history.getHistoryType()) {
 					case STOCK_LIST:
 						List<TableStockData> list = (List<TableStockData>) history
@@ -1341,9 +1348,12 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 						tableStockDataList = FXCollections
 								.observableArrayList();
 						tableStockDataList.addAll(list);
-						tableView.setItems(tableStockDataList);
+						view.setItems(tableStockDataList);
 						break;
 					}
+
+					// Update view
+					updateCenterContentPane(view);
 				}
 				updateHistoryButtonsStatus();
 			}
@@ -1358,6 +1368,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					if (historyList.size() > currentHistoryIdx + 1) {
 						++currentHistoryIdx;
 						History history = historyList.get(currentHistoryIdx);
+						TableView view = (TableView) history.getView();
 						switch (history.getHistoryType()) {
 						case STOCK_LIST:
 							List<TableStockData> list = (List<TableStockData>) history
@@ -1365,14 +1376,22 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 							tableStockDataList = FXCollections
 									.observableArrayList();
 							tableStockDataList.addAll(list);
-							tableView.setItems(tableStockDataList);
+							view.setItems(tableStockDataList);
 							break;
 						}
+
+						// Update view
+						updateCenterContentPane(view);
 					}
 					updateHistoryButtonsStatus();
 				}
 			}
 		};
+	}
+
+	private void updateCenterContentPane(Node view) {
+		centerContentPane.getChildren().clear();
+		centerContentPane.getChildren().add(view);
 	}
 
 	private void updateHistoryButtonsStatus() {

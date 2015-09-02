@@ -1,8 +1,11 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
+import javafx.scene.Node;
+
 public class History {
 
 	private HistoryType historyType;
+	private Node view;
 	private String name;
 	private String nameInEnglish;
 	private String caption;
@@ -18,6 +21,14 @@ public class History {
 
 	public void setHistoryType(HistoryType historyType) {
 		this.historyType = historyType;
+	}
+
+	public Node getView() {
+		return view;
+	}
+
+	public void setView(Node view) {
+		this.view = view;
 	}
 
 	public String getName() {
