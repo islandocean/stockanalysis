@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,7 +22,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
@@ -76,6 +74,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
 
+	private static final int NUM_REGISTERED_STOCKS = 10;
+	private static final int HISTORY_SIZE = 10;
+
 	private static final double DEFAULT_SCENE_WIDTH = 1230d;
 	private static final double DEFAULT_SCENE_HEIGHT = 870d;
 	private static final double ALL_STOCKS_TREEVIEW_MIN_HEIGHT = 680d;
@@ -86,8 +87,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final double TABLE_VIEW_MIN_HEIGHT = 700d;
 	private static final double TABLE_STOCK_CODE_COLUMN_MAX_WIDTH = 56d;
 	private static final double TABLE_STOCK_NAME_COLUMN_MIN_WIDTH = 180d;
-
-	private static final int HISTORY_SIZE = 10;
 
 	//
 	// Data
@@ -104,12 +103,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private ResourceBundle resource;
 	private Pref pref;
 	private Locale appLocale;
-	private static final int NUM_REGISTERED_STOCKS = 10;
 	private String[] registeredStocksPrefStrs;
 	private LinkedHashSet<String>[] registeredStockSets;
 	private String rightPaneStockCode;
 
-	private ObservableList<TableStockData> tableStockDataList;
 	private List<History> historyList;
 	private int currentHistoryIdx;
 
@@ -243,9 +240,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		// Build UI
 		buildUi(stage); // Calls scanMain();
 
-		// Empty table and one history.
-		beforeUpdateTableStockDataList(true);
-		afterUpdateTableStockDataList();
+		// Empty table, and add one history.
+		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
+		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
 	}
 
 	private void initResource() {
@@ -1174,33 +1171,36 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		MenuItem menuDeleteSelectedRows = new MenuItem(
 				resource.getString(MessageKey.DELETE_SELECTED_ROWS_CONTEXT_MENU));
-		menuDeleteSelectedRows.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = view
-					.getSelectionModel().getSelectedItems();
-			if (selectedItems.size() != 0) {
-				beforeUpdateTableStockDataList(false);
-				tableStockDataList.removeAll(selectedItems);
-				afterUpdateTableStockDataList();
-			}
-			view.getSelectionModel().clearSelection();
-		});
+		menuDeleteSelectedRows
+				.setOnAction((ActionEvent e) -> {
+					ObservableList<TableStockData> selectedItems = view
+							.getSelectionModel().getSelectedItems();
+					ArrayList copy = new ArrayList();
+					copy.addAll(selectedItems);
+					if (copy.size() != 0) {
+						ObservableList tableStockDataList = beforeUpdateTableStockDataList(false);
+						tableStockDataList.removeAll(copy);
+						afterUpdateTableStockDataList(tableStockDataList, view);
+					}
+					view.getSelectionModel().clearSelection();
+				});
 		menuItems.add(menuDeleteSelectedRows);
 
 		MenuItem menuDeleteUnselectedRows = new MenuItem(
 				resource.getString(MessageKey.DELETE_UNSELECTED_ROWS_CONTEXT_MENU));
-		menuDeleteUnselectedRows.setOnAction((ActionEvent e) -> {
-			ObservableList<TableStockData> selectedItems = view
-					.getSelectionModel().getSelectedItems();
-			ArrayList copy = new ArrayList();
-			copy.addAll(selectedItems);
-			if (copy.size() != 0) {
-				beforeUpdateTableStockDataList(false);
-				tableStockDataList.clear();
-				tableStockDataList.addAll(copy);
-				afterUpdateTableStockDataList();
-			}
-			view.getSelectionModel().clearSelection();
-		});
+		menuDeleteUnselectedRows
+				.setOnAction((ActionEvent e) -> {
+					ObservableList<TableStockData> selectedItems = view
+							.getSelectionModel().getSelectedItems();
+					ArrayList copy = new ArrayList();
+					copy.addAll(selectedItems);
+					if (copy.size() != 0) {
+						ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
+						tableStockDataList.addAll(copy);
+						afterUpdateTableStockDataList(tableStockDataList, view);
+					}
+					view.getSelectionModel().clearSelection();
+				});
 		menuItems.add(menuDeleteUnselectedRows);
 
 		MenuItem menuOpenYahooFinance = new MenuItem(
@@ -1228,14 +1228,14 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			return;
 		}
 		Object value = item.getValue();
-		if (value instanceof StockRecord) {
-			reloadTableByItem(item);
-			return;
-		}
 		TreeView treeView = getTreeViewFromTreeItem(item);
 		ObservableList<TreeItem> list = treeView.getSelectionModel()
 				.getSelectedItems();
-		beforeUpdateTableStockDataList(true);
+		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
+		if (value instanceof StockRecord) {
+			reloadTableByItem(item, tableStockDataList);
+			return;
+		}
 		HashSet dupCheckSet = new HashSet();
 		list.forEach(selectedItem -> {
 			TreeItem checkParentItem = selectedItem;
@@ -1248,39 +1248,43 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			}
 			dupCheckSet.add(selectedItem);
 			if (!found) {
-				reloadTableByItem((TreeItem) selectedItem);
+				reloadTableByItem((TreeItem) selectedItem, tableStockDataList);
 			}
 		});
-		afterUpdateTableStockDataList();
+		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
 	}
 
-	private void reloadTableByItem(TreeItem<Object> item) {
+	private void reloadTableByItem(TreeItem<Object> item,
+			ObservableList tableStockDataList) {
 		Object value = item.getValue();
 		if (value instanceof RootItemValue) {
-			reloadTableByRoot(item);
+			reloadTableByRoot(item, tableStockDataList);
 		} else if (value instanceof MarketItemValue) {
-			reloadTableByMarket(item);
+			reloadTableByMarket(item, tableStockDataList);
 		} else if (value instanceof SectorItemValue) {
-			reloadTableBySector(item);
+			reloadTableBySector(item, tableStockDataList);
 		} else if (value instanceof StockRecord) {
 			String stockCode = ((StockRecord) value).getStockCode();
 			reloadRightPane(stockCode);
 		}
 	}
 
-	private void reloadTableByRoot(TreeItem<Object> root) {
+	private void reloadTableByRoot(TreeItem<Object> root,
+			ObservableList tableStockDataList) {
 		root.getChildren().forEach(marketItem -> {
-			reloadTableByMarket(marketItem);
+			reloadTableByMarket(marketItem, tableStockDataList);
 		});
 	}
 
-	private void reloadTableByMarket(TreeItem<Object> marketItem) {
+	private void reloadTableByMarket(TreeItem<Object> marketItem,
+			ObservableList tableStockDataList) {
 		marketItem.getChildren().forEach(sectorItem -> {
-			reloadTableBySector(sectorItem);
+			reloadTableBySector(sectorItem, tableStockDataList);
 		});
 	}
 
-	private void reloadTableBySector(TreeItem<Object> sectorItem) {
+	private void reloadTableBySector(TreeItem<Object> sectorItem,
+			ObservableList tableStockDataList) {
 		sectorItem.getChildren().forEach(stockItem -> {
 			if (!(stockItem.getValue() instanceof StockRecord)) {
 				return; // continue
@@ -1293,18 +1297,20 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		});
 	}
 
-	private void beforeUpdateTableStockDataList(boolean regenerateData) {
+	private ObservableList beforeUpdateTableStockDataList(boolean regenerateData) {
 		if (regenerateData) {
-			tableStockDataList = FXCollections.observableArrayList();
-			tableView.setItems(tableStockDataList);
+			return FXCollections.observableArrayList();
 		}
+		return (ObservableList) getCopyOfCurrentHistoryContent();
 	}
 
-	private void afterUpdateTableStockDataList() {
+	private void afterUpdateTableStockDataList(
+			ObservableList tableStockDataList, TableView view) {
+
 		// Prepare
-		List<TableStockData> save = new LinkedList<TableStockData>();
+		ObservableList<TableStockData> save = FXCollections
+				.observableArrayList();
 		save.addAll(tableStockDataList);
-		TableView view = tableView;
 
 		// Create history
 		History history = new History();
@@ -1327,34 +1333,28 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			historyList.remove(0);
 			--currentHistoryIdx;
 		}
-		updateHistoryButtonsStatus();
 
-		// Update view
-		updateCenterContentPane(view);
+		updateCenterContentPane();
+		updateHistoryButtonsStatus();
+	}
+
+	private ObservableList getCopyOfCurrentHistoryContent() {
+		if (currentHistoryIdx < 0) {
+			return null;
+		}
+		History history = historyList.get(currentHistoryIdx);
+		ObservableList list = FXCollections.observableArrayList();
+		ObservableList content = (ObservableList) history.getContent();
+		list.addAll(content);
+		return list;
 	}
 
 	private EventHandler<ActionEvent> createBackButtonEventHandler() {
 		return new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (currentHistoryIdx > 0) {
-					--currentHistoryIdx;
-					History history = historyList.get(currentHistoryIdx);
-					TableView view = (TableView) history.getView();
-					switch (history.getHistoryType()) {
-					case STOCK_LIST:
-						List<TableStockData> list = (List<TableStockData>) history
-								.getContent();
-						tableStockDataList = FXCollections
-								.observableArrayList();
-						tableStockDataList.addAll(list);
-						view.setItems(tableStockDataList);
-						break;
-					}
-
-					// Update view
-					updateCenterContentPane(view);
-				}
+				--currentHistoryIdx;
+				updateCenterContentPane();
 				updateHistoryButtonsStatus();
 			}
 		};
@@ -1364,32 +1364,19 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		return new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				if (currentHistoryIdx >= 0) {
-					if (historyList.size() > currentHistoryIdx + 1) {
-						++currentHistoryIdx;
-						History history = historyList.get(currentHistoryIdx);
-						TableView view = (TableView) history.getView();
-						switch (history.getHistoryType()) {
-						case STOCK_LIST:
-							List<TableStockData> list = (List<TableStockData>) history
-									.getContent();
-							tableStockDataList = FXCollections
-									.observableArrayList();
-							tableStockDataList.addAll(list);
-							view.setItems(tableStockDataList);
-							break;
-						}
-
-						// Update view
-						updateCenterContentPane(view);
-					}
-					updateHistoryButtonsStatus();
-				}
+				++currentHistoryIdx;
+				updateCenterContentPane();
+				updateHistoryButtonsStatus();
 			}
 		};
 	}
 
-	private void updateCenterContentPane(Node view) {
+	private void updateCenterContentPane() {
+		History history = historyList.get(currentHistoryIdx);
+		TableView view = (TableView) history.getView();
+		ObservableList tableStockDataList = (ObservableList) history
+				.getContent();
+		view.setItems(tableStockDataList);
 		centerContentPane.getChildren().clear();
 		centerContentPane.getChildren().add(view);
 	}
@@ -1439,10 +1426,18 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				if (index < 0) {
 					return;
 				}
-				TableStockData tableStockData = tableStockDataList.get(index);
+
+				ObservableList tableStockDataList = view.getItems();
+				if (tableStockDataList == null) {
+					return;
+				}
+
+				TableStockData tableStockData = (TableStockData) tableStockDataList
+						.get(index);
 				if (tableStockData == null) {
 					return;
 				}
+
 				String stockCode = tableStockData.getStockCode();
 				reloadRightPane(stockCode);
 			}
@@ -1477,8 +1472,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	}
 
 	private void searchCorps(String text) {
-		beforeUpdateTableStockDataList(true);
-		tableStockDataList.clear();
+		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
 		lastData.forEach(record -> {
 			String stockCode = record.getStockCode();
 			String stockName = record.getStockName();
@@ -1497,12 +1491,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				tableStockDataList.add(new TableStockData(record, detail));
 			}
 		});
-		afterUpdateTableStockDataList();
+		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
 	}
 
 	private void updateTable() {
-		beforeUpdateTableStockDataList(true);
-		tableStockDataList.clear();
+		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
 		String text = consoleTextArea.getText();
 		text = text.trim();
 		text = text.replace("\r\n", ",");
@@ -1528,10 +1521,11 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				break;
 			}
 		}
-		afterUpdateTableStockDataList();
+		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
 	}
 
 	private void getFromTable() {
+		ObservableList<TableStockData> tableStockDataList = getCopyOfCurrentHistoryContent();
 		if (tableStockDataList == null) {
 			return;
 		}
