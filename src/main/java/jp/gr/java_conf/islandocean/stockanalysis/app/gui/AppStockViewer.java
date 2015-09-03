@@ -182,6 +182,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private TableColumn pbrColumn;
 	private TableColumn epsColumn;
 	private TableColumn bpsColumn;
+	private TableColumn averageAnnualSalaryColumn;
+	private TableColumn averageAgeColumn;
 
 	private TextArea consoleTextArea;
 	private Button updateButton;
@@ -670,6 +672,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
 		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
 		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
+		averageAnnualSalaryColumn = new TableColumn(
+				resource.getString(MessageKey.AVERAGE_ANNUAL_SALARY));
+		averageAgeColumn = new TableColumn(
+				resource.getString(MessageKey.AVERAGE_AGE));
 
 		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
 				"stockCode"));
@@ -687,11 +693,16 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
 		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
 		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
+		averageAnnualSalaryColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"averageAnnualSalary"));
+		averageAgeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"averageAge"));
 
 		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
 				marketColumn, sectorColumn, marketCapitalizationColumn,
 				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
-				bpsColumn);
+				bpsColumn, averageAnnualSalaryColumn, averageAgeColumn);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -1295,16 +1306,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	private void reloadTableBySector(TreeItem<Object> sectorItem,
 			ObservableList tableStockDataList) {
-		sectorItem.getChildren().forEach(stockItem -> {
-			if (!(stockItem.getValue() instanceof StockRecord)) {
-				return; // continue
-			}
-			StockRecord record = (StockRecord) stockItem.getValue();
-			String stockCode = record.getStockCode();
-			DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
-					.get(stockCode);
-			tableStockDataList.add(new TableStockData(record, detail));
-		});
+		sectorItem
+				.getChildren()
+				.forEach(stockItem -> {
+					if (!(stockItem.getValue() instanceof StockRecord)) {
+						return; // continue
+					}
+					StockRecord record = (StockRecord) stockItem.getValue();
+					String stockCode = record.getStockCode();
+					DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
+							.get(stockCode);
+					ProfileRecord profile = (ProfileRecord) stockCodeToProfileRecordMap
+							.get(stockCode);
+					tableStockDataList.add(new TableStockData(record, detail,
+							profile));
+				});
 	}
 
 	private ObservableList beforeUpdateTableStockDataList(boolean regenerateData) {
@@ -1525,7 +1541,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 							.contains(text))) {
 				DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
 						.get(stockCode);
-				tableStockDataList.add(new TableStockData(record, detail));
+				ProfileRecord profile = (ProfileRecord) stockCodeToProfileRecordMap
+						.get(stockCode);
+				tableStockDataList.add(new TableStockData(record, detail,
+						profile));
 			}
 		});
 		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
@@ -1554,7 +1573,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			for (StockRecord record : list) {
 				DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
 						.get(code);
-				tableStockDataList.add(new TableStockData(record, detail));
+				ProfileRecord profile = (ProfileRecord) stockCodeToProfileRecordMap
+						.get(stockCode);
+				tableStockDataList.add(new TableStockData(record, detail,
+						profile));
 				break;
 			}
 		}
