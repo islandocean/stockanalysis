@@ -15,6 +15,8 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 	ResourceBundle resource;
 	ScreeningParameter screeningParameter;
 	ButtonType executeButtonType;
+	ButtonType closeButtonType;
+	ButtonType cancelButtonType;
 	GridPane grid;
 	TextField minPerTextField;
 	TextField maxPerTextField;
@@ -37,8 +39,10 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 
 		executeButtonType = new ButtonType("Execute Screening",
 				ButtonData.OK_DONE);
+		closeButtonType = new ButtonType("Close", ButtonData.OK_DONE);
+		cancelButtonType = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
 		getDialogPane().getButtonTypes().addAll(executeButtonType,
-				ButtonType.CANCEL);
+				closeButtonType, cancelButtonType);
 
 		grid = new GridPane();
 		grid.setHgap(10);
@@ -104,7 +108,15 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		getDialogPane().setContent(grid);
 
 		setResultConverter(dialogButton -> {
-			if (dialogButton == executeButtonType) {
+			if (dialogButton == executeButtonType
+					|| dialogButton == closeButtonType) {
+
+				boolean execute = false;
+				if (dialogButton == executeButtonType) {
+					execute = true;
+				}
+				screeningParameter.setExecute(execute);
+
 				String minPer = minPerTextField.getText();
 				String maxPer = maxPerTextField.getText();
 				String minPbr = minPbrTextField.getText();

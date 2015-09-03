@@ -2,6 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 public class ScreeningParameter {
 
+	private boolean execute;
 	private Double minPer;
 	private Double maxPer;
 	private Double minPbr;
@@ -11,6 +12,14 @@ public class ScreeningParameter {
 
 	public ScreeningParameter() {
 		super();
+	}
+
+	public boolean getExecute() {
+		return execute;
+	}
+
+	public void setExecute(boolean execute) {
+		this.execute = execute;
 	}
 
 	public Double getMinPer() {
@@ -60,5 +69,4 @@ public class ScreeningParameter {
 	public void setMaxAnnualInterestRate(Double maxAnnualInterestRate) {
 		this.maxAnnualInterestRate = maxAnnualInterestRate;
 	}
-
 }
