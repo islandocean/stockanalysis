@@ -10,18 +10,19 @@ import java.util.Properties;
 public class Pref {
 	private String preferenceFilename;
 	private Properties properties;
+	private String className;
 
 	public Pref(Class clazz) {
 		super();
 
-		String className = clazz.getSimpleName();
+		className = clazz.getSimpleName();
 		preferenceFilename = Config.getBaseFolder() + className + ".properties";
 		File prefFile = new File(preferenceFilename);
 		if (!prefFile.exists()) {
 			Properties emptyProperties = new Properties();
 			try {
 				emptyProperties.store(new FileOutputStream(preferenceFilename),
-						"Comments");
+						className);
 			} catch (IOException e) {
 				throw new RuntimeException(
 						"Error: Internal error. Failed to create property file. Cannot continue execution. File="
@@ -34,7 +35,7 @@ public class Pref {
 			properties.load(new FileInputStream(preferenceFilename));
 		} catch (IOException e) {
 			throw new RuntimeException(
-					"Error: Internal error. Failed to create property file. Cannot continue execution. File="
+					"Error: Internal error. Failed to load property file. Cannot continue execution. File="
 							+ preferenceFilename, e);
 		}
 	}
@@ -48,6 +49,6 @@ public class Pref {
 	}
 
 	public void save() throws FileNotFoundException, IOException {
-		properties.store(new FileOutputStream(preferenceFilename), "Comments");
+		properties.store(new FileOutputStream(preferenceFilename), className);
 	}
 }
