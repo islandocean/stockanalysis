@@ -40,7 +40,7 @@ public class MessageKey {
 	public static final String FUND_REFERENCE_INFO = "FUND_REFERENCE_INFO";
 	public static final String MARGIN_INFO = "MARGIN_INFO";
 	public static final String PROFILE_INFO = "PROFILE_INFO";
-	public static final String REALTIME_PRICE = "REALTIME_PRICE";
+	public static final String STOCK_PRICE = "STOCK_PRICE";
 	public static final String PRICE_COMPARISON_WITH_PREVIOUS_DAY = "PRICE_COMPARISON_WITH_PREVIOUS_DAY";
 	public static final String PREVIOUS_CLOSING_PRICE = "PREVIOUS_CLOSING_PRICE";
 	public static final String OPENING_PRICE = "OPENING_PRICE";
