@@ -14,6 +14,15 @@ public class ScreeningParameter {
 		super();
 	}
 
+	public boolean isEmpty() {
+		if (minPer == null && maxPer == null && minPbr == null
+				&& maxPbr == null && minAnnualInterestRate == null
+				&& maxAnnualInterestRate == null) {
+			return true;
+		}
+		return false;
+	}
+
 	public boolean getExecute() {
 		return execute;
 	}

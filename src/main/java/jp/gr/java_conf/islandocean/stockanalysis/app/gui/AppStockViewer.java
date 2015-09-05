@@ -1631,6 +1631,15 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		boolean execute = screeningParameter.getExecute();
 		if (execute) {
 			System.out.println("Execute!");
+			if (screeningParameter.isEmpty()) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("Warning Dialog");
+				alert.setHeaderText("No parameter is set.");
+				alert.setContentText("To execute screening, set parameter(s) in the screening dialog.");
+				alert.showAndWait();
+				return;
+			}
+			// TODO: execute screening
 		} else {
 			System.out.println("Close!");
 		}
