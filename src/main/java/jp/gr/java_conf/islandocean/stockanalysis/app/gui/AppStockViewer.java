@@ -511,25 +511,19 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				resource.getString(MessageKey.SCREENING_BUTTON));
 		screeningButton.setOnAction((ActionEvent e) -> {
 			ScreeningParameter screeningParameter = new ScreeningParameter();
-			screeningParameter.setMinPer(5.1);
-			screeningParameter.setMaxPer(11.1);
-			screeningParameter.setMinPbr(0.7);
-			screeningParameter.setMaxPbr(1.1);
-			screeningParameter.setMinAnnualInterestRate(3.5);
-			screeningParameter.setMaxAnnualInterestRate(6.0);
-			Dialog<ScreeningParameter> dialog = new ScreeningDialog(resource,
-					screeningParameter);
-			Optional<ScreeningParameter> result = dialog.showAndWait();
-			result.ifPresent(ret -> {
-				System.out.println("minPer=" + ret.getMinPer() + ", maxPer="
-						+ ret.getMaxPer() + ", minPbr=" + ret.getMinPbr()
-						+ ", maxPbr=" + ret.getMaxPbr()
-						+ ", minAnnualInterestRate="
-						+ ret.getMinAnnualInterestRate()
-						+ ", maxAnnualInterestRate="
-						+ ret.getMaxAnnualInterestRate());
+			// screeningParameter.setMinPer(5.1);
+			// screeningParameter.setMaxPer(11.1);
+			// screeningParameter.setMinPbr(0.7);
+			// screeningParameter.setMaxPbr(1.1);
+			// screeningParameter.setMinAnnualInterestRate(3.5);
+			// screeningParameter.setMaxAnnualInterestRate(6.0);
+				Dialog<ScreeningParameter> dialog = new ScreeningDialog(
+						resource, screeningParameter);
+				Optional<ScreeningParameter> result = dialog.showAndWait();
+				result.ifPresent(ret -> {
+					executeScreening(ret);
+				});
 			});
-		});
 
 		backButton = new Button(resource.getString(MessageKey.BACK_BUTTON));
 		backButton.setOnAction(createHistoryBackEventHandler());
@@ -1624,5 +1618,21 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		alert.setHeaderText("Look, an Information Dialog");
 		alert.setContentText("I have a great message for you!");
 		alert.showAndWait();
+	}
+
+	private void executeScreening(ScreeningParameter screeningParameter) {
+		System.out.println("minPer=" + screeningParameter.getMinPer()
+				+ ", maxPer=" + screeningParameter.getMaxPer() + ", minPbr="
+				+ screeningParameter.getMinPbr() + ", maxPbr="
+				+ screeningParameter.getMaxPbr() + ", minAnnualInterestRate="
+				+ screeningParameter.getMinAnnualInterestRate()
+				+ ", maxAnnualInterestRate="
+				+ screeningParameter.getMaxAnnualInterestRate());
+		boolean execute = screeningParameter.getExecute();
+		if (execute) {
+			System.out.println("Execute!");
+		} else {
+			System.out.println("Close!");
+		}
 	}
 }

@@ -41,7 +41,7 @@ public class MainCalculateJreitPriceRatioFromRecentHigh implements
 	}
 
 	public CalendarRange selectCalendarRange() {
-		return CalendarUtil.createCalendarRangeRecentDays(180);
+		return CalendarUtil.createCalendarRangeRecentDays(240);
 	}
 
 	public static void main(String[] args) {
