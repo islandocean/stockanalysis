@@ -1639,9 +1639,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				alert.showAndWait();
 				return;
 			}
-			// TODO: execute screening
+			executeScreeningInner(screeningParameter);
 		} else {
 			System.out.println("Close!");
 		}
+	}
+
+	private void executeScreeningInner(ScreeningParameter screeningParameter) {
+		// TODO: execute screening
 	}
 }
