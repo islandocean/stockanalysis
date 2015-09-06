@@ -14,17 +14,32 @@ public class TableScreeningData extends TableStockData {
 	private final SimpleDoubleProperty periodLow;
 
 	public TableScreeningData(StockRecord record, DetailRecord detail,
-			ProfileRecord profile) {
+			ProfileRecord profile, IndicatorRecord indicator) {
 		super(record, detail, profile);
 
-		//
-		// TODO:
-		//
-		percentageChangeOfPast = null; // Under construction !!!
-		percentageChangeOfHigh = null; // Under construction !!!
-		percentageChangeOfLow = null; // Under construction !!!
-		periodHigh = null; // Under construction !!!
-		periodLow = null; // Under construction !!!
+		Double d;
+		if (indicator == null) {
+			this.percentageChangeOfPast = null;
+			this.percentageChangeOfHigh = null;
+			this.percentageChangeOfLow = null;
+			this.periodHigh = null;
+			this.periodLow = null;
+		} else {
+			d = (Double) indicator.get(IndicatorEnum.PERCENTAGE_CHANGE_OF_PAST);
+			this.percentageChangeOfPast = createSimpleDoublePropertyOrNull(d);
+
+			d = (Double) indicator.get(IndicatorEnum.PERCENTAGE_CHANGE_OF_HIGH);
+			this.percentageChangeOfHigh = createSimpleDoublePropertyOrNull(d);
+
+			d = (Double) indicator.get(IndicatorEnum.PERCENTAGE_CHANGE_OF_LOW);
+			this.percentageChangeOfLow = createSimpleDoublePropertyOrNull(d);
+
+			d = (Double) indicator.get(IndicatorEnum.PERIOD_HIGH);
+			this.periodHigh = createSimpleDoublePropertyOrNull(d);
+
+			d = (Double) indicator.get(IndicatorEnum.PERIOD_LOW);
+			this.periodLow = createSimpleDoublePropertyOrNull(d);
+		}
 	}
 
 	public Double getPercentageChangeOfPast() {

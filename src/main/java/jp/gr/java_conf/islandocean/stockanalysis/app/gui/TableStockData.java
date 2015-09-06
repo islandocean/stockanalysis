@@ -30,7 +30,6 @@ public class TableStockData {
 		this.sector = new SimpleStringProperty(record.getSector());
 
 		Double d;
-
 		if (detail == null) {
 			this.marketCapitalization = null;
 			this.annualInterestRate = null;
@@ -40,22 +39,22 @@ public class TableStockData {
 			this.bps = null;
 		} else {
 			d = (Double) detail.get(DetailEnum.MARKET_CAPITALIZATION);
-			this.marketCapitalization = createSimpleDoubleProperty(d);
+			this.marketCapitalization = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) detail.get(DetailEnum.ANNUAL_INTEREST_RATE);
-			this.annualInterestRate = createSimpleDoubleProperty(d);
+			this.annualInterestRate = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) detail.get(DetailEnum.PER);
-			this.per = createSimpleDoubleProperty(d);
+			this.per = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) detail.get(DetailEnum.PBR);
-			this.pbr = createSimpleDoubleProperty(d);
+			this.pbr = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) detail.get(DetailEnum.EPS);
-			this.eps = createSimpleDoubleProperty(d);
+			this.eps = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) detail.get(DetailEnum.BPS);
-			this.bps = createSimpleDoubleProperty(d);
+			this.bps = createSimpleDoublePropertyOrNull(d);
 		}
 
 		if (profile == null) {
@@ -63,14 +62,14 @@ public class TableStockData {
 			this.averageAge = null;
 		} else {
 			d = (Double) profile.get(ProfileEnum.AVERAGE_ANNUAL_SALARY);
-			this.averageAnnualSalary = createSimpleDoubleProperty(d);
+			this.averageAnnualSalary = createSimpleDoublePropertyOrNull(d);
 
 			d = (Double) profile.get(ProfileEnum.AVERAGE_AGE);
-			this.averageAge = createSimpleDoubleProperty(d);
+			this.averageAge = createSimpleDoublePropertyOrNull(d);
 		}
 	}
 
-	protected SimpleDoubleProperty createSimpleDoubleProperty(Double d) {
+	protected SimpleDoubleProperty createSimpleDoublePropertyOrNull(Double d) {
 		if (d == null) {
 			return null;
 		}

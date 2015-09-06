@@ -2,6 +2,7 @@ package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -53,11 +54,13 @@ import javafx.stage.Stage;
 import jp.gr.java_conf.islandocean.stockanalysis.app.CorpsAllData;
 import jp.gr.java_conf.islandocean.stockanalysis.app.CorpsScannerTemplate;
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.StockSplitInfo;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStore;
 import jp.gr.java_conf.islandocean.stockanalysis.price.DataStoreKdb;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
@@ -1639,13 +1642,176 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				alert.showAndWait();
 				return;
 			}
-			executeScreeningInner(screeningParameter);
+			List<TableScreeningData> list = doScreeningCorps(screeningParameter);
+
+			//
+			// TODO: Display screening result.
+			//
+			System.out.println("Screening result count=" + list.size());
+
 		} else {
 			System.out.println("Close!");
 		}
 	}
 
-	private void executeScreeningInner(ScreeningParameter screeningParameter) {
-		// TODO: execute screening
+	private List<TableScreeningData> doScreeningCorps(
+			ScreeningParameter screeningParameter) {
+
+		System.out.println("doScreeningCorps()");
+		List list = new ArrayList();
+
+		//
+		// Get data
+		//
+		Map<String, StockSplitInfo> stockCodeToSplitInfoMap = financeManager
+				.getStockCodeToSplitInfoMap();
+
+		//
+		// scan
+		//
+		Calendar currentDay = CalendarUtil.createToday();
+		int count = 0;
+		for (int idxCorp = 0; idxCorp < stockCodes.length; ++idxCorp) {
+			String stockCode = stockCodes[idxCorp];
+			List<StockRecord> oneCorpRecords = null;
+			if (stockManager != null) {
+				oneCorpRecords = stockManager.retrieve(stockCode);
+			}
+
+			if (oneCorpRecords == null) {
+
+			} else if (oneCorpRecords.size() == 0) {
+				System.out
+						.println("Warning: No stock price record for one corp. stockCode="
+								+ stockCode);
+			} else {
+				String splitSerachStockCode = financeManager
+						.toSplitSearchStockCode(stockCode);
+				StockSplitInfo stockSplitInfo = stockCodeToSplitInfoMap
+						.get(splitSerachStockCode);
+				stockManager.calcAdjustedPricesForOneCorp(oneCorpRecords,
+						stockSplitInfo, currentDay);
+			}
+
+			TableScreeningData data = doScreeningOneCorp(stockCode,
+					oneCorpRecords, stockManager, financeManager,
+					screeningParameter);
+			if (data != null) {
+				list.add(data);
+			}
+		}
+		return list;
+	}
+
+	public TableScreeningData doScreeningOneCorp(String stockCode,
+			List<StockRecord> oneCorpRecords, StockManager stockManager,
+			FinanceManager financeManager, ScreeningParameter screeningParameter) {
+
+		Double minPerCond = screeningParameter.getMinPer();
+		Double maxPerCond = screeningParameter.getMaxPer();
+		Double minPbrCond = screeningParameter.getMinPbr();
+		Double maxPbrCond = screeningParameter.getMaxPbr();
+		Double minAnnualInterestRateCond = screeningParameter
+				.getMinAnnualInterestRate();
+		Double maxAnnualInterestRateCond = screeningParameter
+				.getMaxAnnualInterestRate();
+
+		IndicatorRecord indicator = new IndicatorRecord();
+		StockRecord stockRecord = null;
+		for (StockRecord record : oneCorpRecords) {
+			// Get at least 1 record.
+			stockRecord = record;
+
+			String market = (String) record.get(StockEnum.MARKET);
+			String sector = (String) record.get(StockEnum.SECTOR);
+			String stockName = (String) record.get(StockEnum.STOCK_NAME);
+
+			//
+			// TODO: Calc indicator.
+			//
+
+			break; // TODO: Delete break if necessary.
+		}
+		//
+		// TODO: Set indicator values.
+		//
+
+		if (stockRecord == null) {
+			return null;
+		}
+
+		DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
+				.get(stockCode);
+		ProfileRecord profile = (ProfileRecord) stockCodeToProfileRecordMap
+				.get(stockCode);
+
+		//
+		// Screening.
+		//
+
+		Double d;
+
+		if (minPerCond != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.PER)) == null) {
+				return null;
+			}
+			if (d < minPerCond) {
+				return null;
+			}
+		}
+		if (maxPerCond != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.PER)) == null) {
+				return null;
+			}
+			if (d > maxPerCond) {
+				return null;
+			}
+		}
+
+		if (minPbrCond != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.PBR)) == null) {
+				return null;
+			}
+			if (d < minPbrCond) {
+				return null;
+			}
+		}
+		if (maxPbrCond != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.PBR)) == null) {
+				return null;
+			}
+			if (d > maxPbrCond) {
+				return null;
+			}
+		}
+
+		if (minAnnualInterestRateCond != null) {
+			if (detail == null
+					|| (d = (Double) detail
+							.get(DetailEnum.ANNUAL_INTEREST_RATE)) == null) {
+				return null;
+			}
+			if (d < minAnnualInterestRateCond) {
+				return null;
+			}
+		}
+		if (maxAnnualInterestRateCond != null) {
+			if (detail == null
+					|| (d = (Double) detail
+							.get(DetailEnum.ANNUAL_INTEREST_RATE)) == null) {
+				return null;
+			}
+			if (d > maxAnnualInterestRateCond) {
+				return null;
+			}
+		}
+
+		TableScreeningData data = new TableScreeningData(stockRecord, detail,
+				profile, indicator);
+		return data;
 	}
 }
