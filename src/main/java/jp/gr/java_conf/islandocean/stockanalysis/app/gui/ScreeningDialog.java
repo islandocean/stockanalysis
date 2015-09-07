@@ -18,12 +18,12 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 	ButtonType closeButtonType;
 	ButtonType cancelButtonType;
 	GridPane grid;
+	TextField minAnnualInterestRateTextField;
+	TextField maxAnnualInterestRateTextField;
 	TextField minPerTextField;
 	TextField maxPerTextField;
 	TextField minPbrTextField;
 	TextField maxPbrTextField;
-	TextField minAnnualInterestRateTextField;
-	TextField maxAnnualInterestRateTextField;
 
 	public ScreeningDialog(ResourceBundle resource,
 			ScreeningParameter screeningParameter) {
@@ -51,6 +51,18 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 
 		Double org;
 
+		minAnnualInterestRateTextField = new TextField();
+		minAnnualInterestRateTextField.setPromptText("minAnnualInterestRate");
+		if ((org = screeningParameter.getMinAnnualInterestRate()) != null) {
+			minAnnualInterestRateTextField.setText(org.toString());
+		}
+
+		maxAnnualInterestRateTextField = new TextField();
+		maxAnnualInterestRateTextField.setPromptText("maxAnnualInterestRate");
+		if ((org = screeningParameter.getMaxAnnualInterestRate()) != null) {
+			maxAnnualInterestRateTextField.setText(org.toString());
+		}
+
 		minPerTextField = new TextField();
 		minPerTextField.setPromptText("minPer");
 		if ((org = screeningParameter.getMinPer()) != null) {
@@ -75,32 +87,29 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 			maxPbrTextField.setText(org.toString());
 		}
 
-		minAnnualInterestRateTextField = new TextField();
-		minAnnualInterestRateTextField.setPromptText("minAnnualInterestRate");
-		if ((org = screeningParameter.getMinAnnualInterestRate()) != null) {
-			minAnnualInterestRateTextField.setText(org.toString());
-		}
+		int row = 0;
+		int col;
 
-		maxAnnualInterestRateTextField = new TextField();
-		maxAnnualInterestRateTextField.setPromptText("maxAnnualInterestRate");
-		if ((org = screeningParameter.getMaxAnnualInterestRate()) != null) {
-			maxAnnualInterestRateTextField.setText(org.toString());
-		}
+		col = 0;
+		grid.add(new Label("Annual Interest Rate:"), col++, row);
+		grid.add(minAnnualInterestRateTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxAnnualInterestRateTextField, col++, row);
+		++row;
 
-		grid.add(new Label("Per:"), 0, 0);
-		grid.add(minPerTextField, 1, 0);
-		grid.add(new Label("-"), 2, 0);
-		grid.add(maxPerTextField, 3, 0);
+		col = 0;
+		grid.add(new Label("Per:"), col++, row);
+		grid.add(minPerTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxPerTextField, col++, row);
+		++row;
 
-		grid.add(new Label("Pbr:"), 0, 1);
-		grid.add(minPbrTextField, 1, 1);
-		grid.add(new Label("-"), 2, 1);
-		grid.add(maxPbrTextField, 3, 1);
-
-		grid.add(new Label("Annual Interest Rate:"), 0, 2);
-		grid.add(minAnnualInterestRateTextField, 1, 2);
-		grid.add(new Label("-"), 2, 2);
-		grid.add(maxAnnualInterestRateTextField, 3, 2);
+		col = 0;
+		grid.add(new Label("Pbr:"), col++, row);
+		grid.add(minPbrTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxPbrTextField, col++, row);
+		++row;
 
 		getDialogPane().setContent(grid);
 
@@ -114,16 +123,30 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 				}
 				screeningParameter.setExecute(execute);
 
-				String minPer = minPerTextField.getText();
-				String maxPer = maxPerTextField.getText();
-				String minPbr = minPbrTextField.getText();
-				String maxPbr = maxPbrTextField.getText();
 				String minAnnualInterestRate = minAnnualInterestRateTextField
 						.getText();
 				String maxAnnualInterestRate = maxAnnualInterestRateTextField
 						.getText();
+				String minPer = minPerTextField.getText();
+				String maxPer = maxPerTextField.getText();
+				String minPbr = minPbrTextField.getText();
+				String maxPbr = maxPbrTextField.getText();
 
 				Double d;
+
+				try {
+					d = Double.parseDouble(minAnnualInterestRate);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinAnnualInterestRate(d);
+
+				try {
+					d = Double.parseDouble(maxAnnualInterestRate);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxAnnualInterestRate(d);
 
 				try {
 					d = Double.parseDouble(minPer);
@@ -152,20 +175,6 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 					d = null;
 				}
 				screeningParameter.setMaxPbr(d);
-
-				try {
-					d = Double.parseDouble(minAnnualInterestRate);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinAnnualInterestRate(d);
-
-				try {
-					d = Double.parseDouble(maxAnnualInterestRate);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxAnnualInterestRate(d);
 
 				return this.screeningParameter;
 			}

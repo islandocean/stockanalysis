@@ -179,13 +179,13 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private TableColumn stockNameColumn;
 	private TableColumn marketColumn;
 	private TableColumn sectorColumn;
-	private TableColumn marketCapitalizationColumn;
 	private TableColumn annualInterestRateColumn;
 	private TableColumn perColumn;
 	private TableColumn pbrColumn;
 	private TableColumn epsColumn;
 	private TableColumn bpsColumn;
 	private TableColumn roeColumn;
+	private TableColumn marketCapitalizationColumn;
 	private TableColumn averageAnnualSalaryColumn;
 	private TableColumn averageAgeColumn;
 
@@ -662,8 +662,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
 		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
 		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
-		marketCapitalizationColumn = new TableColumn(
-				resource.getString(MessageKey.MARKET_CAPITALIZATION));
 		annualInterestRateColumn = new TableColumn(
 				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
 		perColumn = new TableColumn(resource.getString(MessageKey.PER));
@@ -671,6 +669,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
 		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
 		roeColumn = new TableColumn(resource.getString(MessageKey.ROE));
+		marketCapitalizationColumn = new TableColumn(
+				resource.getString(MessageKey.MARKET_CAPITALIZATION));
 		averageAnnualSalaryColumn = new TableColumn(
 				resource.getString(MessageKey.AVERAGE_ANNUAL_SALARY));
 		averageAgeColumn = new TableColumn(
@@ -682,9 +682,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				"stockName"));
 		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
 		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
-		marketCapitalizationColumn
-				.setCellValueFactory(new PropertyValueFactory<>(
-						"marketCapitalization"));
 		annualInterestRateColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"annualInterestRate"));
@@ -693,6 +690,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
 		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
 		roeColumn.setCellValueFactory(new PropertyValueFactory<>("roe"));
+		marketCapitalizationColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"marketCapitalization"));
 		averageAnnualSalaryColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"averageAnnualSalary"));
@@ -700,9 +700,9 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				"averageAge"));
 
 		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
-				marketColumn, sectorColumn, marketCapitalizationColumn,
-				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
-				bpsColumn, roeColumn, averageAnnualSalaryColumn,
+				marketColumn, sectorColumn, annualInterestRateColumn,
+				perColumn, pbrColumn, epsColumn, bpsColumn, roeColumn,
+				marketCapitalizationColumn, averageAnnualSalaryColumn,
 				averageAgeColumn);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
