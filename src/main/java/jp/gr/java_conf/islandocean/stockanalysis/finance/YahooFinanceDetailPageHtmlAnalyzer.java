@@ -540,6 +540,17 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 				}
 			}
 
+			// ROE
+			Double eps = (Double) record.get(DetailEnum.EPS);
+			Double bps = (Double) record.get(DetailEnum.BPS);
+			Double roe = null;
+			if (eps != null && bps != null && bps != 0.0d) {
+				roe = eps / bps * 100.0d;
+			}
+			if (roe != null) {
+				record.put(DetailEnum.ROE, roe);
+			}
+
 			// 最低購入代金
 			org = minimumPurchaseAmountStr;
 			if ((s = org) != null) {

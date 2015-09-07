@@ -58,6 +58,7 @@ public class MessageKey {
 	public static final String PBR = "PBR";
 	public static final String EPS = "EPS";
 	public static final String BPS = "BPS";
+	public static final String ROE = "ROE";
 	public static final String MINIMUM_PURCHASE_AMOUNT = "MINIMUM_PURCHASE_AMOUNT";
 	public static final String SHARE_UNIT_NUMBER = "SHARE_UNIT_NUMBER";
 	public static final String YEARLY_HIGH = "YEARLY_HIGH";

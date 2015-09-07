@@ -109,8 +109,8 @@ public class CorpInfoPane extends TitledPane {
 			grid.add(new Label(getDetailString(DetailEnum.SECTOR)), 1, row);
 
 			++row;
-			grid.add(new Label(resource.getString(MessageKey.STOCK_PRICE)),
-					0, row);
+			grid.add(new Label(resource.getString(MessageKey.STOCK_PRICE)), 0,
+					row);
 			grid.add(new Label(getDetailString(DetailEnum.REALTIME_PRICE)), 1,
 					row);
 
@@ -229,6 +229,10 @@ public class CorpInfoPane extends TitledPane {
 			++row;
 			grid.add(new Label(resource.getString(MessageKey.BPS)), 0, row);
 			grid.add(new Label(getDetailString(DetailEnum.BPS)), 1, row);
+
+			++row;
+			grid.add(new Label(resource.getString(MessageKey.ROE)), 0, row);
+			grid.add(new Label(getDetailString(DetailEnum.ROE)), 1, row);
 
 			++row;
 			grid.add(

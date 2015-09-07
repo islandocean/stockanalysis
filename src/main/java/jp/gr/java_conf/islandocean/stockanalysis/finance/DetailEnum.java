@@ -75,6 +75,9 @@ public enum DetailEnum implements HasDataValueClass {
 	/** BPS */
 	BPS(Double.class),
 
+	/** ROE */
+	ROE(Double.class),
+
 	/** 最低購入代金 */
 	MINIMUM_PURCHASE_AMOUNT(Double.class),
 

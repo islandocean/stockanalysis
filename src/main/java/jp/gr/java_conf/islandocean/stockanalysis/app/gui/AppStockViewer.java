@@ -185,6 +185,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private TableColumn pbrColumn;
 	private TableColumn epsColumn;
 	private TableColumn bpsColumn;
+	private TableColumn roeColumn;
 	private TableColumn averageAnnualSalaryColumn;
 	private TableColumn averageAgeColumn;
 
@@ -669,6 +670,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
 		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
 		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
+		roeColumn = new TableColumn(resource.getString(MessageKey.ROE));
 		averageAnnualSalaryColumn = new TableColumn(
 				resource.getString(MessageKey.AVERAGE_ANNUAL_SALARY));
 		averageAgeColumn = new TableColumn(
@@ -690,6 +692,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
 		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
 		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
+		roeColumn.setCellValueFactory(new PropertyValueFactory<>("roe"));
 		averageAnnualSalaryColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"averageAnnualSalary"));
@@ -699,7 +702,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
 				marketColumn, sectorColumn, marketCapitalizationColumn,
 				annualInterestRateColumn, perColumn, pbrColumn, epsColumn,
-				bpsColumn, averageAnnualSalaryColumn, averageAgeColumn);
+				bpsColumn, roeColumn, averageAnnualSalaryColumn,
+				averageAgeColumn);
 		tableView.setPlaceholder(new Label(""));
 		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
 		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

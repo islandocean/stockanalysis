@@ -1,5 +1,7 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
+import java.math.BigDecimal;
+
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
@@ -19,6 +21,7 @@ public class TableStockData {
 	private final SimpleDoubleProperty pbr;
 	private final SimpleDoubleProperty eps;
 	private final SimpleDoubleProperty bps;
+	private final SimpleDoubleProperty roe;
 	private final SimpleDoubleProperty averageAnnualSalary;
 	private final SimpleDoubleProperty averageAge;
 
@@ -37,6 +40,7 @@ public class TableStockData {
 			this.pbr = null;
 			this.eps = null;
 			this.bps = null;
+			this.roe = null;
 		} else {
 			d = (Double) detail.get(DetailEnum.MARKET_CAPITALIZATION);
 			this.marketCapitalization = createSimpleDoublePropertyOrNull(d);
@@ -55,6 +59,14 @@ public class TableStockData {
 
 			d = (Double) detail.get(DetailEnum.BPS);
 			this.bps = createSimpleDoublePropertyOrNull(d);
+
+			d = (Double) detail.get(DetailEnum.ROE);
+			if (d != null) {
+				BigDecimal b = new BigDecimal(d);
+				b = b.setScale(3, BigDecimal.ROUND_HALF_UP);
+				d = b.doubleValue();
+			}
+			this.roe = createSimpleDoublePropertyOrNull(d);
 		}
 
 		if (profile == null) {
@@ -136,6 +148,13 @@ public class TableStockData {
 			return null;
 		}
 		return bps.get();
+	}
+
+	public Double getRoe() {
+		if (roe == null) {
+			return null;
+		}
+		return roe.get();
 	}
 
 	public Double getAverageAnnualSalary() {
