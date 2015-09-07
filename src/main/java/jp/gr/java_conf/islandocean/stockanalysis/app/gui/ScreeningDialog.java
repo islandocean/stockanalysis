@@ -24,6 +24,18 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 	TextField maxPerTextField;
 	TextField minPbrTextField;
 	TextField maxPbrTextField;
+	TextField minEpsTextField;
+	TextField maxEpsTextField;
+	TextField minBpsTextField;
+	TextField maxBpsTextField;
+	TextField minRoeTextField;
+	TextField maxRoeTextField;
+	TextField minMarketCapitalizationTextField;
+	TextField maxMarketCapitalizationTextField;
+	TextField minAverageAnnualSalaryTextField;
+	TextField maxAverageAnnualSalaryTextField;
+	TextField minAverageAgeTextField;
+	TextField maxAverageAgeTextField;
 
 	public ScreeningDialog(ResourceBundle resource,
 			ScreeningParameter screeningParameter) {
@@ -87,6 +99,80 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 			maxPbrTextField.setText(org.toString());
 		}
 
+		minEpsTextField = new TextField();
+		minEpsTextField.setPromptText("minEps");
+		if ((org = screeningParameter.getMinEps()) != null) {
+			minEpsTextField.setText(org.toString());
+		}
+
+		maxEpsTextField = new TextField();
+		maxEpsTextField.setPromptText("maxEps");
+		if ((org = screeningParameter.getMaxEps()) != null) {
+			maxEpsTextField.setText(org.toString());
+		}
+
+		minBpsTextField = new TextField();
+		minBpsTextField.setPromptText("minBps");
+		if ((org = screeningParameter.getMinBps()) != null) {
+			minBpsTextField.setText(org.toString());
+		}
+
+		maxBpsTextField = new TextField();
+		maxBpsTextField.setPromptText("maxBps");
+		if ((org = screeningParameter.getMaxBps()) != null) {
+			maxBpsTextField.setText(org.toString());
+		}
+
+		minRoeTextField = new TextField();
+		minRoeTextField.setPromptText("minRoe");
+		if ((org = screeningParameter.getMinRoe()) != null) {
+			minRoeTextField.setText(org.toString());
+		}
+
+		maxRoeTextField = new TextField();
+		maxRoeTextField.setPromptText("maxRoe");
+		if ((org = screeningParameter.getMaxRoe()) != null) {
+			maxRoeTextField.setText(org.toString());
+		}
+
+		minMarketCapitalizationTextField = new TextField();
+		minMarketCapitalizationTextField
+				.setPromptText("minMarketCapitalization");
+		if ((org = screeningParameter.getMinMarketCapitalization()) != null) {
+			minMarketCapitalizationTextField.setText(org.toString());
+		}
+
+		maxMarketCapitalizationTextField = new TextField();
+		maxMarketCapitalizationTextField
+				.setPromptText("maxMarketCapitalization");
+		if ((org = screeningParameter.getMaxMarketCapitalization()) != null) {
+			maxMarketCapitalizationTextField.setText(org.toString());
+		}
+
+		minAverageAnnualSalaryTextField = new TextField();
+		minAverageAnnualSalaryTextField.setPromptText("minAverageAnnualSalary");
+		if ((org = screeningParameter.getMinAverageAnnualSalary()) != null) {
+			minAverageAnnualSalaryTextField.setText(org.toString());
+		}
+
+		maxAverageAnnualSalaryTextField = new TextField();
+		maxAverageAnnualSalaryTextField.setPromptText("maxAverageAnnualSalary");
+		if ((org = screeningParameter.getMaxAverageAnnualSalary()) != null) {
+			maxAverageAnnualSalaryTextField.setText(org.toString());
+		}
+
+		minAverageAgeTextField = new TextField();
+		minAverageAgeTextField.setPromptText("minAverageAge");
+		if ((org = screeningParameter.getMinAverageAge()) != null) {
+			minAverageAgeTextField.setText(org.toString());
+		}
+
+		maxAverageAgeTextField = new TextField();
+		maxAverageAgeTextField.setPromptText("maxAverageAge");
+		if ((org = screeningParameter.getMaxAverageAge()) != null) {
+			maxAverageAgeTextField.setText(org.toString());
+		}
+
 		int row = 0;
 		int col;
 
@@ -111,6 +197,48 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		grid.add(maxPbrTextField, col++, row);
 		++row;
 
+		col = 0;
+		grid.add(new Label("Eps:"), col++, row);
+		grid.add(minEpsTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxEpsTextField, col++, row);
+		++row;
+
+		col = 0;
+		grid.add(new Label("Bps:"), col++, row);
+		grid.add(minBpsTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxBpsTextField, col++, row);
+		++row;
+
+		col = 0;
+		grid.add(new Label("Roe:"), col++, row);
+		grid.add(minRoeTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxRoeTextField, col++, row);
+		++row;
+
+		col = 0;
+		grid.add(new Label("Market Capitalization:"), col++, row);
+		grid.add(minMarketCapitalizationTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxMarketCapitalizationTextField, col++, row);
+		++row;
+
+		col = 0;
+		grid.add(new Label("Average Annual Salary:"), col++, row);
+		grid.add(minAverageAnnualSalaryTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxAverageAnnualSalaryTextField, col++, row);
+		++row;
+
+		col = 0;
+		grid.add(new Label("Average Age:"), col++, row);
+		grid.add(minAverageAgeTextField, col++, row);
+		grid.add(new Label("-"), col++, row);
+		grid.add(maxAverageAgeTextField, col++, row);
+		++row;
+
 		getDialogPane().setContent(grid);
 
 		setResultConverter(dialogButton -> {
@@ -131,6 +259,22 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 				String maxPer = maxPerTextField.getText();
 				String minPbr = minPbrTextField.getText();
 				String maxPbr = maxPbrTextField.getText();
+				String minEps = minEpsTextField.getText();
+				String maxEps = maxEpsTextField.getText();
+				String minBps = minBpsTextField.getText();
+				String maxBps = maxBpsTextField.getText();
+				String minRoe = minRoeTextField.getText();
+				String maxRoe = maxRoeTextField.getText();
+				String minMarketCapitalization = minMarketCapitalizationTextField
+						.getText();
+				String maxMarketCapitalization = maxMarketCapitalizationTextField
+						.getText();
+				String minAverageAnnualSalary = minAverageAnnualSalaryTextField
+						.getText();
+				String maxAverageAnnualSalary = maxAverageAnnualSalaryTextField
+						.getText();
+				String minAverageAge = minAverageAgeTextField.getText();
+				String maxAverageAge = maxAverageAgeTextField.getText();
 
 				Double d;
 
@@ -175,6 +319,90 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 					d = null;
 				}
 				screeningParameter.setMaxPbr(d);
+
+				try {
+					d = Double.parseDouble(minEps);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinEps(d);
+
+				try {
+					d = Double.parseDouble(maxEps);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxEps(d);
+
+				try {
+					d = Double.parseDouble(minBps);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinBps(d);
+
+				try {
+					d = Double.parseDouble(maxBps);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxBps(d);
+
+				try {
+					d = Double.parseDouble(minRoe);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinRoe(d);
+
+				try {
+					d = Double.parseDouble(maxRoe);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxRoe(d);
+
+				try {
+					d = Double.parseDouble(minMarketCapitalization);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinMarketCapitalization(d);
+
+				try {
+					d = Double.parseDouble(maxMarketCapitalization);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxMarketCapitalization(d);
+
+				try {
+					d = Double.parseDouble(minAverageAnnualSalary);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinAverageAnnualSalary(d);
+
+				try {
+					d = Double.parseDouble(maxAverageAnnualSalary);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxAverageAnnualSalary(d);
+
+				try {
+					d = Double.parseDouble(minAverageAge);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMinAverageAge(d);
+
+				try {
+					d = Double.parseDouble(maxAverageAge);
+				} catch (NumberFormatException e) {
+					d = null;
+				}
+				screeningParameter.setMaxAverageAge(d);
 
 				return this.screeningParameter;
 			}
