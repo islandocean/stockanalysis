@@ -58,6 +58,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.FinanceManager;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.MarketUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.SectorUtil;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.StockSplitInfo;
@@ -1822,14 +1823,30 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 			List<StockRecord> oneCorpRecords, StockManager stockManager,
 			FinanceManager financeManager, ScreeningParameter screeningParameter) {
 
-		Double minPerCond = screeningParameter.getMinPer();
-		Double maxPerCond = screeningParameter.getMaxPer();
-		Double minPbrCond = screeningParameter.getMinPbr();
-		Double maxPbrCond = screeningParameter.getMaxPbr();
-		Double minAnnualInterestRateCond = screeningParameter
+		Double minAnnualInterestRate = screeningParameter
 				.getMinAnnualInterestRate();
-		Double maxAnnualInterestRateCond = screeningParameter
+		Double maxAnnualInterestRate = screeningParameter
 				.getMaxAnnualInterestRate();
+		Double minPer = screeningParameter.getMinPer();
+		Double maxPer = screeningParameter.getMaxPer();
+		Double minPbr = screeningParameter.getMinPbr();
+		Double maxPbr = screeningParameter.getMaxPbr();
+		Double minEps = screeningParameter.getMinEps();
+		Double maxEps = screeningParameter.getMaxEps();
+		Double minBps = screeningParameter.getMinBps();
+		Double maxBps = screeningParameter.getMaxBps();
+		Double minRoe = screeningParameter.getMinRoe();
+		Double maxRoe = screeningParameter.getMaxRoe();
+		Double minMarketCapitalization = screeningParameter
+				.getMinMarketCapitalization();
+		Double maxMarketCapitalization = screeningParameter
+				.getMaxMarketCapitalization();
+		Double minAverageAnnualSalary = screeningParameter
+				.getMinAverageAnnualSalary();
+		Double maxAverageAnnualSalary = screeningParameter
+				.getMaxAverageAnnualSalary();
+		Double minAverageAge = screeningParameter.getMinAverageAge();
+		Double maxAverageAge = screeningParameter.getMaxAverageAge();
 
 		IndicatorRecord indicator = new IndicatorRecord();
 		StockRecord stockRecord = null;
@@ -1866,61 +1883,179 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		Double d;
 
-		if (minPerCond != null) {
+		if (minPer != null) {
 			if (detail == null
 					|| (d = (Double) detail.get(DetailEnum.PER)) == null) {
 				return null;
 			}
-			if (d < minPerCond) {
+			if (d < minPer) {
 				return null;
 			}
 		}
-		if (maxPerCond != null) {
+		if (maxPer != null) {
 			if (detail == null
 					|| (d = (Double) detail.get(DetailEnum.PER)) == null) {
 				return null;
 			}
-			if (d > maxPerCond) {
+			if (d > maxPer) {
 				return null;
 			}
 		}
 
-		if (minPbrCond != null) {
+		if (minPbr != null) {
 			if (detail == null
 					|| (d = (Double) detail.get(DetailEnum.PBR)) == null) {
 				return null;
 			}
-			if (d < minPbrCond) {
+			if (d < minPbr) {
 				return null;
 			}
 		}
-		if (maxPbrCond != null) {
+		if (maxPbr != null) {
 			if (detail == null
 					|| (d = (Double) detail.get(DetailEnum.PBR)) == null) {
 				return null;
 			}
-			if (d > maxPbrCond) {
+			if (d > maxPbr) {
 				return null;
 			}
 		}
 
-		if (minAnnualInterestRateCond != null) {
+		if (minAnnualInterestRate != null) {
 			if (detail == null
 					|| (d = (Double) detail
 							.get(DetailEnum.ANNUAL_INTEREST_RATE)) == null) {
 				return null;
 			}
-			if (d < minAnnualInterestRateCond) {
+			if (d < minAnnualInterestRate) {
 				return null;
 			}
 		}
-		if (maxAnnualInterestRateCond != null) {
+		if (maxAnnualInterestRate != null) {
 			if (detail == null
 					|| (d = (Double) detail
 							.get(DetailEnum.ANNUAL_INTEREST_RATE)) == null) {
 				return null;
 			}
-			if (d > maxAnnualInterestRateCond) {
+			if (d > maxAnnualInterestRate) {
+				return null;
+			}
+		}
+
+		if (minEps != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.EPS)) == null) {
+				return null;
+			}
+			if (d < minEps) {
+				return null;
+			}
+		}
+		if (maxEps != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.EPS)) == null) {
+				return null;
+			}
+			if (d > maxEps) {
+				return null;
+			}
+		}
+
+		if (minBps != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.BPS)) == null) {
+				return null;
+			}
+			if (d < minBps) {
+				return null;
+			}
+		}
+		if (maxBps != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.BPS)) == null) {
+				return null;
+			}
+			if (d > maxBps) {
+				return null;
+			}
+		}
+
+		if (minRoe != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.ROE)) == null) {
+				return null;
+			}
+			if (d < minRoe) {
+				return null;
+			}
+		}
+		if (maxRoe != null) {
+			if (detail == null
+					|| (d = (Double) detail.get(DetailEnum.ROE)) == null) {
+				return null;
+			}
+			if (d > maxRoe) {
+				return null;
+			}
+		}
+
+		if (minMarketCapitalization != null) {
+			if (detail == null
+					|| (d = (Double) detail
+							.get(DetailEnum.MARKET_CAPITALIZATION)) == null) {
+				return null;
+			}
+			if (d < minMarketCapitalization) {
+				return null;
+			}
+		}
+		if (maxMarketCapitalization != null) {
+			if (detail == null
+					|| (d = (Double) detail
+							.get(DetailEnum.MARKET_CAPITALIZATION)) == null) {
+				return null;
+			}
+			if (d > maxMarketCapitalization) {
+				return null;
+			}
+		}
+
+		if (minAverageAnnualSalary != null) {
+			if (profile == null
+					|| (d = (Double) profile
+							.get(ProfileEnum.AVERAGE_ANNUAL_SALARY)) == null) {
+				return null;
+			}
+			if (d < minAverageAnnualSalary) {
+				return null;
+			}
+		}
+		if (maxAverageAnnualSalary != null) {
+			if (profile == null
+					|| (d = (Double) profile
+							.get(ProfileEnum.AVERAGE_ANNUAL_SALARY)) == null) {
+				return null;
+			}
+			if (d > maxAverageAnnualSalary) {
+				return null;
+			}
+		}
+
+		if (minAverageAge != null) {
+			if (profile == null
+					|| (d = (Double) profile.get(ProfileEnum.AVERAGE_AGE)) == null) {
+				return null;
+			}
+			if (d < minAverageAge) {
+				return null;
+			}
+		}
+		if (maxAverageAge != null) {
+			if (profile == null
+					|| (d = (Double) profile.get(ProfileEnum.AVERAGE_AGE)) == null) {
+				return null;
+			}
+			if (d > maxAverageAge) {
 				return null;
 			}
 		}

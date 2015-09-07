@@ -545,7 +545,7 @@ public class YahooFinanceDetailPageHtmlAnalyzer {
 			Double bps = (Double) record.get(DetailEnum.BPS);
 			Double roe = null;
 			if (eps != null && bps != null && bps != 0.0d) {
-				roe = eps / bps * 100.0d;
+				roe = eps.doubleValue() / bps.doubleValue() * 100.0d;
 			}
 			if (roe != null) {
 				record.put(DetailEnum.ROE, roe);
