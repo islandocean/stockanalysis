@@ -174,20 +174,20 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 	// Table
 	private HBox tableControlPane;
-	private TableView<TableStockData> tableView;
-	private TableColumn stockCodeColumn;
-	private TableColumn stockNameColumn;
-	private TableColumn marketColumn;
-	private TableColumn sectorColumn;
-	private TableColumn annualInterestRateColumn;
-	private TableColumn perColumn;
-	private TableColumn pbrColumn;
-	private TableColumn epsColumn;
-	private TableColumn bpsColumn;
-	private TableColumn roeColumn;
-	private TableColumn marketCapitalizationColumn;
-	private TableColumn averageAnnualSalaryColumn;
-	private TableColumn averageAgeColumn;
+	private TableView<TableStockData> stockTableView;
+	private TableColumn stockTableStockCodeColumn;
+	private TableColumn stockTableStockNameColumn;
+	private TableColumn stockTableMarketColumn;
+	private TableColumn stockTableSectorColumn;
+	private TableColumn stockTableAnnualInterestRateColumn;
+	private TableColumn stockTablePerColumn;
+	private TableColumn stockTablePbrColumn;
+	private TableColumn stockTableEpsColumn;
+	private TableColumn stockTableBpsColumn;
+	private TableColumn stockTableRoeColumn;
+	private TableColumn stockTableMarketCapitalizationColumn;
+	private TableColumn stockTableAverageAnnualSalaryColumn;
+	private TableColumn stockTableAverageAgeColumn;
 
 	private TextArea consoleTextArea;
 	private Button updateButton;
@@ -248,7 +248,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 
 		// Empty table, and add one history.
 		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
-		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
+		afterUpdateTableStockDataList(tableStockDataList, this.stockTableView);
 	}
 
 	private void initResource() {
@@ -545,7 +545,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		tableControlPane.setMaxHeight(TABLE_CONTROL_PANE_MAX_HEIGHT);
 
 		// Table view
-		buildTableView();
+		buildStockTableView();
 
 		// Center content pane
 		centerContentPane = new VBox();
@@ -650,67 +650,89 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		stage.show();
 	}
 
-	private void buildTableView() {
+	private void buildStockTableView() {
 		// Table View
-		tableView = new TableView<TableStockData>();
+		stockTableView = new TableView<TableStockData>();
 
-		stockCodeColumn = new TableColumn(
+		stockTableStockCodeColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_CODE));
-		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
-		stockNameColumn = new TableColumn(
+		stockTableStockCodeColumn
+				.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
+		stockTableStockNameColumn = new TableColumn(
 				resource.getString(MessageKey.STOCK_NAME));
-		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
-		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
-		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
-		annualInterestRateColumn = new TableColumn(
+		stockTableStockNameColumn
+				.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
+		stockTableMarketColumn = new TableColumn(
+				resource.getString(MessageKey.MARKET));
+		stockTableSectorColumn = new TableColumn(
+				resource.getString(MessageKey.SECTOR));
+		stockTableAnnualInterestRateColumn = new TableColumn(
 				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
-		perColumn = new TableColumn(resource.getString(MessageKey.PER));
-		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
-		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
-		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
-		roeColumn = new TableColumn(resource.getString(MessageKey.ROE));
-		marketCapitalizationColumn = new TableColumn(
+		stockTablePerColumn = new TableColumn(
+				resource.getString(MessageKey.PER));
+		stockTablePbrColumn = new TableColumn(
+				resource.getString(MessageKey.PBR));
+		stockTableEpsColumn = new TableColumn(
+				resource.getString(MessageKey.EPS));
+		stockTableBpsColumn = new TableColumn(
+				resource.getString(MessageKey.BPS));
+		stockTableRoeColumn = new TableColumn(
+				resource.getString(MessageKey.ROE));
+		stockTableMarketCapitalizationColumn = new TableColumn(
 				resource.getString(MessageKey.MARKET_CAPITALIZATION));
-		averageAnnualSalaryColumn = new TableColumn(
+		stockTableAverageAnnualSalaryColumn = new TableColumn(
 				resource.getString(MessageKey.AVERAGE_ANNUAL_SALARY));
-		averageAgeColumn = new TableColumn(
+		stockTableAverageAgeColumn = new TableColumn(
 				resource.getString(MessageKey.AVERAGE_AGE));
 
-		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
-				"stockCode"));
-		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
-				"stockName"));
-		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
-		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
-		annualInterestRateColumn
+		stockTableStockCodeColumn
+				.setCellValueFactory(new PropertyValueFactory<>("stockCode"));
+		stockTableStockNameColumn
+				.setCellValueFactory(new PropertyValueFactory<>("stockName"));
+		stockTableMarketColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"market"));
+		stockTableSectorColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"sector"));
+		stockTableAnnualInterestRateColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"annualInterestRate"));
-		perColumn.setCellValueFactory(new PropertyValueFactory<>("per"));
-		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
-		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
-		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
-		roeColumn.setCellValueFactory(new PropertyValueFactory<>("roe"));
-		marketCapitalizationColumn
+		stockTablePerColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"per"));
+		stockTablePbrColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"pbr"));
+		stockTableEpsColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"eps"));
+		stockTableBpsColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"bps"));
+		stockTableRoeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"roe"));
+		stockTableMarketCapitalizationColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"marketCapitalization"));
-		averageAnnualSalaryColumn
+		stockTableAverageAnnualSalaryColumn
 				.setCellValueFactory(new PropertyValueFactory<>(
 						"averageAnnualSalary"));
-		averageAgeColumn.setCellValueFactory(new PropertyValueFactory<>(
-				"averageAge"));
+		stockTableAverageAgeColumn
+				.setCellValueFactory(new PropertyValueFactory<>("averageAge"));
 
-		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
-				marketColumn, sectorColumn, annualInterestRateColumn,
-				perColumn, pbrColumn, epsColumn, bpsColumn, roeColumn,
-				marketCapitalizationColumn, averageAnnualSalaryColumn,
-				averageAgeColumn);
-		tableView.setPlaceholder(new Label(""));
-		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
-		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-		tableView.getSelectionModel().selectedItemProperty()
-				.addListener(new TableChangeListener(tableView));
-		tableView.setContextMenu(new ContextMenu(
-				createTableContextMenuContents(tableView)));
+		stockTableView.getColumns()
+				.addAll(stockTableStockCodeColumn, stockTableStockNameColumn,
+						stockTableMarketColumn, stockTableSectorColumn,
+						stockTableAnnualInterestRateColumn,
+						stockTablePerColumn, stockTablePbrColumn,
+						stockTableEpsColumn, stockTableBpsColumn,
+						stockTableRoeColumn,
+						stockTableMarketCapitalizationColumn,
+						stockTableAverageAnnualSalaryColumn,
+						stockTableAverageAgeColumn);
+		stockTableView.setPlaceholder(new Label(""));
+		stockTableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
+		stockTableView.getSelectionModel().setSelectionMode(
+				SelectionMode.MULTIPLE);
+		stockTableView.getSelectionModel().selectedItemProperty()
+				.addListener(new TableChangeListener(stockTableView));
+		stockTableView.setContextMenu(new ContextMenu(
+				createTableContextMenuContents(stockTableView)));
 	}
 
 	private void scanMain() {
@@ -811,7 +833,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					buildUi(this.primaryStage);
 					ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
 					afterUpdateTableStockDataList(tableStockDataList,
-							this.tableView);
+							this.stockTableView);
 				});
 		englishMenu
 				.setOnAction(value -> {
@@ -824,7 +846,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 					buildUi(this.primaryStage);
 					ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
 					afterUpdateTableStockDataList(tableStockDataList,
-							this.tableView);
+							this.stockTableView);
 				});
 
 		toolMenu = new Menu(resource.getString(MessageKey.TOOL_MENU));
@@ -1273,7 +1295,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				reloadTableByItem((TreeItem) selectedItem, tableStockDataList);
 			}
 		});
-		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
+		afterUpdateTableStockDataList(tableStockDataList, this.stockTableView);
 	}
 
 	private void reloadTableByItem(TreeItem<Object> item,
@@ -1548,7 +1570,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 						profile));
 			}
 		});
-		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
+		afterUpdateTableStockDataList(tableStockDataList, this.stockTableView);
 	}
 
 	private void updateTable() {
@@ -1581,7 +1603,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				break;
 			}
 		}
-		afterUpdateTableStockDataList(tableStockDataList, this.tableView);
+		afterUpdateTableStockDataList(tableStockDataList, this.stockTableView);
 	}
 
 	private void getFromTable() {
