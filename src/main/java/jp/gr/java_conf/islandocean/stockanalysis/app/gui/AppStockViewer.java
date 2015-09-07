@@ -735,6 +735,87 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				createTableContextMenuContents(stockTableView)));
 	}
 
+	private TableView buildScreeningTableView() {
+		TableView tableView;
+
+		// Table View
+		tableView = new TableView<TableStockData>();
+
+		TableColumn stockCodeColumn;
+		TableColumn stockNameColumn;
+		TableColumn marketColumn;
+		TableColumn sectorColumn;
+		TableColumn annualInterestRateColumn;
+		TableColumn perColumn;
+		TableColumn pbrColumn;
+		TableColumn epsColumn;
+		TableColumn bpsColumn;
+		TableColumn roeColumn;
+		TableColumn marketCapitalizationColumn;
+		TableColumn averageAnnualSalaryColumn;
+		TableColumn averageAgeColumn;
+
+		stockCodeColumn = new TableColumn(
+				resource.getString(MessageKey.STOCK_CODE));
+		stockCodeColumn.setMaxWidth(TABLE_STOCK_CODE_COLUMN_MAX_WIDTH);
+		stockNameColumn = new TableColumn(
+				resource.getString(MessageKey.STOCK_NAME));
+		stockNameColumn.setMinWidth(TABLE_STOCK_NAME_COLUMN_MIN_WIDTH);
+		marketColumn = new TableColumn(resource.getString(MessageKey.MARKET));
+		sectorColumn = new TableColumn(resource.getString(MessageKey.SECTOR));
+		annualInterestRateColumn = new TableColumn(
+				resource.getString(MessageKey.ANNUAL_INTEREST_RATE));
+		perColumn = new TableColumn(resource.getString(MessageKey.PER));
+		pbrColumn = new TableColumn(resource.getString(MessageKey.PBR));
+		epsColumn = new TableColumn(resource.getString(MessageKey.EPS));
+		bpsColumn = new TableColumn(resource.getString(MessageKey.BPS));
+		roeColumn = new TableColumn(resource.getString(MessageKey.ROE));
+		marketCapitalizationColumn = new TableColumn(
+				resource.getString(MessageKey.MARKET_CAPITALIZATION));
+		averageAnnualSalaryColumn = new TableColumn(
+				resource.getString(MessageKey.AVERAGE_ANNUAL_SALARY));
+		averageAgeColumn = new TableColumn(
+				resource.getString(MessageKey.AVERAGE_AGE));
+
+		stockCodeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockCode"));
+		stockNameColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"stockName"));
+		marketColumn.setCellValueFactory(new PropertyValueFactory<>("market"));
+		sectorColumn.setCellValueFactory(new PropertyValueFactory<>("sector"));
+		annualInterestRateColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"annualInterestRate"));
+		perColumn.setCellValueFactory(new PropertyValueFactory<>("per"));
+		pbrColumn.setCellValueFactory(new PropertyValueFactory<>("pbr"));
+		epsColumn.setCellValueFactory(new PropertyValueFactory<>("eps"));
+		bpsColumn.setCellValueFactory(new PropertyValueFactory<>("bps"));
+		roeColumn.setCellValueFactory(new PropertyValueFactory<>("roe"));
+		marketCapitalizationColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"marketCapitalization"));
+		averageAnnualSalaryColumn
+				.setCellValueFactory(new PropertyValueFactory<>(
+						"averageAnnualSalary"));
+		averageAgeColumn.setCellValueFactory(new PropertyValueFactory<>(
+				"averageAge"));
+
+		tableView.getColumns().addAll(stockCodeColumn, stockNameColumn,
+				marketColumn, sectorColumn, annualInterestRateColumn,
+				perColumn, pbrColumn, epsColumn, bpsColumn, roeColumn,
+				marketCapitalizationColumn, averageAnnualSalaryColumn,
+				averageAgeColumn);
+		tableView.setPlaceholder(new Label(""));
+		tableView.setMinHeight(TABLE_VIEW_MIN_HEIGHT);
+		tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		tableView.getSelectionModel().selectedItemProperty()
+				.addListener(new TableChangeListener(tableView));
+		tableView.setContextMenu(new ContextMenu(
+				createTableContextMenuContents(tableView)));
+
+		return tableView;
+	}
+
 	private void scanMain() {
 		// Scan corps
 		try {
@@ -1668,16 +1749,24 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				alert.showAndWait();
 				return;
 			}
-			List<TableScreeningData> list = doScreeningCorps(screeningParameter);
 
-			//
-			// TODO: Display screening result.
-			//
+			// Screening
+			List<TableScreeningData> list = doScreeningCorps(screeningParameter);
+			if (list == null || list.size() == 0) {
+				// TODO: alert() and return
+			}
 			System.out.println("Screening result count=" + list.size());
 
+			// Update view
+			ObservableList tableScreeningDataList = beforeUpdateTableStockDataList(true);
+			tableScreeningDataList.addAll(list);
+			TableView view = buildScreeningTableView();
+			afterUpdateTableScreeningDataList(tableScreeningDataList, view);
 		} else {
 			System.out.println("Close!");
 		}
+
+		// TODO: save parameters
 	}
 
 	private List<TableScreeningData> doScreeningCorps(
