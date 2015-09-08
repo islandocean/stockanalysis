@@ -16,13 +16,14 @@ public class Pref {
 		super();
 
 		className = clazz.getSimpleName();
-		preferenceFilename = Config.getBaseFolder() + className + ".properties";
+		preferenceFilename = Config.getBaseFolder() + className
+				+ ".properties.xml";
 		File prefFile = new File(preferenceFilename);
 		if (!prefFile.exists()) {
 			Properties emptyProperties = new Properties();
 			try {
-				emptyProperties.store(new FileOutputStream(preferenceFilename),
-						className);
+				emptyProperties.storeToXML(new FileOutputStream(
+						preferenceFilename), className);
 			} catch (IOException e) {
 				throw new RuntimeException(
 						"Error: Internal error. Failed to create property file. Cannot continue execution. File="
@@ -32,7 +33,7 @@ public class Pref {
 
 		this.properties = new Properties();
 		try {
-			properties.load(new FileInputStream(preferenceFilename));
+			properties.loadFromXML(new FileInputStream(preferenceFilename));
 		} catch (IOException e) {
 			throw new RuntimeException(
 					"Error: Internal error. Failed to load property file. Cannot continue execution. File="
@@ -49,6 +50,7 @@ public class Pref {
 	}
 
 	public void save() throws FileNotFoundException, IOException {
-		properties.store(new FileOutputStream(preferenceFilename), className);
+		properties.storeToXML(new FileOutputStream(preferenceFilename),
+				className);
 	}
 }
