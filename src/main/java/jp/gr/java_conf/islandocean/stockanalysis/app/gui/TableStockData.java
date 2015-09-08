@@ -8,6 +8,7 @@ import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.DetailRecord;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.finance.ProfileRecord;
+import jp.gr.java_conf.islandocean.stockanalysis.price.StockEnum;
 import jp.gr.java_conf.islandocean.stockanalysis.price.StockRecord;
 
 public class TableStockData {
@@ -27,10 +28,14 @@ public class TableStockData {
 
 	public TableStockData(StockRecord record, DetailRecord detail,
 			ProfileRecord profile) {
-		this.stockCode = new SimpleStringProperty(record.getStockCode());
-		this.stockName = new SimpleStringProperty(record.getStockName());
-		this.market = new SimpleStringProperty(record.getMarket());
-		this.sector = new SimpleStringProperty(record.getSector());
+		this.stockCode = new SimpleStringProperty(
+				(String) record.get(StockEnum.STOCK_CODE));
+		this.stockName = new SimpleStringProperty(
+				(String) record.get(StockEnum.STOCK_NAME));
+		this.market = new SimpleStringProperty(
+				(String) record.get(StockEnum.MARKET));
+		this.sector = new SimpleStringProperty(
+				(String) record.get(StockEnum.SECTOR));
 
 		Double d;
 		if (detail == null) {

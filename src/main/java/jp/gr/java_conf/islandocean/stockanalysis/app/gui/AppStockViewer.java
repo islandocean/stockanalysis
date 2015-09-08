@@ -77,6 +77,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final String PREFKEY_LOCALE = "LOCALE";
 	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
+	// private static final String PREFKEY_CURRENT_SCREENING_PARAMETERS =
+	// "CURRENT_SCREENING_PARAMETERS";
 
 	private static final int NUM_REGISTERED_STOCKS = 10;
 	private static final int HISTORY_SIZE = 10;
@@ -1110,7 +1112,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void removeStockFromSetForUnregister(TreeItem stockItem,
 			Set registerSet) {
 		StockRecord record = (StockRecord) (stockItem.getValue());
-		String stockCode = record.getStockCode();
+		String stockCode = (String) record.get(StockEnum.STOCK_CODE);
 		registerSet.remove(stockCode);
 	}
 
@@ -1390,7 +1392,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		} else if (value instanceof SectorItemValue) {
 			reloadTableBySector(item, tableStockDataList);
 		} else if (value instanceof StockRecord) {
-			String stockCode = ((StockRecord) value).getStockCode();
+			String stockCode = (String) ((StockRecord) value)
+					.get(StockEnum.STOCK_CODE);
 			reloadRightPane(stockCode);
 		}
 	}
@@ -1418,7 +1421,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 						return; // continue
 					}
 					StockRecord record = (StockRecord) stockItem.getValue();
-					String stockCode = record.getStockCode();
+					String stockCode = (String) record
+							.get(StockEnum.STOCK_CODE);
 					DetailRecord detail = (DetailRecord) stockCodeToDetailRecordMap
 							.get(stockCode);
 					ProfileRecord profile = (ProfileRecord) stockCodeToProfileRecordMap
@@ -1632,10 +1636,10 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private void searchCorps(String text) {
 		ObservableList tableStockDataList = beforeUpdateTableStockDataList(true);
 		lastData.forEach(record -> {
-			String stockCode = record.getStockCode();
-			String stockName = record.getStockName();
-			String market = record.getMarket();
-			String sector = record.getSector();
+			String stockCode = (String) record.get(StockEnum.STOCK_CODE);
+			String stockName = (String) record.get(StockEnum.STOCK_NAME);
+			String market = (String) record.get(StockEnum.MARKET);
+			String sector = (String) record.get(StockEnum.SECTOR);
 			if ((stockCode != null && stockCode.length() > 0 && stockCode
 					.contains(text))
 					|| (stockName != null && stockName.length() > 0 && stockName
