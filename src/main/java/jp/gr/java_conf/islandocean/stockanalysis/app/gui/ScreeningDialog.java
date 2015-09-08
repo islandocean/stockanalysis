@@ -44,10 +44,10 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		super();
 		this.resource = resource;
 		this.screeningParameter = screeningParameter;
-		initScreeningDialog();
+		initDialog();
 	}
 
-	public void initScreeningDialog() {
+	public void initDialog() {
 		setTitle(resource.getString(MessageKey.SCREENING_DIALOG_TITLE));
 		setHeaderText(resource
 				.getString(MessageKey.SCREENING_DIALOG_HEADER_TEXT));
@@ -332,133 +332,32 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 				String minAverageAge = minAverageAgeTextField.getText();
 				String maxAverageAge = maxAverageAgeTextField.getText();
 
-				Double d;
-
-				try {
-					d = Double.parseDouble(minAnnualInterestRate);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinAnnualInterestRate(d);
-
-				try {
-					d = Double.parseDouble(maxAnnualInterestRate);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxAnnualInterestRate(d);
-
-				try {
-					d = Double.parseDouble(minPer);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinPer(d);
-
-				try {
-					d = Double.parseDouble(maxPer);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxPer(d);
-
-				try {
-					d = Double.parseDouble(minPbr);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinPbr(d);
-
-				try {
-					d = Double.parseDouble(maxPbr);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxPbr(d);
-
-				try {
-					d = Double.parseDouble(minEps);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinEps(d);
-
-				try {
-					d = Double.parseDouble(maxEps);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxEps(d);
-
-				try {
-					d = Double.parseDouble(minBps);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinBps(d);
-
-				try {
-					d = Double.parseDouble(maxBps);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxBps(d);
-
-				try {
-					d = Double.parseDouble(minRoe);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinRoe(d);
-
-				try {
-					d = Double.parseDouble(maxRoe);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxRoe(d);
-
-				try {
-					d = Double.parseDouble(minMarketCapitalization);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinMarketCapitalization(d);
-
-				try {
-					d = Double.parseDouble(maxMarketCapitalization);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxMarketCapitalization(d);
-
-				try {
-					d = Double.parseDouble(minAverageAnnualSalary);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinAverageAnnualSalary(d);
-
-				try {
-					d = Double.parseDouble(maxAverageAnnualSalary);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxAverageAnnualSalary(d);
-
-				try {
-					d = Double.parseDouble(minAverageAge);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMinAverageAge(d);
-
-				try {
-					d = Double.parseDouble(maxAverageAge);
-				} catch (NumberFormatException e) {
-					d = null;
-				}
-				screeningParameter.setMaxAverageAge(d);
+				screeningParameter
+						.setMinAnnualInterestRate(toDoubleOrNull(minAnnualInterestRate));
+				screeningParameter
+						.setMaxAnnualInterestRate(toDoubleOrNull(maxAnnualInterestRate));
+				screeningParameter.setMinPer(toDoubleOrNull(minPer));
+				screeningParameter.setMaxPer(toDoubleOrNull(maxPer));
+				screeningParameter.setMinPbr(toDoubleOrNull(minPbr));
+				screeningParameter.setMaxPbr(toDoubleOrNull(maxPbr));
+				screeningParameter.setMinEps(toDoubleOrNull(minEps));
+				screeningParameter.setMaxEps(toDoubleOrNull(maxEps));
+				screeningParameter.setMinBps(toDoubleOrNull(minBps));
+				screeningParameter.setMaxBps(toDoubleOrNull(maxBps));
+				screeningParameter.setMinRoe(toDoubleOrNull(minRoe));
+				screeningParameter.setMaxRoe(toDoubleOrNull(maxRoe));
+				screeningParameter
+						.setMinMarketCapitalization(toDoubleOrNull(minMarketCapitalization));
+				screeningParameter
+						.setMaxMarketCapitalization(toDoubleOrNull(maxMarketCapitalization));
+				screeningParameter
+						.setMinAverageAnnualSalary(toDoubleOrNull(minAverageAnnualSalary));
+				screeningParameter
+						.setMaxAverageAnnualSalary(toDoubleOrNull(maxAverageAnnualSalary));
+				screeningParameter
+						.setMinAverageAge(toDoubleOrNull(minAverageAge));
+				screeningParameter
+						.setMaxAverageAge(toDoubleOrNull(maxAverageAge));
 
 				return this.screeningParameter;
 			}
@@ -470,5 +369,15 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		DoubleStringConverter converter = new DoubleStringConverter();
 		TextFormatter<Double> formatter = new TextFormatter<>(converter);
 		return formatter;
+	}
+
+	private Double toDoubleOrNull(String s) {
+		Double d;
+		try {
+			d = Double.parseDouble(s);
+		} catch (NumberFormatException e) {
+			d = null;
+		}
+		return d;
 	}
 }
