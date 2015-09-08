@@ -8,7 +8,9 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.GridPane;
+import javafx.util.converter.DoubleStringConverter;
 
 public class ScreeningDialog extends Dialog<ScreeningParameter> {
 
@@ -48,6 +50,10 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 	public void initScreeningDialog() {
 		setTitle("Screening Dialog");
 		setHeaderText("Select screening parameters.");
+
+		//
+		// Controls
+		//
 
 		executeButtonType = new ButtonType("Execute Screening",
 				ButtonData.OK_DONE);
@@ -173,6 +179,39 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 			maxAverageAgeTextField.setText(org.toString());
 		}
 
+		//
+		// Formatter
+		//
+
+		minAnnualInterestRateTextField
+				.setTextFormatter(createDoubleFormatter());
+		maxAnnualInterestRateTextField
+				.setTextFormatter(createDoubleFormatter());
+		minPerTextField.setTextFormatter(createDoubleFormatter());
+		maxPerTextField.setTextFormatter(createDoubleFormatter());
+		minPbrTextField.setTextFormatter(createDoubleFormatter());
+		maxPbrTextField.setTextFormatter(createDoubleFormatter());
+		minEpsTextField.setTextFormatter(createDoubleFormatter());
+		maxEpsTextField.setTextFormatter(createDoubleFormatter());
+		minBpsTextField.setTextFormatter(createDoubleFormatter());
+		maxBpsTextField.setTextFormatter(createDoubleFormatter());
+		minRoeTextField.setTextFormatter(createDoubleFormatter());
+		maxRoeTextField.setTextFormatter(createDoubleFormatter());
+		minMarketCapitalizationTextField
+				.setTextFormatter(createDoubleFormatter());
+		maxMarketCapitalizationTextField
+				.setTextFormatter(createDoubleFormatter());
+		minAverageAnnualSalaryTextField
+				.setTextFormatter(createDoubleFormatter());
+		maxAverageAnnualSalaryTextField
+				.setTextFormatter(createDoubleFormatter());
+		minAverageAgeTextField.setTextFormatter(createDoubleFormatter());
+		maxAverageAgeTextField.setTextFormatter(createDoubleFormatter());
+
+		//
+		// Layout
+		//
+
 		int row = 0;
 		int col;
 
@@ -240,6 +279,10 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		++row;
 
 		getDialogPane().setContent(grid);
+
+		//
+		// Result
+		//
 
 		setResultConverter(dialogButton -> {
 			if (dialogButton == executeButtonType
@@ -408,5 +451,11 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 			}
 			return null;
 		});
+	}
+
+	private TextFormatter<Double> createDoubleFormatter() {
+		DoubleStringConverter converter = new DoubleStringConverter();
+		TextFormatter<Double> formatter = new TextFormatter<>(converter);
+		return formatter;
 	}
 }
