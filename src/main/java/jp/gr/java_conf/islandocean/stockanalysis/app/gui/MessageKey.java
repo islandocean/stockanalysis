@@ -91,6 +91,13 @@ public class MessageKey {
 	public static final String CONSOLIDATED_NUMBER_OF_EMPLOYEES = "CONSOLIDATED_NUMBER_OF_EMPLOYEES";
 	public static final String AVERAGE_AGE = "AVERAGE_AGE";
 	public static final String AVERAGE_ANNUAL_SALARY = "AVERAGE_ANNUAL_SALARY";
+	public static final String SCREENING_DIALOG_TITLE = "SCREENING_DIALOG_TITLE";
+	public static final String SCREENING_DIALOG_HEADER_TEXT = "SCREENING_DIALOG_HEADER_TEXT";
+	public static final String EXECUTE_BUTTON = "EXECUTE_BUTTON";
+	public static final String CLOSE_BUTTON = "CLOSE_BUTTON";
+	public static final String CANCEL_BUTTON = "CANCEL_BUTTON";
+	public static final String MIN_PROMPTTEXT = "MIN_PROMPTTEXT";
+	public static final String MAX_PROMPTTEXT = "MAX_PROMPTTEXT";
 
 	private MessageKey() {
 	}
