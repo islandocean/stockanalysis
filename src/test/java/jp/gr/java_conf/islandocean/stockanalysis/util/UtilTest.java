@@ -66,4 +66,32 @@ public class UtilTest {
 		System.out.println();
 		assertEquals("failure - strings are not equal", expected, actual);
 	}
+
+	@Test
+	public void testEscapeAndUnescape() {
+		System.out.println(Util.getCurrentClassNameAndMethodName());
+		String org;
+		String actual;
+		String expected;
+		String orgSave;
+
+		org = null;
+		actual = Util.escape(org);
+		System.out.println("escape(" + org + ")=" + actual);
+		expected = null;
+		assertEquals("failure - strings are not equal", expected, actual);
+
+		org = "abc日本\b\r\n\f世界xyz\t\"\'\\";
+		actual = Util.escape(org);
+		System.out.println("escape(" + org + ")=" + actual);
+		expected = "abc日本\\b\\r\\n\\f世界xyz\\t\\\"\\\'\\\\";
+		assertEquals("failure - strings are not equal", expected, actual);
+
+		orgSave = org;
+		org = expected;
+		expected = orgSave;
+		actual = Util.unescape(org);
+		System.out.println("unescape(" + org + ")=" + actual);
+		assertEquals("failure - strings are not equal", expected, actual);
+	}
 }

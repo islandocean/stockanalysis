@@ -182,6 +182,99 @@ public final class Util {
 		}
 	}
 
+	public static String escape(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < len; ++i) {
+			char c = org.charAt(i);
+			switch (c) {
+			case '\b':
+				sb.append("\\b");
+				break;
+			case '\t':
+				sb.append("\\t");
+				break;
+			case '\n':
+				sb.append("\\n");
+				break;
+			case '\f':
+				sb.append("\\f");
+				break;
+			case '\r':
+				sb.append("\\r");
+				break;
+			case '\"':
+				sb.append("\\\"");
+				break;
+			case '\'':
+				sb.append("\\\'");
+				break;
+			case '\\':
+				sb.append("\\\\");
+				break;
+			default:
+				sb.append(c);
+				break;
+			}
+		}
+		return sb.toString();
+	}
+
+	public static String unescape(String org) {
+		int len;
+		if (org == null || (len = org.length()) == 0) {
+			return org;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < len; ++i) {
+			char c = org.charAt(i);
+			if (c == '\\') {
+				if (i == len - 1) {
+					sb.append('\\');
+					break;
+				} else {
+					++i;
+					char c2 = org.charAt(i);
+					switch (c2) {
+					case 'b':
+						sb.append("\b");
+						break;
+					case 't':
+						sb.append("\t");
+						break;
+					case 'n':
+						sb.append("\n");
+						break;
+					case 'f':
+						sb.append("\f");
+						break;
+					case 'r':
+						sb.append("\r");
+						break;
+					case '\"':
+						sb.append("\"");
+						break;
+					case '\'':
+						sb.append("\'");
+						break;
+					case '\\':
+						sb.append("\\");
+						break;
+					default:
+						sb.append(c);
+						break;
+					}
+				}
+			} else {
+				sb.append(c);
+			}
+		}
+		return sb.toString();
+	}
+
 	private static final DecimalFormat percentFormat = new DecimalFormat(
 			"##0.00%");
 
