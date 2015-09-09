@@ -7,6 +7,7 @@ import java.util.List;
 
 import jp.gr.java_conf.islandocean.stockanalysis.common.InvalidDataException;
 import jp.gr.java_conf.islandocean.stockanalysis.util.CalendarUtil;
+import jp.gr.java_conf.islandocean.stockanalysis.util.Util;
 
 public class Record extends EnumMap {
 
@@ -106,6 +107,92 @@ public class Record extends EnumMap {
 							}
 							put(key, cal);
 						}
+					}
+				}
+			}
+		}
+	}
+
+	public String toTabSeparatedNameEqualsValueString() {
+		StringBuilder sb = new StringBuilder(100);
+		Enum<?>[] allKeys = getEnumConstants();
+		for (int idx = 0; idx < allKeys.length; ++idx) {
+			Enum<?> key = (Enum<?>) allKeys[idx];
+			Object obj = this.get(key);
+			if (idx != 0) {
+				sb.append(DELIM);
+			}
+			sb.append(key.name());
+			sb.append('=');
+			if (obj != null) {
+				if (obj instanceof Calendar) {
+					String s = CalendarUtil.format_yyyyMMdd((Calendar) obj);
+					sb.append(s);
+				} else if (obj instanceof Double || obj instanceof Long
+						|| obj instanceof Integer) {
+					sb.append(obj.toString());
+				} else {
+					sb.append(Util.escape((String) obj));
+				}
+			}
+		}
+		return sb.toString();
+	}
+
+	public void fromTabSeparatedNameEqualsValueString(String line)
+			throws InvalidDataException {
+		Enum<?>[] allKeys = getEnumConstants();
+		String[] a = line.split(DELIM);
+		for (int idx = 0; idx < a.length; ++idx) {
+			String s = a[idx];
+			String keyStr;
+			String valueStr;
+			int idxEqual = s.indexOf('=');
+			if (idxEqual >= 0) {
+				keyStr = s.substring(0, idxEqual);
+				valueStr = s.substring(idxEqual + 1);
+			} else {
+				keyStr = s;
+				valueStr = null;
+			}
+
+			Enum<?> key = null;
+			int idxEnum = -1;
+			for (Enum<?> k : allKeys) {
+				if (k.name().equals(keyStr)) {
+					key = k;
+					idxEnum = k.ordinal();
+					break;
+				}
+			}
+			if (key == null) {
+				throw new InvalidDataException(
+						"Cannot find correspondent enum key. keyStr=" + keyStr
+								+ " valueStr=" + valueStr);
+			}
+
+			Class clazz = EnumUtil.getDataValueClass(enumClass, idxEnum);
+			if (clazz.equals(String.class)) {
+				put(key, Util.unescape(valueStr));
+			} else {
+				if (valueStr.length() == 0) {
+					put(key, null);
+				} else {
+					if (clazz.equals(Double.class)) {
+						put(key, Double.parseDouble(valueStr));
+					} else if (clazz.equals(Long.class)) {
+						put(key, Long.parseLong(valueStr));
+					} else if (clazz.equals(Integer.class)) {
+						put(key, Integer.parseInt(valueStr));
+					} else if (clazz.equals(Calendar.class)) {
+						Calendar cal = null;
+						try {
+							cal = CalendarUtil
+									.createCalendarByStringyyyyMMdd(valueStr);
+						} catch (InvalidDataException e) {
+							throw e;
+						}
+						put(key, cal);
 					}
 				}
 			}

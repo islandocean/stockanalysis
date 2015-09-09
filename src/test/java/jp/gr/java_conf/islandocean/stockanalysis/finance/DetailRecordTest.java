@@ -29,14 +29,10 @@ public class DetailRecordTest {
 	}
 
 	@Test
-	public void test() {
+	public void testTsv() {
 		System.out.println(Util.getCurrentClassNameAndMethodName());
 		DetailRecord record = new DetailRecord();
-		String org = "20150717\t1491\t中外鉱業(株)\t非鉄金属\t32.0\t-1.0\t33.0\t32.0\t33.0\t31.0";
-		org += "\t735700.0\t23634.0\t63.0\t3.0\t9272.0\t2.89747982E8\t0.0\t0.0\t58.18\t1.3";
-		org += "\t0.55\t24.66\t3200.0\t100.0\t34.0\t27.0\t\t\t\t";
-		org += "\t\t\t\t\t\t\t1837100.0\t-190700.0\t0.0\t0.0";
-		org += "\t0.0";
+		String org = getTsv();
 		try {
 			record.fromTsvString(org);
 		} catch (InvalidDataException e) {
@@ -50,9 +46,46 @@ public class DetailRecordTest {
 		assertEquals("failure - strings are not equal", expected, actual);
 
 		// extra
-		System.out.println("------------------------------");
-		record.printAllNamesAndValues();
-		System.out.println("------------------------------");
-		System.out.println("record.header()=" + record.header());
+		// System.out.println("------------------------------");
+		// record.printAllNamesAndValues();
+		// System.out.println("------------------------------");
+		// System.out.println("record.header()=" + record.header());
+	}
+
+	@Test
+	public void testNameEqualsValue() {
+		System.out.println(Util.getCurrentClassNameAndMethodName());
+		DetailRecord record = new DetailRecord();
+		try {
+			record.fromTsvString(getTsv());
+		} catch (InvalidDataException e) {
+			e.printStackTrace();
+			fail("Unexpected error.");
+		}
+
+		String org = record.toTabSeparatedNameEqualsValueString();
+		System.out.println("org=" + org);
+
+		try {
+			record.fromTabSeparatedNameEqualsValueString(org);
+		} catch (InvalidDataException e) {
+			e.printStackTrace();
+			fail("Unexpected error.");
+		}
+
+		String expected = getTsv();
+		String actual = record.toTsvString();
+		System.out.println("actual(converted)=" + actual);
+		System.out.println("expect(original) =" + expected);
+		assertEquals("failure - strings are not equal", expected, actual);
+	}
+
+	private String getTsv() {
+		String org = "20150717\t1491\t中外鉱業(株)\t非鉄金属\t32.0\t-1.0\t33.0\t32.0\t33.0\t31.0";
+		org += "\t735700.0\t23634.0\t63.0\t3.0\t9272.0\t2.89747982E8\t0.0\t0.0\t58.18\t1.3";
+		org += "\t0.55\t24.66\t3200.0\t9.99\t9.99\t100.0\t34.0\t27.0\t\t\t\t";
+		org += "\t\t\t\t\t\t\t1837100.0\t-190700.0\t0.0\t0.0";
+		org += "\t0.0";
+		return org;
 	}
 }
