@@ -372,12 +372,10 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 	}
 
 	private Double toDoubleOrNull(String s) {
-		Double d;
 		try {
-			d = Double.parseDouble(s);
+			return (Double) (Double.parseDouble(s));
 		} catch (NumberFormatException e) {
-			d = null;
+			return null;
 		}
-		return d;
 	}
 }
