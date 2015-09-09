@@ -129,8 +129,8 @@ public class UtilTest {
 			fail();
 		}
 
-		ScreeningParameter expected = (ScreeningParameter) org;
+		ScreeningParameter actual = (ScreeningParameter) org;
 		assertEquals("failure - doubles are not equal",
-				expected.getMaxAnnualInterestRate(), (Double) d1);
+				actual.getMaxAnnualInterestRate(), (Double) d1);
 	}
 }

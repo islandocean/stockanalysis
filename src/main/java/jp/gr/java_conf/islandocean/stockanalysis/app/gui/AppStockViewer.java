@@ -77,8 +77,7 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 	private static final String PREFKEY_LOCALE = "LOCALE";
 	private static final String PREFKEY_REGISTERED_STOCKS_ = "REGISTERED_STOCKS_";
 	private static final String PREFKEY_SELECTED_REGISTERED_STOCKS_INDEX = "SELECTED_REGISTERED_STOCKS_INDEX";
-	// private static final String PREFKEY_CURRENT_SCREENING_PARAMETERS =
-	// "CURRENT_SCREENING_PARAMETERS";
+	private static final String PREFKEY_CURRENT_SCREENING_PARAMETERS = "CURRENT_SCREENING_PARAMETERS";
 
 	private static final int NUM_REGISTERED_STOCKS = 10;
 	private static final int HISTORY_SIZE = 10;
@@ -517,18 +516,29 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		screeningButton = new Button(
 				resource.getString(MessageKey.SCREENING_BUTTON));
 		screeningButton.setOnAction((ActionEvent e) -> {
-			ScreeningParameter screeningParameter = new ScreeningParameter();
-			//
-			// TODO: Set initial screening parameter from pref.
-			//
-				ScreeningDialog dialog = new ScreeningDialog(resource,
-						screeningParameter);
-				Optional<ScreeningParameter> result = dialog.showAndWait();
-				boolean execute = dialog.getExecute();
-				result.ifPresent(ret -> {
-					executeScreening(ret, execute);
-				});
-			});
+			ScreeningParameter screeningParameter = null;
+			String str = (String) pref
+					.getProperty(PREFKEY_CURRENT_SCREENING_PARAMETERS);
+			if (str != null) {
+				try {
+					screeningParameter = (ScreeningParameter) Util
+							.deserializeHexToObj(str);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (screeningParameter == null) {
+			screeningParameter = new ScreeningParameter();
+		}
+		ScreeningDialog dialog = new ScreeningDialog(resource,
+				screeningParameter);
+		Optional<ScreeningParameter> result = dialog.showAndWait();
+		boolean execute = dialog.getExecute();
+		result.ifPresent(ret -> {
+			executeScreening(ret, execute);
+		});
+	})	;
 
 		backButton = new Button(resource.getString(MessageKey.BACK_BUTTON));
 		backButton.setOnAction(createHistoryBackEventHandler());
@@ -1742,6 +1752,16 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				+ screeningParameter.getMinAnnualInterestRate()
 				+ ", maxAnnualInterestRate="
 				+ screeningParameter.getMaxAnnualInterestRate());
+
+		try {
+			pref.setProperty(PREFKEY_CURRENT_SCREENING_PARAMETERS,
+					Util.serializeObjToHex(screeningParameter));
+			savePref();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		if (execute) {
 			System.out.println("Execute!");
 			if (screeningParameter.isEmpty()) {

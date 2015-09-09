@@ -14,31 +14,31 @@ import javafx.util.converter.DoubleStringConverter;
 
 public class ScreeningDialog extends Dialog<ScreeningParameter> {
 
-	ResourceBundle resource;
-	ScreeningParameter screeningParameter;
+	private ResourceBundle resource;
+	private ScreeningParameter screeningParameter;
 	private boolean execute;
-	ButtonType executeButtonType;
-	ButtonType closeButtonType;
-	ButtonType cancelButtonType;
-	GridPane grid;
-	TextField minAnnualInterestRateTextField;
-	TextField maxAnnualInterestRateTextField;
-	TextField minPerTextField;
-	TextField maxPerTextField;
-	TextField minPbrTextField;
-	TextField maxPbrTextField;
-	TextField minEpsTextField;
-	TextField maxEpsTextField;
-	TextField minBpsTextField;
-	TextField maxBpsTextField;
-	TextField minRoeTextField;
-	TextField maxRoeTextField;
-	TextField minMarketCapitalizationTextField;
-	TextField maxMarketCapitalizationTextField;
-	TextField minAverageAnnualSalaryTextField;
-	TextField maxAverageAnnualSalaryTextField;
-	TextField minAverageAgeTextField;
-	TextField maxAverageAgeTextField;
+	private ButtonType executeButtonType;
+	private ButtonType closeButtonType;
+	private ButtonType cancelButtonType;
+	private GridPane grid;
+	private TextField minAnnualInterestRateTextField;
+	private TextField maxAnnualInterestRateTextField;
+	private TextField minPerTextField;
+	private TextField maxPerTextField;
+	private TextField minPbrTextField;
+	private TextField maxPbrTextField;
+	private TextField minEpsTextField;
+	private TextField maxEpsTextField;
+	private TextField minBpsTextField;
+	private TextField maxBpsTextField;
+	private TextField minRoeTextField;
+	private TextField maxRoeTextField;
+	private TextField minMarketCapitalizationTextField;
+	private TextField maxMarketCapitalizationTextField;
+	private TextField minAverageAnnualSalaryTextField;
+	private TextField maxAverageAnnualSalaryTextField;
+	private TextField minAverageAgeTextField;
+	private TextField maxAverageAgeTextField;
 
 	public ScreeningDialog(ResourceBundle resource,
 			ScreeningParameter screeningParameter) {
@@ -72,115 +72,59 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		String min = resource.getString(MessageKey.MIN_PROMPTTEXT);
 		String max = resource.getString(MessageKey.MAX_PROMPTTEXT);
 
-		Double org;
-
 		minAnnualInterestRateTextField = new TextField();
 		minAnnualInterestRateTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinAnnualInterestRate()) != null) {
-			minAnnualInterestRateTextField.setText(org.toString());
-		}
 
 		maxAnnualInterestRateTextField = new TextField();
 		maxAnnualInterestRateTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxAnnualInterestRate()) != null) {
-			maxAnnualInterestRateTextField.setText(org.toString());
-		}
 
 		minPerTextField = new TextField();
 		minPerTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinPer()) != null) {
-			minPerTextField.setText(org.toString());
-		}
 
 		maxPerTextField = new TextField();
 		maxPerTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxPer()) != null) {
-			maxPerTextField.setText(org.toString());
-		}
 
 		minPbrTextField = new TextField();
 		minPbrTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinPbr()) != null) {
-			minPbrTextField.setText(org.toString());
-		}
 
 		maxPbrTextField = new TextField();
 		maxPbrTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxPbr()) != null) {
-			maxPbrTextField.setText(org.toString());
-		}
 
 		minEpsTextField = new TextField();
 		minEpsTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinEps()) != null) {
-			minEpsTextField.setText(org.toString());
-		}
 
 		maxEpsTextField = new TextField();
 		maxEpsTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxEps()) != null) {
-			maxEpsTextField.setText(org.toString());
-		}
 
 		minBpsTextField = new TextField();
 		minBpsTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinBps()) != null) {
-			minBpsTextField.setText(org.toString());
-		}
 
 		maxBpsTextField = new TextField();
 		maxBpsTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxBps()) != null) {
-			maxBpsTextField.setText(org.toString());
-		}
 
 		minRoeTextField = new TextField();
 		minRoeTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinRoe()) != null) {
-			minRoeTextField.setText(org.toString());
-		}
 
 		maxRoeTextField = new TextField();
 		maxRoeTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxRoe()) != null) {
-			maxRoeTextField.setText(org.toString());
-		}
 
 		minMarketCapitalizationTextField = new TextField();
 		minMarketCapitalizationTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinMarketCapitalization()) != null) {
-			minMarketCapitalizationTextField.setText(org.toString());
-		}
 
 		maxMarketCapitalizationTextField = new TextField();
 		maxMarketCapitalizationTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxMarketCapitalization()) != null) {
-			maxMarketCapitalizationTextField.setText(org.toString());
-		}
 
 		minAverageAnnualSalaryTextField = new TextField();
 		minAverageAnnualSalaryTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinAverageAnnualSalary()) != null) {
-			minAverageAnnualSalaryTextField.setText(org.toString());
-		}
 
 		maxAverageAnnualSalaryTextField = new TextField();
 		maxAverageAnnualSalaryTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxAverageAnnualSalary()) != null) {
-			maxAverageAnnualSalaryTextField.setText(org.toString());
-		}
 
 		minAverageAgeTextField = new TextField();
 		minAverageAgeTextField.setPromptText(min);
-		if ((org = screeningParameter.getMinAverageAge()) != null) {
-			minAverageAgeTextField.setText(org.toString());
-		}
 
 		maxAverageAgeTextField = new TextField();
 		maxAverageAgeTextField.setPromptText(max);
-		if ((org = screeningParameter.getMaxAverageAge()) != null) {
-			maxAverageAgeTextField.setText(org.toString());
-		}
 
 		//
 		// Formatter
@@ -210,6 +154,67 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 				.setTextFormatter(createDoubleFormatter());
 		minAverageAgeTextField.setTextFormatter(createDoubleFormatter());
 		maxAverageAgeTextField.setTextFormatter(createDoubleFormatter());
+
+		//
+		// Set current values
+		//
+
+		Double org;
+
+		if ((org = screeningParameter.getMinAnnualInterestRate()) != null) {
+			minAnnualInterestRateTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxAnnualInterestRate()) != null) {
+			maxAnnualInterestRateTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinPer()) != null) {
+			minPerTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxPer()) != null) {
+			maxPerTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinPbr()) != null) {
+			minPbrTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxPbr()) != null) {
+			maxPbrTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinEps()) != null) {
+			minEpsTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxEps()) != null) {
+			maxEpsTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinBps()) != null) {
+			minBpsTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxBps()) != null) {
+			maxBpsTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinRoe()) != null) {
+			minRoeTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxRoe()) != null) {
+			maxRoeTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinMarketCapitalization()) != null) {
+			minMarketCapitalizationTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxMarketCapitalization()) != null) {
+			maxMarketCapitalizationTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinAverageAnnualSalary()) != null) {
+			minAverageAnnualSalaryTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxAverageAnnualSalary()) != null) {
+			maxAverageAnnualSalaryTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMinAverageAge()) != null) {
+			minAverageAgeTextField.setText(org.toString());
+		}
+		if ((org = screeningParameter.getMaxAverageAge()) != null) {
+			maxAverageAgeTextField.setText(org.toString());
+		}
 
 		//
 		// Layout
