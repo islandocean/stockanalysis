@@ -16,6 +16,7 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 
 	ResourceBundle resource;
 	ScreeningParameter screeningParameter;
+	private boolean execute;
 	ButtonType executeButtonType;
 	ButtonType closeButtonType;
 	ButtonType cancelButtonType;
@@ -44,6 +45,7 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		super();
 		this.resource = resource;
 		this.screeningParameter = screeningParameter;
+		this.execute = false;
 		initDialog();
 	}
 
@@ -301,11 +303,9 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 			if (dialogButton == executeButtonType
 					|| dialogButton == closeButtonType) {
 
-				boolean execute = false;
 				if (dialogButton == executeButtonType) {
-					execute = true;
+					this.execute = true;
 				}
-				screeningParameter.setExecute(execute);
 
 				String minAnnualInterestRate = minAnnualInterestRateTextField
 						.getText();
@@ -377,5 +377,9 @@ public class ScreeningDialog extends Dialog<ScreeningParameter> {
 		} catch (NumberFormatException e) {
 			return null;
 		}
+	}
+
+	public boolean getExecute() {
+		return this.execute;
 	}
 }

@@ -518,17 +518,15 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				resource.getString(MessageKey.SCREENING_BUTTON));
 		screeningButton.setOnAction((ActionEvent e) -> {
 			ScreeningParameter screeningParameter = new ScreeningParameter();
-			// screeningParameter.setMinPer(5.1);
-			// screeningParameter.setMaxPer(11.1);
-			// screeningParameter.setMinPbr(0.7);
-			// screeningParameter.setMaxPbr(1.1);
-			// screeningParameter.setMinAnnualInterestRate(3.5);
-			// screeningParameter.setMaxAnnualInterestRate(6.0);
-				Dialog<ScreeningParameter> dialog = new ScreeningDialog(
-						resource, screeningParameter);
+			//
+			// TODO: Set initial screening parameter from pref.
+			//
+				ScreeningDialog dialog = new ScreeningDialog(resource,
+						screeningParameter);
 				Optional<ScreeningParameter> result = dialog.showAndWait();
+				boolean execute = dialog.getExecute();
 				result.ifPresent(ret -> {
-					executeScreening(ret);
+					executeScreening(ret, execute);
 				});
 			});
 
@@ -1735,7 +1733,8 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 		alert.showAndWait();
 	}
 
-	private void executeScreening(ScreeningParameter screeningParameter) {
+	private void executeScreening(ScreeningParameter screeningParameter,
+			boolean execute) {
 		System.out.println("minPer=" + screeningParameter.getMinPer()
 				+ ", maxPer=" + screeningParameter.getMaxPer() + ", minPbr="
 				+ screeningParameter.getMinPbr() + ", maxPbr="
@@ -1743,7 +1742,6 @@ public class AppStockViewer extends Application implements CorpsScannerTemplate 
 				+ screeningParameter.getMinAnnualInterestRate()
 				+ ", maxAnnualInterestRate="
 				+ screeningParameter.getMaxAnnualInterestRate());
-		boolean execute = screeningParameter.getExecute();
 		if (execute) {
 			System.out.println("Execute!");
 			if (screeningParameter.isEmpty()) {
