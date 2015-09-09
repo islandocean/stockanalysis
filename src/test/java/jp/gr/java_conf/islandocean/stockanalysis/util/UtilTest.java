@@ -1,6 +1,12 @@
 package jp.gr.java_conf.islandocean.stockanalysis.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.io.Serializable;
+
+import jp.gr.java_conf.islandocean.stockanalysis.app.gui.ScreeningParameter;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -93,5 +99,38 @@ public class UtilTest {
 		actual = Util.unescape(org);
 		System.out.println("unescape(" + org + ")=" + actual);
 		assertEquals("failure - strings are not equal", expected, actual);
+	}
+
+	@Test
+	public void testSerializeAndDeserialize() {
+		System.out.println(Util.getCurrentClassNameAndMethodName());
+		ScreeningParameter org = new ScreeningParameter();
+		double d1 = 5.987d;
+		double d2 = 30.123d;
+		org.setMaxAnnualInterestRate(d1);
+		org.setMinAverageAge(d2);
+
+		String str = null;
+		try {
+			str = Util.serializeObjToHex(org);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		System.out.println("str.length=" + str.length());
+		System.out.println("str=" + str);
+
+		Serializable obj = null;
+		try {
+			obj = Util.deserializeHexToObj(str);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		ScreeningParameter expected = (ScreeningParameter) org;
+		assertEquals("failure - doubles are not equal",
+				expected.getMaxAnnualInterestRate(), (Double) d1);
 	}
 }

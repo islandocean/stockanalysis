@@ -1,8 +1,17 @@
 package jp.gr.java_conf.islandocean.stockanalysis.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.xml.bind.DatatypeConverter;
 
 public final class Util {
 
@@ -305,5 +314,25 @@ public final class Util {
 		String className = stackTraceElement.getClassName();
 		String methodName = stackTraceElement.getMethodName();
 		return className + "#" + methodName + "()";
+	}
+
+	public static String serializeObjToHex(Serializable obj) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(obj);
+		oos.close();
+		baos.close();
+		return DatatypeConverter.printHexBinary(baos.toByteArray());
+	}
+
+	public static Serializable deserializeHexToObj(String hexStr)
+			throws IOException, ClassNotFoundException {
+		byte[] bytes = DatatypeConverter.parseHexBinary(hexStr);
+		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+		ObjectInputStream ois = new ObjectInputStream(bais);
+		Serializable obj = (Serializable) ois.readObject();
+		ois.close();
+		bais.close();
+		return obj;
 	}
 }

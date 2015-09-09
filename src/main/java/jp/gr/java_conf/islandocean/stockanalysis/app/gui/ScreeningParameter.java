@@ -1,6 +1,8 @@
 package jp.gr.java_conf.islandocean.stockanalysis.app.gui;
 
-public class ScreeningParameter {
+import java.io.Serializable;
+
+public class ScreeningParameter implements Serializable {
 
 	private Double minAnnualInterestRate;
 	private Double maxAnnualInterestRate;
