@@ -57,7 +57,8 @@ public class AppDownloadStockPrice extends Application {
 				CalendarUtil.createCalendarRangeYear(2012),
 				CalendarUtil.createCalendarRangeYear(2013),
 				CalendarUtil.createCalendarRangeYear(2014),
-				CalendarUtil.createCalendarRangeYear(2015) };
+				CalendarUtil.createCalendarRangeYear(2015),
+				CalendarUtil.createCalendarRangeYear(2016) };
 	}
 
 	public static void main(String[] args) {
@@ -155,7 +156,8 @@ public class AppDownloadStockPrice extends Application {
 				FXCollections.observableArrayList("recent 7 days",
 						"recent 14 days", "recent 30 days", "recent 90 days",
 						"recent 180 days", "recent 365 days", "2007", "2008",
-						"2009", "2010", "2011", "2012", "2013", "2014", "2015"));
+						"2009", "2010", "2011", "2012", "2013", "2014", "2015",
+						"2016"));
 
 		rangeChoiceBox
 				.getSelectionModel()

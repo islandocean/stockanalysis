@@ -41,6 +41,7 @@ public class MainDownloadSouko {
 			calendarRange = CalendarUtil.createCalendarRangeYear(2013);
 			calendarRange = CalendarUtil.createCalendarRangeYear(2014);
 			calendarRange = CalendarUtil.createCalendarRangeYear(2015);
+			calendarRange = CalendarUtil.createCalendarRangeYear(2016);
 			calendarRange = new CalendarRange(CalendarUtil.createDay(2000,
 					Calendar.JANUARY, 1), CalendarUtil.createToday());
 		}
